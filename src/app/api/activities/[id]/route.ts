@@ -17,9 +17,7 @@ export async function DELETE(
 
   const { id } = await params;
 
-  // emission_results 먼저 삭제 (FK 제약)
-  await supabaseAdmin.from('emission_results').delete().eq('activity_id', id);
-
+  // emission_results는 ON DELETE CASCADE로 자동 삭제됨
   const { error } = await supabaseAdmin
     .from('activities')
     .delete()

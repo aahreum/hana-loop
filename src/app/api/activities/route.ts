@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/shared/lib/supabase.server';
 import { jitter, maybeFail, toCC, toCCArray } from '@/app/api/_store';
 import { CreateActivitySchema } from '@/shared/types/activity';
-import { GHG_SCOPE } from '@/shared/constants/ghgScope';
 import type { ActivityData } from '@/shared/types/activity';
 import type { ActivityTypeEnum } from '@/shared/types/database';
 
@@ -55,59 +54,32 @@ export async function POST(req: NextRequest) {
   }
 
   const input = parsed.data;
-  const scope = GHG_SCOPE[input.type];
 
-  // 1. activities 저장
-  const { data: activity, error: actErr } = await supabaseAdmin
-    .from('activities')
-    .insert({
-      company_id: input.companyId,
-      date: input.date,
-      type: input.type,
-      description: input.description,
-      factor_category: input.factorCategory,
-      quantity: input.quantity,
-      unit: input.unit,
-      scope,
-    })
-    .select()
-    .single();
+  // activities + emission_results를 하나의 트랜잭션으로 저장 (RPC)
+  const { data, error } = await supabaseAdmin.rpc(
+    'create_activity_with_emission',
+    {
+      p_company_id: input.companyId,
+      p_date: input.date,
+      p_type: input.type,
+      p_description: input.description,
+      p_factor_category: input.factorCategory,
+      p_quantity: input.quantity,
+      p_unit: input.unit,
+    },
+  );
 
-  if (actErr || !activity) {
-    return NextResponse.json(
-      { error: actErr?.message ?? '활동 데이터 저장 실패' },
-      { status: 500 },
-    );
+  if (error) {
+    const status = error.message.includes('FACTOR_NOT_FOUND') ? 422 : 500;
+    const message =
+      status === 422 ? '배출계수를 찾을 수 없습니다.' : '활동 데이터 저장 실패';
+    return NextResponse.json({ error: message }, { status });
   }
 
-  // 2. 배출계수 조회 (현재 유효: valid_to IS NULL)
-  const { data: factor, error: factErr } = await supabaseAdmin
-    .from('emission_factors')
-    .select('*')
-    .eq('category', input.factorCategory)
-    .is('valid_to', null)
-    .single();
-
-  if (factErr || !factor) {
-    return NextResponse.json(
-      { error: '배출계수를 찾을 수 없습니다.' },
-      { status: 422 },
-    );
-  }
-
-  // 3. 배출량 계산 및 emission_results 저장
-  const emissionKgCo2e = input.quantity * factor.factor;
-
-  await supabaseAdmin.from('emission_results').insert({
-    activity_id: activity.id,
-    factor_id: factor.id,
-    company_id: input.companyId,
-    year_month: activity.year_month,
-    quantity: input.quantity,
-    factor: factor.factor,
-    emission_kg_co2e: emissionKgCo2e,
-    scope,
-  });
-
-  return NextResponse.json(toCC<ActivityData>(activity), { status: 201 });
+  return NextResponse.json(
+    toCC<ActivityData>(data as Record<string, unknown>),
+    {
+      status: 201,
+    },
+  );
 }
