@@ -7,20 +7,10 @@ import { Button } from '@/shared/ui/button';
 import { cn } from '@/shared/lib/utils';
 import { useDeleteActivity } from '@/shared/hooks/useActivities';
 import type { ActivityData } from '@/shared/types/activity';
-
-const TYPE_LABELS: Record<string, string> = {
-  electricity: '전기',
-  fuel: '연료',
-  raw_material: '원자재',
-  transport: '운송',
-  waste: '폐기물',
-};
-
-const SCOPE_BADGE: Record<number, string> = {
-  1: 'text-scope1 bg-scope1/10 border-scope1/20',
-  2: 'text-scope2 bg-scope2/10 border-scope2/20',
-  3: 'text-scope3 bg-scope3/10 border-scope3/20',
-};
+import {
+  ACTIVITY_TYPE_LABELS,
+  SCOPE_BADGE_CLASSES,
+} from '@/shared/constants/activityLabels';
 
 type SortKey = keyof Pick<ActivityData, 'date' | 'type' | 'quantity' | 'scope'>;
 
@@ -78,7 +68,7 @@ export function ActivityTable({ activities }: ActivityTableProps) {
 
   if (activities.length === 0) {
     return (
-      <div className="flex h-40 items-center justify-center text-sm text-gray-400">
+      <div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
         활동 데이터가 없습니다
       </div>
     );
@@ -88,7 +78,7 @@ export function ActivityTable({ activities }: ActivityTableProps) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-border bg-gray-50/50">
+          <tr className="border-b border-border bg-muted/50">
             {(
               [
                 { key: 'date', label: '날짜' },
@@ -102,7 +92,7 @@ export function ActivityTable({ activities }: ActivityTableProps) {
               .map(({ key, label }) => (
                 <th
                   key={key}
-                  className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 cursor-pointer select-none"
+                  className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none"
                   onClick={() => handleSort(key)}
                 >
                   <div className="flex items-center gap-1">
@@ -111,10 +101,10 @@ export function ActivityTable({ activities }: ActivityTableProps) {
                   </div>
                 </th>
               ))}
-            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               설명
             </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               배출계수
             </th>
             <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
@@ -127,34 +117,34 @@ export function ActivityTable({ activities }: ActivityTableProps) {
             <tr
               key={a.id}
               className={cn(
-                'hover:bg-gray-50/50 transition-colors',
+                'hover:bg-muted/50 transition-colors',
                 deletingId === a.id && 'opacity-50',
               )}
             >
-              <td className="px-4 py-3 tabular-nums text-gray-700">{a.date}</td>
+              <td className="px-4 py-3 tabular-nums text-text">{a.date}</td>
               <td className="px-4 py-3">
                 <span className="inline-flex items-center rounded-full bg-primary-bg px-2 py-0.5 text-xs font-medium text-primary">
-                  {TYPE_LABELS[a.type] ?? a.type}
+                  {ACTIVITY_TYPE_LABELS[a.type] ?? a.type}
                 </span>
               </td>
-              <td className="px-4 py-3 tabular-nums text-gray-700">
+              <td className="px-4 py-3 tabular-nums text-text">
                 {a.quantity.toLocaleString()} {a.unit}
               </td>
               <td className="px-4 py-3">
                 <span
                   className={cn(
                     'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium',
-                    SCOPE_BADGE[a.scope] ??
-                      'bg-gray-100 text-gray-600 border-gray-200',
+                    SCOPE_BADGE_CLASSES[a.scope] ??
+                      'bg-muted text-muted-foreground border-border',
                   )}
                 >
                   Scope {a.scope}
                 </span>
               </td>
-              <td className="px-4 py-3 max-w-[200px] truncate text-gray-700">
+              <td className="px-4 py-3 max-w-[200px] truncate text-text">
                 {a.description}
               </td>
-              <td className="px-4 py-3 text-xs text-gray-500">
+              <td className="px-4 py-3 text-xs text-muted-foreground">
                 {a.factorCategory}
               </td>
               <td className="px-4 py-3 text-right">
@@ -163,7 +153,7 @@ export function ActivityTable({ activities }: ActivityTableProps) {
                   size="icon"
                   onClick={() => handleDelete(a.id)}
                   disabled={isDeleting}
-                  className="h-7 w-7 text-gray-400 hover:text-error hover:bg-error-bg"
+                  className="h-7 w-7 text-muted-foreground hover:text-error hover:bg-error-bg"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>

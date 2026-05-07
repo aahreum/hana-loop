@@ -18,6 +18,7 @@ import {
 } from '@/shared/types/activity';
 import type { EmissionFactor } from '@/shared/types/factor';
 import { calculateEmission, kgToTon } from '@/shared/lib/calculations';
+import { cn } from '@/shared/lib/utils';
 
 const ACTIVITY_TYPES = [
   { value: 'electricity', label: '전기' },
@@ -170,7 +171,7 @@ export function ActivityForm({
             {filteredFactors.map((f) => (
               <SelectItem key={f.category} value={f.category}>
                 {f.name}
-                <span className="ml-2 text-xs text-gray-400">
+                <span className="ml-2 text-xs text-muted-foreground">
                   ({f.factor} {f.unit})
                 </span>
               </SelectItem>
@@ -210,7 +211,7 @@ export function ActivityForm({
             readOnly={!!selectedFactor}
             className={cn(
               errors.unit ? 'border-error' : '',
-              selectedFactor ? 'bg-gray-50 text-gray-500' : '',
+              selectedFactor ? 'bg-muted text-muted-foreground' : '',
             )}
           />
           {errors.unit && (
@@ -250,8 +251,4 @@ export function ActivityForm({
       </div>
     </form>
   );
-}
-
-function cn(...classes: (string | undefined | false)[]) {
-  return classes.filter(Boolean).join(' ');
 }

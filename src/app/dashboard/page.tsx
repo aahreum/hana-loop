@@ -46,7 +46,7 @@ export default function DashboardPage() {
         onMenuClick={toggleSidebar}
         actions={
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 text-sm text-gray-500">
+            <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <input
                 type="month"
                 value={from}
@@ -71,10 +71,10 @@ export default function DashboardPage() {
         {noCompany ? (
           <div className="flex h-64 flex-col items-center justify-center gap-3 text-center">
             <Leaf className="h-10 w-10 text-primary-border" />
-            <p className="text-base font-medium text-gray-700">
+            <p className="text-base font-medium text-text">
               사이드바에서 기업을 선택하세요
             </p>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-muted-foreground">
               기업을 선택하면 탄소 배출 현황을 확인할 수 있습니다
             </p>
           </div>
@@ -82,7 +82,7 @@ export default function DashboardPage() {
           <div className="space-y-6">
             {/* KPI Cards */}
             <section>
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                 주요 지표
               </h2>
               <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -129,7 +129,7 @@ export default function DashboardPage() {
                       icon={<Leaf className="h-4 w-4" />}
                       subtitle={
                         kpis
-                          ? `S2: ${kpis.byScope[2].toFixed(1)} / S3: ${kpis.byScope[3].toFixed(1)} t`
+                          ? `S2: ${kpis.byScope[2].toFixed(1)} / S3: ${kpis.byScope[3].toFixed(1)} tCO₂e`
                           : '데이터 없음'
                       }
                     />
@@ -144,7 +144,7 @@ export default function DashboardPage() {
                 <h3 className="text-sm font-semibold text-text">
                   탄소 관리 등급
                 </h3>
-                <p className="mb-3 text-xs text-gray-400">
+                <p className="mb-3 text-xs text-muted-foreground">
                   기간 내 배출량 감축 추세 기반
                 </p>
                 {isLoading ? (
@@ -221,7 +221,7 @@ export default function DashboardPage() {
                   {Array.from({ length: 5 }).map((_, i) => (
                     <div
                       key={i}
-                      className="h-10 rounded-md bg-gray-100 animate-pulse"
+                      className="h-10 rounded-md bg-muted animate-pulse"
                     />
                   ))}
                 </div>

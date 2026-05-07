@@ -6,15 +6,8 @@ import { useActivities } from '@/shared/hooks/useActivities';
 import { useFilterStore } from '@/shared/lib/store/filterStore';
 import { kgToTon, calcChangeRate } from '@/shared/lib/calculations';
 import { CHART_COLORS } from '@/shared/constants/chartColors';
+import { ACTIVITY_TYPE_LABELS } from '@/shared/constants/activityLabels';
 import type { Scope } from '@/shared/types/activity';
-
-const ACTIVITY_TYPE_LABELS: Record<string, string> = {
-  electricity: '전기',
-  fuel: '연료',
-  raw_material: '원자재',
-  transport: '운송',
-  waste: '폐기물',
-};
 
 export function useDashboard() {
   const { selectedCompanyId, from, to } = useFilterStore();
@@ -107,9 +100,10 @@ export function useDashboard() {
   // 활동 유형별 월별 바 차트 데이터
   const categoryBarData = useMemo(() => {
     const byMonth: Record<string, Record<string, number>> = {};
-    for (const a of activities) {
-      if (!byMonth[a.yearMonth])
-        byMonth[a.yearMonth] = {
+    // results(기간 필터 적용)로 월 초기화 — trendData와 x축 일치
+    for (const r of results) {
+      if (!byMonth[r.yearMonth])
+        byMonth[r.yearMonth] = {
           electricity: 0,
           fuel: 0,
           raw_material: 0,
@@ -129,7 +123,7 @@ export function useDashboard() {
       .map(([month, cats]) => ({ month, ...cats }));
   }, [results, activities]);
 
-  // 최대 배출원 (activity description 기준)
+  // 최대 배출원 (활동 유형 기준)
   const topSource = useMemo(() => {
     const byActivity: Record<string, number> = {};
     for (const r of results) {

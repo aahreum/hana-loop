@@ -48,7 +48,7 @@ export default function ActivitiesPage() {
         {noCompany ? (
           <div className="flex h-64 flex-col items-center justify-center gap-3 text-center">
             <Leaf className="h-10 w-10 text-primary-border" />
-            <p className="text-base font-medium text-gray-700">
+            <p className="text-base font-medium text-text">
               사이드바에서 기업을 선택하세요
             </p>
           </div>
@@ -58,7 +58,7 @@ export default function ActivitiesPage() {
               <h2 className="text-sm font-semibold text-text">
                 활동 목록{' '}
                 {activities.length > 0 && (
-                  <span className="ml-1 text-xs font-normal text-gray-400">
+                  <span className="ml-1 text-xs font-normal text-muted-foreground">
                     ({activities.length}건)
                   </span>
                 )}
@@ -66,7 +66,7 @@ export default function ActivitiesPage() {
             </div>
 
             {isLoading ? (
-              <div className="flex h-48 items-center justify-center gap-2 text-sm text-gray-400">
+              <div className="flex h-48 items-center justify-center gap-2 text-sm text-muted-foreground">
                 <RefreshCw className="h-4 w-4 animate-spin" />
                 불러오는 중...
               </div>
@@ -75,7 +75,7 @@ export default function ActivitiesPage() {
                 <p className="text-sm font-medium text-error">
                   데이터를 불러오지 못했습니다
                 </p>
-                <p className="text-xs text-gray-400">{error.message}</p>
+                <p className="text-xs text-muted-foreground">{error.message}</p>
               </div>
             ) : (
               <div className="p-1">
