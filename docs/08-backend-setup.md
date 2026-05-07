@@ -122,60 +122,46 @@ export async function POST(req: NextRequest) {
   await jitter();
   if (maybeFail()) {
     return NextResponse.json(
-      { error: 'Network error: request failed' },
-      { status: 503 },
+      { error: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' },
+      { status: 500 },
     );
   }
 
   const body = CreateActivitySchema.safeParse(await req.json());
   if (!body.success) {
-    return NextResponse.json({ error: body.error.flatten() }, { status: 400 });
+    return NextResponse.json(
+      { error: body.error.errors[0]?.message ?? '입력값이 올바르지 않습니다.' },
+      { status: 400 },
+    );
   }
 
   const input = body.data;
 
-  // 1. 배출계수 조회 (현재 유효한 계수)
-  const { data: factor } = await supabaseAdmin
-    .from('emission_factors')
-    .select('*')
-    .eq('category', input.factorCategory)
-    .is('valid_to', null)
-    .single();
+  // activities + emission_results를 하나의 트랜잭션으로 저장 (RPC)
+  // - scope는 emission_factors.scope에서 자동 결정 (클라이언트 입력 불필요)
+  // - 배출계수 미존재 시 전체 롤백
+  const { data, error } = await supabaseAdmin.rpc(
+    'create_activity_with_emission',
+    {
+      p_company_id: input.companyId,
+      p_date: input.date,
+      p_type: input.type,
+      p_description: input.description,
+      p_factor_category: input.factorCategory,
+      p_quantity: input.quantity,
+      p_unit: input.unit,
+    },
+  );
 
-  // 2. 활동 데이터 저장 (scope는 GHG_SCOPE에서 자동 결정)
-  const { data: activity, error } = await supabaseAdmin
-    .from('activities')
-    .insert({
-      company_id: input.companyId,
-      date: input.date,
-      type: input.type,
-      description: input.description,
-      factor_category: input.factorCategory,
-      quantity: input.quantity,
-      unit: input.unit,
-      scope: GHG_SCOPE[input.type],
-    })
-    .select()
-    .single();
-
-  if (error)
-    return NextResponse.json({ error: error.message }, { status: 500 });
-
-  // 3. 배출량 계산 결과 저장
-  if (factor) {
-    await supabaseAdmin.from('emission_results').insert({
-      activity_id: activity.id,
-      factor_id: factor.id,
-      company_id: activity.company_id,
-      year_month: activity.year_month,
-      quantity: activity.quantity,
-      factor: factor.factor,
-      emission_kg_co2e: activity.quantity * factor.factor,
-      scope: activity.scope,
-    });
+  if (error) {
+    const status = error.message.includes('FACTOR_NOT_FOUND') ? 422 : 500;
+    return NextResponse.json(
+      { error: status === 422 ? '배출계수를 찾을 수 없습니다.' : '활동 데이터 저장 실패' },
+      { status },
+    );
   }
 
-  return NextResponse.json(activity, { status: 201 });
+  return NextResponse.json(toCC(data), { status: 201 });
 }
 ```
 
