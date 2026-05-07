@@ -10,11 +10,7 @@ export const ActivityTypeSchema = z.enum([
 
 export type ActivityType = z.infer<typeof ActivityTypeSchema>;
 
-export const ScopeSchema = z.union([
-  z.literal(1),
-  z.literal(2),
-  z.literal(3),
-]);
+export const ScopeSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]);
 
 export type Scope = z.infer<typeof ScopeSchema>;
 

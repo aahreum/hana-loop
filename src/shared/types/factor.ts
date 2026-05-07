@@ -8,7 +8,10 @@ export const EmissionFactorSchema = z.object({
   unit: z.string(),
   scope: ScopeSchema,
   validFrom: z.string().regex(/^\d{4}-\d{2}$/),
-  validTo: z.string().regex(/^\d{4}-\d{2}$/).nullable(),
+  validTo: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/)
+    .nullable(),
   source: z.string(),
 });
 
