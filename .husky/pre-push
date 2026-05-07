@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+
+branch_name=$(git symbolic-ref --short HEAD 2>/dev/null || true)
+if [ -z "$branch_name" ]; then
+  echo "브랜치명을 확인할 수 없어 검증을 건너뜁니다."
+  exit 0
+fi
+
+if [ "$branch_name" = "main" ] || [ "$branch_name" = "master" ]; then
+  echo "✅ 메인 브랜치: $branch_name"
+  exit 0
+fi
+
+# 브랜치명 규칙: type/#이슈번호-설명
+pattern='^(feat|fix|hotfix|chore|docs|refactor|test|design)/#[0-9]+-[a-z0-9-]+$'
+
+if echo "$branch_name" | grep -Eq "$pattern"; then
+  echo "✅ 브랜치명이 규칙을 따릅니다: $branch_name"
+else
+  echo "❌ 브랜치명이 규칙을 따르지 않습니다."
+  echo ""
+  echo "올바른 형식: type/#이슈번호-설명"
+  echo "  예: feat/#1-setup-dashboard"
+  echo "  예: fix/#12-fix-chart-render"
+  echo ""
+  echo "현재 브랜치: $branch_name"
+  exit 1
+fi
