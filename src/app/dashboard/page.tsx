@@ -12,6 +12,7 @@ import { CategoryBarChart } from '@/features/dashboard/ui/CategoryBarChart';
 import { CarbonGauge } from '@/features/dashboard/ui/CarbonGauge';
 import { RecentActivitiesTable } from '@/features/dashboard/ui/RecentActivitiesTable';
 import { Header } from '@/features/layout/ui/Header';
+import { DATASET_FROM, DATASET_TO } from '@/shared/constants/datasetRange';
 
 const ACTIVITY_CATEGORIES = [
   'electricity',
@@ -50,6 +51,7 @@ export default function DashboardPage() {
               <input
                 type="month"
                 value={from}
+                min={DATASET_FROM}
                 max={to}
                 onChange={(e) => setDateRange(e.target.value, to)}
                 className="rounded-md border border-border bg-surface px-2 py-1 text-sm text-text focus:outline-none focus:ring-1 focus:ring-primary"
@@ -59,6 +61,7 @@ export default function DashboardPage() {
                 type="month"
                 value={to}
                 min={from}
+                max={DATASET_TO}
                 onChange={(e) => setDateRange(from, e.target.value)}
                 className="rounded-md border border-border bg-surface px-2 py-1 text-sm text-text focus:outline-none focus:ring-1 focus:ring-primary"
               />

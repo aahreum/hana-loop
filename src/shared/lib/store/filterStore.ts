@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { DATASET_FROM, DATASET_TO } from '@/shared/constants/datasetRange';
 
 type FilterStore = {
   selectedCompanyId: string | null;
@@ -9,16 +10,11 @@ type FilterStore = {
   setDateRange: (from: string, to: string) => void;
 };
 
-const now = new Date();
-const defaultTo = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-const eighteenMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 17, 1);
-const defaultFrom = `${eighteenMonthsAgo.getFullYear()}-${String(eighteenMonthsAgo.getMonth() + 1).padStart(2, '0')}`;
-
 export const useFilterStore = create<FilterStore>((set) => ({
   selectedCompanyId: null,
   setSelectedCompanyId: (id) => set({ selectedCompanyId: id }),
 
-  from: defaultFrom,
-  to: defaultTo,
+  from: DATASET_FROM,
+  to: DATASET_TO,
   setDateRange: (from, to) => set({ from, to }),
 }));
