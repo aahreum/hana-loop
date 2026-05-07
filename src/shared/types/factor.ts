@@ -1,9 +1,11 @@
 import { z } from 'zod';
-import { ScopeSchema } from './activity';
+import { ScopeSchema, ActivityTypeSchema } from './activity';
 
 export const EmissionFactorSchema = z.object({
   id: z.string().uuid(),
-  category: z.string(),
+  category: z.string(), // 머신 키: 'electricity_kepco'
+  name: z.string(), // 레이블: '전기 (한국전력 기본값)'
+  activityType: ActivityTypeSchema,
   factor: z.number().positive(),
   unit: z.string(),
   scope: ScopeSchema,

@@ -7,10 +7,10 @@ Claude Code가 위키를 직접 편집할 때 반드시 따른다.
 
 ## 위키 레포 정보
 
-| 항목 | 값 |
-|------|----|
-| 원격 레포 | `aahreum/hana-loop.wiki` |
-| 로컬 경로 | `/tmp/hana-loop.wiki/` |
+| 항목       | 값                                                         |
+| ---------- | ---------------------------------------------------------- |
+| 원격 레포  | `aahreum/hana-loop.wiki`                                   |
+| 로컬 경로  | `/tmp/hana-loop.wiki/`                                     |
 | clone 명령 | `gh repo clone aahreum/hana-loop.wiki /tmp/hana-loop.wiki` |
 
 ---

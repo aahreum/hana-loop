@@ -16,9 +16,10 @@ export type Scope = z.infer<typeof ScopeSchema>;
 
 export const CreateActivitySchema = z.object({
   companyId: z.string().uuid(),
-  yearMonth: z.string().regex(/^\d{4}-\d{2}$/, 'YYYY-MM 형식이어야 합니다'),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'YYYY-MM-DD 형식이어야 합니다'),
   type: ActivityTypeSchema,
   description: z.string().min(1, '설명을 입력하세요'),
+  factorCategory: z.string().min(1, '배출계수를 선택하세요'),
   quantity: z.number().positive('0보다 큰 값을 입력하세요'),
   unit: z.string().min(1, '단위를 선택하세요'),
   scope: ScopeSchema,
@@ -28,6 +29,7 @@ export type CreateActivityInput = z.infer<typeof CreateActivitySchema>;
 
 export const ActivitySchema = CreateActivitySchema.extend({
   id: z.string().uuid(),
+  yearMonth: z.string().regex(/^\d{4}-\d{2}$/), // DB generated column
   createdAt: z.string().datetime(),
 });
 

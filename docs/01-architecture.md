@@ -2,17 +2,17 @@
 
 ## 기술 스택
 
-| 레이어 | 기술 | 선택 이유 |
-|--------|------|----------|
-| 프레임워크 | Next.js 15 App Router | 요구사항(14+). RSC로 초기 로딩 최적화, 최신 캐싱 API 활용 |
-| 언어 | TypeScript | 요구사항. 도메인 복잡도 상 타입 안정성 필수 |
-| 스타일링 | Tailwind CSS | 빠른 반응형 구현, 디자인 토큰 일관성 |
-| UI 컴포넌트 | shadcn/ui | 요구사항 허용. Headless + 스타일 자유도 |
-| 상태 관리 | Zustand + TanStack Query | UI/서버 상태 명확히 분리 |
-| 폼 | React Hook Form + Zod | 유효성 검증 + 타입 추론 |
-| 차트 | Recharts | React 친화적, 경량, 커스터마이징 용이 |
-| DB | Supabase (PostgreSQL) | 호스팅 PostgreSQL. 무료 티어. 타입 자동 생성 |
-| API 문서 | zod-to-openapi + swagger-ui-react | Zod 스키마 → OpenAPI spec 자동 생성. 코드가 곧 문서 |
+| 레이어      | 기술                              | 선택 이유                                                 |
+| ----------- | --------------------------------- | --------------------------------------------------------- |
+| 프레임워크  | Next.js 15 App Router             | 요구사항(14+). RSC로 초기 로딩 최적화, 최신 캐싱 API 활용 |
+| 언어        | TypeScript                        | 요구사항. 도메인 복잡도 상 타입 안정성 필수               |
+| 스타일링    | Tailwind CSS                      | 빠른 반응형 구현, 디자인 토큰 일관성                      |
+| UI 컴포넌트 | shadcn/ui                         | 요구사항 허용. Headless + 스타일 자유도                   |
+| 상태 관리   | Zustand + TanStack Query          | UI/서버 상태 명확히 분리                                  |
+| 폼          | React Hook Form + Zod             | 유효성 검증 + 타입 추론                                   |
+| 차트        | Recharts                          | React 친화적, 경량, 커스터마이징 용이                     |
+| DB          | Supabase (PostgreSQL)             | 호스팅 PostgreSQL. 무료 티어. 타입 자동 생성              |
+| API 문서    | zod-to-openapi + swagger-ui-react | Zod 스키마 → OpenAPI spec 자동 생성. 코드가 곧 문서       |
 
 ---
 
@@ -173,13 +173,13 @@ Form State (React Hook Form — features/activities/ui/)
 
 ## 렌더링 전략
 
-| 컴포넌트 | 전략 | 이유 |
-|----------|------|------|
-| Dashboard 차트 | Client Component + dynamic import | 인터랙션 필요, SSR 불필요 |
-| KPI 카드 | Client Component + Suspense | 데이터 로딩 경계 분리 |
-| Navigation Drawer | Client Component | open/close 상태 |
-| Activity 테이블 | Client Component | 필터·정렬 인터랙션 |
-| Swagger UI (`/docs`) | Client Component | swagger-ui-react가 CSR 전용 |
+| 컴포넌트             | 전략                              | 이유                        |
+| -------------------- | --------------------------------- | --------------------------- |
+| Dashboard 차트       | Client Component + dynamic import | 인터랙션 필요, SSR 불필요   |
+| KPI 카드             | Client Component + Suspense       | 데이터 로딩 경계 분리       |
+| Navigation Drawer    | Client Component                  | open/close 상태             |
+| Activity 테이블      | Client Component                  | 필터·정렬 인터랙션          |
+| Swagger UI (`/docs`) | Client Component                  | swagger-ui-react가 CSR 전용 |
 
 ---
 

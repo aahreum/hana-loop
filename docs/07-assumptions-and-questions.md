@@ -53,11 +53,11 @@
 
 ## 주요 설계 결정 근거
 
-| 결정 | 대안 | 선택 이유 |
-|------|------|----------|
-| Next.js API Routes + Supabase | Fake API만 사용 | 실제 영속성. 가점 요소(PostgreSQL) 충족. 구조가 실서비스와 동일 |
-| zod-to-openapi로 Swagger 자동 생성 | OpenAPI spec 수동 작성 | Zod 스키마가 유효성 검증 + API 문서의 단일 소스. 중복 없음 |
-| ActivityData와 EmissionResult 분리 | emissions 필드를 ActivityData에 포함 | 배출계수 변경 시 재계산 가능. 감사 추적. 실무 탄소 회계 표준 패턴 |
-| 배출계수 validFrom/validTo | 단순 단일 레코드 | 규정 변경 시 과거 데이터 무결성 보장. 실제 탄소 관리 플랫폼의 필수 요건 |
-| TanStack Query + Zustand 분리 | Context API만 사용 | 서버 상태(캐싱/동기화)와 클라이언트 UI 상태의 관심사 명확 분리 |
-| Recharts 선택 | Visx, Chart.js | React 컴포넌트 모델과 일치. SSR 호환. 충분한 커스터마이징. 번들 크기 적절 |
+| 결정                               | 대안                                 | 선택 이유                                                                 |
+| ---------------------------------- | ------------------------------------ | ------------------------------------------------------------------------- |
+| Next.js API Routes + Supabase      | Fake API만 사용                      | 실제 영속성. 가점 요소(PostgreSQL) 충족. 구조가 실서비스와 동일           |
+| zod-to-openapi로 Swagger 자동 생성 | OpenAPI spec 수동 작성               | Zod 스키마가 유효성 검증 + API 문서의 단일 소스. 중복 없음                |
+| ActivityData와 EmissionResult 분리 | emissions 필드를 ActivityData에 포함 | 배출계수 변경 시 재계산 가능. 감사 추적. 실무 탄소 회계 표준 패턴         |
+| 배출계수 validFrom/validTo         | 단순 단일 레코드                     | 규정 변경 시 과거 데이터 무결성 보장. 실제 탄소 관리 플랫폼의 필수 요건   |
+| TanStack Query + Zustand 분리      | Context API만 사용                   | 서버 상태(캐싱/동기화)와 클라이언트 UI 상태의 관심사 명확 분리            |
+| Recharts 선택                      | Visx, Chart.js                       | React 컴포넌트 모델과 일치. SSR 호환. 충분한 커스터마이징. 번들 크기 적절 |

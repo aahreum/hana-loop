@@ -1,6 +1,9 @@
 # CLAUDE.md — HanaLoop Carbon Dashboard 헌법
 
-> 이 파일은 프로젝트의 모든 규칙을 정의한다.
+> **과제 원본 스펙**: [`docs/00-assignment.md`](./docs/00-assignment.md)
+> 모든 구현 결정은 이 스펙을 최우선 근거로 삼는다.
+
+> 이 파일은 프로젝트의 모든 기술 규칙을 정의한다.
 > 코드 작성 전 반드시 숙지하고, 모든 결정의 근거로 삼는다.
 > 규칙이 충돌하거나 모호한 경우, 이 파일의 내용을 우선한다.
 
@@ -13,6 +16,7 @@
 자동 계산하여 Scope 1/2/3 기준으로 시각화한다.
 
 **핵심 흐름**:
+
 ```
 활동 데이터 입력 → 배출계수 조회 → 배출량 계산 → Supabase 저장 → 대시보드 시각화
 ```
@@ -21,19 +25,19 @@
 
 ## 기술 스택
 
-| 항목 | 기술 |
-|------|------|
-| 프레임워크 | Next.js 15 App Router |
-| 언어 | TypeScript (strict) |
-| 스타일링 | Tailwind CSS v4 (tailwind.config 없음 — globals.css만) |
-| UI | shadcn/ui (수정 금지) |
-| 상태 관리 | Zustand (UI/Filter) + TanStack Query v5 (서버) |
-| 폼 | React Hook Form + Zod |
-| DB | Supabase (PostgreSQL) |
-| API 문서 | zod-to-openapi + swagger-ui-react (`/docs`) |
-| 차트 | Recharts |
-| 테스트 | Vitest + Testing Library |
-| 패키지 관리자 | pnpm |
+| 항목          | 기술                                                   |
+| ------------- | ------------------------------------------------------ |
+| 프레임워크    | Next.js 15 App Router                                  |
+| 언어          | TypeScript (strict)                                    |
+| 스타일링      | Tailwind CSS v4 (tailwind.config 없음 — globals.css만) |
+| UI            | shadcn/ui (수정 금지)                                  |
+| 상태 관리     | Zustand (UI/Filter) + TanStack Query v5 (서버)         |
+| 폼            | React Hook Form + Zod                                  |
+| DB            | Supabase (PostgreSQL)                                  |
+| API 문서      | zod-to-openapi + swagger-ui-react (`/docs`)            |
+| 차트          | Recharts                                               |
+| 테스트        | Vitest + Testing Library                               |
+| 패키지 관리자 | pnpm                                                   |
 
 ---
 
@@ -124,7 +128,7 @@ export function useActivities(params?: ActivityQueryParams) {
 }
 
 // ❌ 금지 — 인라인 string key
-useQuery({ queryKey: ['activities'] })
+useQuery({ queryKey: ['activities'] });
 ```
 
 ### UI/Filter 상태 — Zustand
@@ -167,7 +171,7 @@ features/{slice}/hooks/ (useMutation)
 // app/api/activities/route.ts
 
 // 1. 지연 시뮬레이션 — 모든 엔드포인트에 적용
-const jitter = () => 200 + Math.random() * 600;
+const jitter = () => new Promise<void>((res) => setTimeout(res, 200 + Math.random() * 600));
 
 // 2. 쓰기 실패 시뮬레이션 — POST/DELETE에만 적용 (15%)
 const maybeFail = () => Math.random() < 0.15;
@@ -279,16 +283,16 @@ export default function KpiCard() { ... }
 
 ### 금지 사항
 
-| 금지 | 이유 |
-|------|------|
-| `console.log` | `console.warn` / `console.error`만 허용 |
-| `any` 타입 | TypeScript strict 모드 위반 |
-| 하드코딩 색상 | 다크모드 대응 불가 |
-| 인라인 Query Key string | 타입 안전성 없음, 오타 위험 |
-| `interface`로 중복 타입 | Zod 스키마가 단일 소스 |
-| `features/A`에서 `features/B` import | FSD 규칙 위반 |
-| `shared/`에서 다른 레이어 import | FSD 규칙 위반 |
-| `supabaseAdmin` 클라이언트 컴포넌트 사용 | 서비스 롤 키 노출 |
+| 금지                                     | 이유                                    |
+| ---------------------------------------- | --------------------------------------- |
+| `console.log`                            | `console.warn` / `console.error`만 허용 |
+| `any` 타입                               | TypeScript strict 모드 위반             |
+| 하드코딩 색상                            | 다크모드 대응 불가                      |
+| 인라인 Query Key string                  | 타입 안전성 없음, 오타 위험             |
+| `interface`로 중복 타입                  | Zod 스키마가 단일 소스                  |
+| `features/A`에서 `features/B` import     | FSD 규칙 위반                           |
+| `shared/`에서 다른 레이어 import         | FSD 규칙 위반                           |
+| `supabaseAdmin` 클라이언트 컴포넌트 사용 | 서비스 롤 키 노출                       |
 
 ---
 

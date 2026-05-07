@@ -1,13 +1,185 @@
-// Supabase CLI로 자동 생성:
+// Supabase CLI로 자동 생성 가능:
 // npx supabase gen types typescript --project-id <your-project-id> > src/shared/types/database.ts
-//
-// 아직 생성 전 — 임시 placeholder
+
+export type ActivityTypeEnum =
+  | 'electricity'
+  | 'fuel'
+  | 'raw_material'
+  | 'transport'
+  | 'waste';
 
 export type Database = {
   public: {
-    Tables: Record<string, never>;
+    Tables: {
+      companies: {
+        Row: {
+          id: string;
+          name: string;
+          country: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          country?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          country?: string;
+          created_at?: string;
+        };
+      };
+      emission_factors: {
+        Row: {
+          id: string;
+          category: string;
+          name: string;
+          activity_type: ActivityTypeEnum;
+          factor: number;
+          unit: string;
+          scope: number;
+          valid_from: string;
+          valid_to: string | null;
+          source: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          category: string;
+          name: string;
+          activity_type: ActivityTypeEnum;
+          factor: number;
+          unit: string;
+          scope: number;
+          valid_from: string;
+          valid_to?: string | null;
+          source?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          category?: string;
+          name?: string;
+          activity_type?: ActivityTypeEnum;
+          factor?: number;
+          unit?: string;
+          scope?: number;
+          valid_from?: string;
+          valid_to?: string | null;
+          source?: string;
+          created_at?: string;
+        };
+      };
+      activities: {
+        Row: {
+          id: string;
+          company_id: string;
+          date: string;
+          year_month: string; // generated column
+          type: ActivityTypeEnum;
+          description: string;
+          factor_category: string;
+          quantity: number;
+          unit: string;
+          scope: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          company_id: string;
+          date: string;
+          type: ActivityTypeEnum;
+          description: string;
+          factor_category: string;
+          quantity: number;
+          unit: string;
+          scope: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          company_id?: string;
+          date?: string;
+          type?: ActivityTypeEnum;
+          description?: string;
+          factor_category?: string;
+          quantity?: number;
+          unit?: string;
+          scope?: number;
+          created_at?: string;
+        };
+      };
+      posts: {
+        Row: {
+          id: string;
+          title: string;
+          resource_uid: string;
+          date_time: string;
+          content: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          resource_uid: string;
+          date_time: string;
+          content?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          resource_uid?: string;
+          date_time?: string;
+          content?: string;
+          created_at?: string;
+        };
+      };
+      emission_results: {
+        Row: {
+          id: string;
+          activity_id: string;
+          factor_id: string;
+          company_id: string;
+          year_month: string;
+          quantity: number;
+          factor: number;
+          emission_kg_co2e: number;
+          scope: number;
+          calculated_at: string;
+        };
+        Insert: {
+          id?: string;
+          activity_id: string;
+          factor_id: string;
+          company_id: string;
+          year_month: string;
+          quantity: number;
+          factor: number;
+          emission_kg_co2e: number;
+          scope: number;
+          calculated_at?: string;
+        };
+        Update: {
+          id?: string;
+          activity_id?: string;
+          factor_id?: string;
+          company_id?: string;
+          year_month?: string;
+          quantity?: number;
+          factor?: number;
+          emission_kg_co2e?: number;
+          scope?: number;
+          calculated_at?: string;
+        };
+      };
+    };
     Views: Record<string, never>;
     Functions: Record<string, never>;
-    Enums: Record<string, never>;
+    Enums: {
+      activity_type_enum: ActivityTypeEnum;
+    };
   };
 };

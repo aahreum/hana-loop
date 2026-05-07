@@ -2,16 +2,16 @@
 
 ## 시간 배분 (총 10시간 기준)
 
-| 단계 | 작업 | 예상 시간 |
-|------|------|----------|
-| 1 | 프로젝트 세팅 | 0.5h |
-| 2 | Supabase 스키마 + 타입 + API Routes + OpenAPI | 1.5h |
-| 3 | 레이아웃 (Drawer + 헤더) | 1h |
-| 4 | Dashboard 페이지 | 2.5h |
-| 5 | Activities 페이지 + 폼 | 2.5h |
-| 6 | Factors 페이지 | 0.5h |
-| 7 | 반응형 + 에러/로딩 처리 | 1h |
-| 8 | README 작성 + 정리 | 0.5h |
+| 단계 | 작업                                          | 예상 시간 |
+| ---- | --------------------------------------------- | --------- |
+| 1    | 프로젝트 세팅                                 | 0.5h      |
+| 2    | Supabase 스키마 + 타입 + API Routes + OpenAPI | 1.5h      |
+| 3    | 레이아웃 (Drawer + 헤더)                      | 1h        |
+| 4    | Dashboard 페이지                              | 2.5h      |
+| 5    | Activities 페이지 + 폼                        | 2.5h      |
+| 6    | Factors 페이지                                | 0.5h      |
+| 7    | 반응형 + 에러/로딩 처리                       | 1h        |
+| 8    | README 작성 + 정리                            | 0.5h      |
 
 ---
 
@@ -36,6 +36,7 @@ npx shadcn@latest add button input select card badge toast dialog
 ```
 
 `.env.local` 생성:
+
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
@@ -49,6 +50,7 @@ Git 초기화 후 첫 커밋.
 ### 2단계: Supabase 스키마 + 타입 + API Routes + OpenAPI (1.5h)
 
 **순서:**
+
 1. Supabase Dashboard → SQL Editor에서 스키마 실행 (`08-backend-setup.md` 참고)
 2. `npx supabase gen types typescript ...` → `src/types/database.ts` 자동 생성
 3. `src/types/` — 도메인 타입 정의 (database.ts 기반으로 확장)
@@ -65,6 +67,7 @@ Git 초기화 후 첫 커밋.
 ### 3단계: 레이아웃 (1h)
 
 **순서:**
+
 1. `src/components/layout/NavigationDrawer.tsx`
    - 링크 목록, 회사 선택 드롭다운
    - 모바일 오버레이 처리
@@ -79,6 +82,7 @@ Git 초기화 후 첫 커밋.
 ### 4단계: Dashboard 페이지 (2.5h)
 
 **순서:**
+
 1. KPI 카드 컴포넌트 4개 (Suspense로 감싸기)
 2. `src/lib/hooks/useEmissions.ts` — TanStack Query 훅
 3. 월별 추이 Line Chart
@@ -92,6 +96,7 @@ Git 초기화 후 첫 커밋.
 ### 5단계: Activities 페이지 + 폼 (2.5h)
 
 **순서:**
+
 1. `src/lib/hooks/useActivities.ts`
 2. Activity 테이블 (필터 + 정렬)
 3. Activity 입력 폼 컴포넌트
@@ -156,12 +161,12 @@ docs: write README with architecture explanation
 
 ## 설계 결정 및 Trade-off 기록
 
-| 결정 | 이유 | Trade-off |
-|------|------|----------|
-| Next.js API Routes + Supabase | 실제 영속성, 가점 요소 충족 | Fake API 대비 세팅 시간 추가 (~30분) |
-| zod-to-openapi로 Swagger 자동 생성 | Zod 스키마가 유효성 검증 + API 문서의 단일 소스 | 스키마 작성 방식이 일반 Zod와 다소 다름 |
-| Recharts 선택 | React 친화적, SSR 이슈 없음 | Visx보다 커스터마이징 제한적 |
-| Zustand로 UI/Filter 상태 분리 | TanStack Query와 역할 명확히 구분 | Context API보다 boilerplate 줄어듦 |
-| ActivityData와 EmissionResult 분리 | 계산 로직 변경 시 재계산 가능, 감사 추적 | 데이터 양 증가 |
-| 배출계수 버전 관리 (validFrom/validTo) | 과거 계산 재현, 규정 변경 대응 | 구현 복잡도 증가 |
-| shadcn/ui 선택 | MUI 금지 조건, Headless로 디자인 자유도 확보 | 초기 컴포넌트 셋업 시간 필요 |
+| 결정                                   | 이유                                            | Trade-off                               |
+| -------------------------------------- | ----------------------------------------------- | --------------------------------------- |
+| Next.js API Routes + Supabase          | 실제 영속성, 가점 요소 충족                     | Fake API 대비 세팅 시간 추가 (~30분)    |
+| zod-to-openapi로 Swagger 자동 생성     | Zod 스키마가 유효성 검증 + API 문서의 단일 소스 | 스키마 작성 방식이 일반 Zod와 다소 다름 |
+| Recharts 선택                          | React 친화적, SSR 이슈 없음                     | Visx보다 커스터마이징 제한적            |
+| Zustand로 UI/Filter 상태 분리          | TanStack Query와 역할 명확히 구분               | Context API보다 boilerplate 줄어듦      |
+| ActivityData와 EmissionResult 분리     | 계산 로직 변경 시 재계산 가능, 감사 추적        | 데이터 양 증가                          |
+| 배출계수 버전 관리 (validFrom/validTo) | 과거 계산 재현, 규정 변경 대응                  | 구현 복잡도 증가                        |
+| shadcn/ui 선택                         | MUI 금지 조건, Headless로 디자인 자유도 확보    | 초기 컴포넌트 셋업 시간 필요            |

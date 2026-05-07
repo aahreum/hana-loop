@@ -5,70 +5,85 @@
 1. **활동 데이터와 계산 결과를 분리**: 계산 로직 변경 시 재계산 가능, 감사 추적 가능
 2. **배출계수 버전 관리**: `valid_from` / `valid_to`로 과거 계산 재현 가능
 3. **Scope 분류 포함**: Scope 1/2/3 구분은 실무 탄소 회계의 핵심
+4. **원본 날짜 보존**: `date` (YYYY-MM-DD)를 그대로 저장, `year_month`는 DB generated column으로 파생
 
 ## 타입 정의
 
-### 제공된 기본 타입
+### 기본 타입 (spec 기준)
 
 ```ts
-// types/company.ts
+// shared/types/company.ts
 type Company = {
   id: string;
   name: string;
-  country: string; // Country.code (e.g. "KR", "US")
-  emissions: GhgEmission[];
+  country: string; // ISO 2자리 코드 (예: "KR", "US")
 };
 
-// types/emission.ts
+// shared/types/emission.ts — API 응답 임베드용 집계 타입
 type GhgEmission = {
-  yearMonth: string;   // "2025-01"
-  source: string;      // "gasoline" | "lpg" | "diesel" | "electricity" | ...
-  emissions: number;   // CO2 배출량 (톤 단위)
+  yearMonth: string; // "2025-01"
+  source: string; // activity.description (예: "한국전력", "플라스틱 1")
+  emissions: number; // tCO2e (= emission_kg_co2e / 1000)
+  scope: 1 | 2 | 3;
 };
+// → GET /api/companies/:id 응답에서 Company.emissions[] 로 임베드됨
+// → DB에 저장되지 않음. emission_results를 집계하여 변환
 
-// types/post.ts
+// shared/types/post.ts
 type Post = {
   id: string;
   title: string;
   resourceUid: string; // Company.id
-  dateTime: string;    // "2024-02"
+  dateTime: string; // "YYYY-MM" (예: "2025-01")
   content: string;
+  createdAt: string;
 };
 ```
 
 ### 확장 타입
 
 ```ts
-// types/activity.ts
-type ActivityType = "electricity" | "raw_material" | "transport" | "fuel" | "waste";
-
+// shared/types/activity.ts
+type ActivityType =
+  | 'electricity'
+  | 'fuel'
+  | 'raw_material'
+  | 'transport'
+  | 'waste';
 type Scope = 1 | 2 | 3;
 
-type ActivityData = {
-  id: string;
+type CreateActivityInput = {
   companyId: string;
-  yearMonth: string;       // "2025-01"
+  date: string; // "YYYY-MM-DD" — Excel 원본 날짜 그대로
   type: ActivityType;
-  description: string;     // "한국전력", "플라스틱1", "트럭" 등
-  quantity: number;        // 활동량
-  unit: string;            // "kWh", "kg", "ton-km" 등
-  scope: Scope;
+  description: string; // "한국전력", "플라스틱 1", "트럭" 등
+  factorCategory: string; // emission_factors.category 참조 (예: "electricity_kepco")
+  quantity: number;
+  unit: string; // "kWh", "kg", "ton-km" 등
+  scope: Scope; // GHG_SCOPE[type]으로 자동 결정 — 사용자 직접 입력 안 함
+};
+
+type ActivityData = CreateActivityInput & {
+  id: string;
+  yearMonth: string; // "YYYY-MM" — DB generated column (date에서 자동 파생)
   createdAt: string;
 };
 
-// types/factor.ts
+// shared/types/factor.ts
 type EmissionFactor = {
   id: string;
-  category: string;        // "electricity", "plastic1" 등
-  factor: number;          // 배출계수 (kgCO2e/unit)
+  category: string; // 머신 키: "electricity_kepco", "raw_material_plastic1"
+  name: string; // 레이블: "전기 (한국전력 기본값)"
+  activityType: ActivityType;
+  factor: number; // 배출계수 (kgCO2e/unit)
   unit: string;
   scope: Scope;
-  validFrom: string;       // "2024-01"
-  validTo: string | null;  // null = 현재 유효
-  source: string;          // 출처 (e.g. "IPCC 2021", "환경부")
+  validFrom: string; // "YYYY-MM"
+  validTo: string | null; // null = 현재 유효 계수
+  source: string; // "IPCC 2021", "한국 환경부 2023" 등
 };
 
-// types/result.ts
+// shared/types/emission.ts
 type EmissionResult = {
   id: string;
   activityId: string;
@@ -77,7 +92,7 @@ type EmissionResult = {
   yearMonth: string;
   quantity: number;
   factor: number;
-  emissionKgCO2e: number;  // quantity × factor
+  emissionKgCo2e: number; // quantity × factor
   scope: Scope;
   calculatedAt: string;
 };
@@ -86,51 +101,47 @@ type EmissionResult = {
 ## ERD (논리적 구조)
 
 ```
-Company (1) ──────< ActivityData (N)
-                        │
-                        │ factorId
-                        ▼
-                   EmissionFactor (1)
-                        │
-                        │ (계산 결과)
-                        ▼
-                   EmissionResult (N)
+companies (1) ──────────< activities (N)
+                              │
+                              │ factor_category → emission_factors.category
+                              ▼
+                         emission_factors (1)
+                              │
+                              │ (계산 결과)
+                              ▼
+                         emission_results (N)
 
-Company (1) ──────< Post (N)
+companies (1) ──────────< posts (N)
 ```
+
+## DB 스키마 요점
+
+| 테이블             | 주요 컬럼                                                                 | 특이사항                                                                |
+| ------------------ | ------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `companies`        | id, name, country                                                         | -                                                                       |
+| `emission_factors` | category, name, activity_type, factor, valid_from, valid_to               | valid_to IS NULL = 현재 유효. category별 active 1개 강제 (unique index) |
+| `activities`       | date, year_month(generated), type, description, factor_category, quantity | date = YYYY-MM-DD 원본. year_month = 자동 생성. 불변                    |
+| `emission_results` | emission_kg_co2e, scope, calculated_at                                    | activity_id UNIQUE. 배출계수 변경 시 재계산 가능                        |
+| `posts`            | title, resource_uid, date_time, content                                   | date_time = "YYYY-MM" 형식                                              |
 
 ## 계산 공식
 
 ```ts
-// lib/calculations/emissions.ts
-export function calculateEmission(
-  quantity: number,
-  factor: number
-): number {
-  return quantity * factor; // 단위: kgCO2e
-}
-
-export function kgToTon(kg: number): number {
-  return kg / 1000;
-}
+// shared/lib/calculations.ts
+calculateEmission(quantity, factor); // → quantity × factor (kgCO2e)
+kgToTon(kg); // → kg / 1000 (tCO2e)
+calcChangeRate(current, previous); // → 전월 대비 증감률 (%)
 ```
 
-## Seed Data 구조
+## Seed Data 배출계수 (CT-045 기준)
 
-### 배출계수 예시
+| 카테고리              | 계수  | 단위          | Scope |
+| --------------------- | ----- | ------------- | ----- |
+| electricity_kepco     | 0.456 | kgCO2e/kWh    | 2     |
+| raw_material_plastic1 | 2.3   | kgCO2e/kg     | 3     |
+| raw_material_plastic2 | 3.2   | kgCO2e/kg     | 3     |
+| transport_truck       | 3.5   | kgCO2e/ton-km | 3     |
+| fuel_diesel           | 2.68  | kgCO2e/L      | 1     |
+| waste_general         | 0.58  | kgCO2e/kg     | 3     |
 
-| 카테고리 | 계수 | 단위 | Scope |
-|----------|------|------|-------|
-| 전기(한국) | 0.4567 | kgCO2e/kWh | 2 |
-| 플라스틱(일반) | 2.3 | kgCO2e/kg | 3 |
-| 경유 | 2.68 | kgCO2e/L | 1 |
-| 트럭(육상) | 0.092 | kgCO2e/ton-km | 3 |
-| LNG | 2.2 | kgCO2e/kg | 1 |
-
-### 활동 데이터 예시
-
-| 날짜 | 회사 | 유형 | 설명 | 활동량 | 단위 | 배출량(kgCO2e) |
-|------|------|------|------|--------|------|----------------|
-| 2025-01 | Acme Corp | 전기 | 한국전력 | 110 | kWh | 50.24 |
-| 2025-01 | Acme Corp | 원소재 | 플라스틱1 | 230 | kg | 529 |
-| 2025-01 | Acme Corp | 운송 | 트럭 | 41 | ton-km | 3.77 |
+> electricity_kepco는 2024-01~2024-12 이력(0.459)과 2025-01~현재(0.456) 두 버전이 seed에 포함됨
