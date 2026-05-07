@@ -34,3 +34,6 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          SUPABASE_URL: https://placeholder.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role-key
