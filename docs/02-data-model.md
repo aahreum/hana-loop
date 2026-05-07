@@ -52,6 +52,8 @@ type ActivityType =
   | 'waste';
 type Scope = 1 | 2 | 3;
 
+// scope는 클라이언트가 보내지 않음 — RPC(create_activity_with_emission)가
+// emission_factors.scope에서 자동 결정하여 저장
 type CreateActivityInput = {
   companyId: string;
   date: string; // "YYYY-MM-DD" — Excel 원본 날짜 그대로
@@ -60,12 +62,12 @@ type CreateActivityInput = {
   factorCategory: string; // emission_factors.category 참조 (예: "electricity_kepco")
   quantity: number;
   unit: string; // "kWh", "kg", "ton-km" 등
-  scope: Scope; // GHG_SCOPE[type]으로 자동 결정 — 사용자 직접 입력 안 함
 };
 
 type ActivityData = CreateActivityInput & {
   id: string;
   yearMonth: string; // "YYYY-MM" — DB generated column (date에서 자동 파생)
+  scope: Scope;       // DB 응답에 포함 — RPC에서 배출계수 기반으로 결정됨
   createdAt: string;
 };
 
