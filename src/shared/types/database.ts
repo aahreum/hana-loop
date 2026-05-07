@@ -30,6 +30,7 @@ export type Database = {
           country?: string;
           created_at?: string;
         };
+        Relationships: [];
       };
       emission_factors: {
         Row: {
@@ -71,13 +72,14 @@ export type Database = {
           source?: string;
           created_at?: string;
         };
+        Relationships: [];
       };
       activities: {
         Row: {
           id: string;
           company_id: string;
           date: string;
-          year_month: string; // generated column
+          year_month: string;
           type: ActivityTypeEnum;
           description: string;
           factor_category: string;
@@ -110,6 +112,7 @@ export type Database = {
           scope?: number;
           created_at?: string;
         };
+        Relationships: [];
       };
       posts: {
         Row: {
@@ -136,6 +139,7 @@ export type Database = {
           content?: string;
           created_at?: string;
         };
+        Relationships: [];
       };
       emission_results: {
         Row: {
@@ -174,6 +178,7 @@ export type Database = {
           scope?: number;
           calculated_at?: string;
         };
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
@@ -181,5 +186,6 @@ export type Database = {
     Enums: {
       activity_type_enum: ActivityTypeEnum;
     };
+    CompositeTypes: Record<string, never>;
   };
 };

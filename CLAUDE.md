@@ -171,7 +171,8 @@ features/{slice}/hooks/ (useMutation)
 // app/api/activities/route.ts
 
 // 1. 지연 시뮬레이션 — 모든 엔드포인트에 적용
-const jitter = () => new Promise<void>((res) => setTimeout(res, 200 + Math.random() * 600));
+const jitter = () =>
+  new Promise<void>((res) => setTimeout(res, 200 + Math.random() * 600));
 
 // 2. 쓰기 실패 시뮬레이션 — POST/DELETE에만 적용 (15%)
 const maybeFail = () => Math.random() < 0.15;
