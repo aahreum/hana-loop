@@ -156,7 +156,12 @@ export async function POST(req: NextRequest) {
   if (error) {
     const status = error.message.includes('FACTOR_NOT_FOUND') ? 422 : 500;
     return NextResponse.json(
-      { error: status === 422 ? '배출계수를 찾을 수 없습니다.' : '활동 데이터 저장 실패' },
+      {
+        error:
+          status === 422
+            ? '배출계수를 찾을 수 없습니다.'
+            : '활동 데이터 저장 실패',
+      },
       { status },
     );
   }
