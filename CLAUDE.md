@@ -326,16 +326,20 @@ describe('calculateEmission', () => {
 
 ## Git 워크플로우
 
+> 작업 완료 후 PR 생성은 반드시 `/ship` 커맨드를 사용한다.
+> `/ship`은 CI 검증 → 이슈 생성 → 브랜치/커밋 → PR 생성 → 위키 작성 → CI 모니터링을 순서대로 실행한다.
+> 상세 절차는 `.claude/commands/ship.md` 참조.
+
 ### 커밋 형식
 
 ```
-type: subject
+type: subject #이슈번호
 
 예시:
-feat: add KPI cards with Suspense boundary
-fix: correct emission calculation for Scope 3
-design: update sidebar color to emerald-900
-test: add unit tests for calculateEmission
+feat: add KPI cards with Suspense boundary #3
+fix: correct emission calculation for Scope 3 #12
+design: update sidebar color to emerald-900 #7
+test: add unit tests for calculateEmission #15
 ```
 
 타입: `feat` `fix` `docs` `style` `refactor` `perf` `test` `chore` `ci` `build` `revert` `design`
@@ -346,7 +350,6 @@ test: add unit tests for calculateEmission
 type/#이슈번호-설명 (소문자, 하이픈 구분)
 
 예시:
-feat/#1-setup-fsd-structure
 feat/#3-implement-dashboard-charts
 fix/#12-fix-emission-calculation-bug
 design/#7-update-kpi-card-layout
