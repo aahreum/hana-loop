@@ -1,0 +1,218 @@
+@import "tailwindcss";
+
+/* ─── Design Tokens ─────────────────────────────────────────────── */
+
+:root {
+  /* Brand — Emerald (친환경) */
+  --primary:          #10B981;
+  --primary-hover:    #059669;
+  --primary-pressed:  #047857;
+  --primary-bg:       #ECFDF5;
+  --primary-border:   #A7F3D0;
+
+  /* Sidebar */
+  --sidebar-bg:   #064E3B;
+  --sidebar-text: #FFFFFF;
+  --sidebar-muted: #6EE7B7;
+  --sidebar-active-bg: #065F46;
+
+  /* Neutral */
+  --gray-900: #0F172A;
+  --gray-700: #334155;
+  --gray-500: #64748B;
+  --gray-400: #94A3B8;
+  --gray-300: #CBD5E1;
+  --gray-200: #E2E8F0;
+  --gray-100: #F1F5F9;
+  --gray-50:  #F8FAFC;
+  --white:    #FFFFFF;
+
+  /* Semantic */
+  --success:     #10B981;
+  --success-bg:  #ECFDF5;
+  --warning:     #F59E0B;
+  --warning-bg:  #FFFBEB;
+  --error:       #EF4444;
+  --error-hover: #DC2626;
+  --error-bg:    #FEF2F2;
+  --info:        #3B82F6;
+  --info-bg:     #EFF6FF;
+
+  /* GHG Scope — 차트 고정 색상 */
+  --scope1: #EF4444;  /* Scope 1: 직접 배출 (Red) */
+  --scope2: #F59E0B;  /* Scope 2: 간접 배출 (Amber) */
+  --scope3: #3B82F6;  /* Scope 3: 가치사슬 (Blue) */
+
+  /* KPI 증감 */
+  --trend-up:   #EF4444;
+  --trend-down: #10B981;
+
+  /* Surface */
+  --bg:      #F8FAFC;
+  --surface: #FFFFFF;
+  --border:  #E2E8F0;
+  --text:    #0F172A;
+}
+
+/* 라이트 모드 명시 */
+:root.light {
+  color-scheme: light;
+}
+
+/* 시스템 다크모드 (JS 미적용 시 CSS 폴백) */
+@media (prefers-color-scheme: dark) {
+  :root:not(.dark):not(.light) {
+    color-scheme: dark;
+    --bg:      #0A0A0A;
+    --surface: #111827;
+    --border:  #1F2937;
+    --text:    #F8FAFC;
+
+    --gray-900: #F8FAFC;
+    --gray-700: #E2E8F0;
+    --gray-500: #94A3B8;
+    --gray-400: #64748B;
+    --gray-300: #334155;
+    --gray-200: #1E293B;
+    --gray-100: #0F172A;
+    --gray-50:  #020617;
+
+    --sidebar-bg:        #022C22;
+    --sidebar-active-bg: #064E3B;
+  }
+}
+
+/* 다크 모드 */
+:root.dark {
+  color-scheme: dark;
+  --bg:      #0A0A0A;
+  --surface: #111827;
+  --border:  #1F2937;
+  --text:    #F8FAFC;
+
+  --gray-900: #F8FAFC;
+  --gray-700: #E2E8F0;
+  --gray-500: #94A3B8;
+  --gray-400: #64748B;
+  --gray-300: #334155;
+  --gray-200: #1E293B;
+  --gray-100: #0F172A;
+  --gray-50:  #020617;
+
+  --sidebar-bg:        #022C22;
+  --sidebar-active-bg: #064E3B;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Tailwind Theme Mapping ─────────────────────────────────────── */
+
+@theme inline {
+  --font-sans: var(--font-pretendard), -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+
+  /* Brand */
+  --color-primary:         var(--primary);
+  --color-primary-hover:   var(--primary-hover);
+  --color-primary-pressed: var(--primary-pressed);
+  --color-primary-bg:      var(--primary-bg);
+  --color-primary-border:  var(--primary-border);
+
+  /* Sidebar */
+  --color-sidebar-bg:        var(--sidebar-bg);
+  --color-sidebar-text:      var(--sidebar-text);
+  --color-sidebar-muted:     var(--sidebar-muted);
+  --color-sidebar-active-bg: var(--sidebar-active-bg);
+
+  /* Neutral */
+  --color-gray-900: var(--gray-900);
+  --color-gray-700: var(--gray-700);
+  --color-gray-500: var(--gray-500);
+  --color-gray-400: var(--gray-400);
+  --color-gray-300: var(--gray-300);
+  --color-gray-200: var(--gray-200);
+  --color-gray-100: var(--gray-100);
+  --color-gray-50:  var(--gray-50);
+  --color-white:    var(--white);
+
+  /* Semantic */
+  --color-success:    var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning:    var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-error:       var(--error);
+  --color-error-hover: var(--error-hover);
+  --color-error-bg:    var(--error-bg);
+  --color-info:       var(--info);
+  --color-info-bg:    var(--info-bg);
+
+  /* GHG Scope */
+  --color-scope1: var(--scope1);
+  --color-scope2: var(--scope2);
+  --color-scope3: var(--scope3);
+
+  /* KPI 증감 */
+  --color-trend-up:   var(--trend-up);
+  --color-trend-down: var(--trend-down);
+
+  /* Surface */
+  --color-bg:      var(--bg);
+  --color-surface: var(--surface);
+  --color-border:  var(--border);
+  --color-text:    var(--text);
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* Transition durations */
+  --duration-fast: 100ms;
+  --duration-base: 150ms;
+  --duration-slow: 200ms;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────── */
+
+html {
+  font-size: 16px;
+  scrollbar-gutter: stable;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 숫자 tabular 정렬 — KPI 수치, 배출량 테이블 등 */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.transition-ui {
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.cursor-pointer { cursor: pointer; }
+.cursor-not-allowed { cursor: not-allowed; }
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
