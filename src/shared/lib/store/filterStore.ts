@@ -9,10 +9,9 @@ type FilterStore = {
   setDateRange: (from: string, to: string) => void;
 };
 
-const now = new Date();
-const defaultTo = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-const eighteenMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 17, 1);
-const defaultFrom = `${eighteenMonthsAgo.getFullYear()}-${String(eighteenMonthsAgo.getMonth() + 1).padStart(2, '0')}`;
+// CT-045 원본 데이터 기간: 2025-01 ~ 2025-08
+const defaultFrom = '2025-01';
+const defaultTo = '2025-08';
 
 export const useFilterStore = create<FilterStore>((set) => ({
   selectedCompanyId: null,
