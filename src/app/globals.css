@@ -3,18 +3,22 @@
 /* ─── Design Tokens ─────────────────────────────────────────────── */
 
 :root {
-  /* Brand — Emerald (친환경) */
-  --primary: #10b981;
-  --primary-hover: #059669;
-  --primary-pressed: #047857;
-  --primary-bg: #ecfdf5;
-  --primary-border: #a7f3d0;
+  /* Brand — HanaLoop (#308af9 blue / #4bb074 green gradient) */
+  --primary: #308af9;
+  --primary-hover: #1a73e8;
+  --primary-pressed: #1060cf;
+  --primary-bg: #eff6ff;
+  --primary-border: #bfdbfe;
 
-  /* Sidebar */
-  --sidebar-bg: #064e3b;
+  /* Brand gradient (green → blue) */
+  --brand-green: #4bb074;
+  --brand-gradient: linear-gradient(135deg, #4bb074 0%, #308af9 100%);
+
+  /* Sidebar — dark navy */
+  --sidebar-bg: #0d1b3e;
   --sidebar-text: #ffffff;
-  --sidebar-muted: #6ee7b7;
-  --sidebar-active-bg: #065f46;
+  --sidebar-muted: #93c5fd;
+  --sidebar-active-bg: #1a2c5c;
 
   /* Neutral */
   --gray-900: #0f172a;
@@ -28,14 +32,14 @@
   --white: #ffffff;
 
   /* Semantic */
-  --success: #10b981;
-  --success-bg: #ecfdf5;
+  --success: #4bb074;
+  --success-bg: #f0fdf4;
   --warning: #f59e0b;
   --warning-bg: #fffbeb;
   --error: #ef4444;
   --error-hover: #dc2626;
   --error-bg: #fef2f2;
-  --info: #3b82f6;
+  --info: #308af9;
   --info-bg: #eff6ff;
 
   /* GHG Scope — 차트 고정 색상 */
@@ -45,7 +49,7 @@
 
   /* KPI 증감 */
   --trend-up: #ef4444;
-  --trend-down: #10b981;
+  --trend-down: #4bb074;
 
   /* Surface */
   --bg: #f8fafc;
@@ -53,8 +57,32 @@
   --border: #e2e8f0;
   --text: #0f172a;
 
+  /* Chart tooltip */
+  --tooltip-bg: rgba(15, 23, 42, 0.06);
+  --tooltip-border: rgba(15, 23, 42, 0.1);
+
   /* Font */
   --font-pretendard: 'Pretendard Variable', Pretendard, sans-serif;
+
+  /* shadcn/ui CSS variable aliases — 우리 디자인 토큰에 매핑 */
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary-foreground: var(--white);
+  --secondary: var(--gray-100);
+  --secondary-foreground: var(--gray-900);
+  --muted: var(--gray-100);
+  --muted-foreground: var(--gray-500);
+  --accent: var(--primary-bg);
+  --accent-foreground: var(--gray-900);
+  --destructive: var(--error);
+  --destructive-foreground: var(--white);
+  --input: var(--gray-200);
+  --ring: var(--primary);
+  --radius: 8px;
 }
 
 /* 라이트 모드 명시 */
@@ -80,8 +108,19 @@
     --gray-100: #0f172a;
     --gray-50: #020617;
 
-    --sidebar-bg: #022c22;
-    --sidebar-active-bg: #064e3b;
+    --sidebar-bg: #060e22;
+    --sidebar-active-bg: #0d1b3e;
+
+    --tooltip-bg: rgba(255, 255, 255, 0.08);
+    --tooltip-border: rgba(255, 255, 255, 0.12);
+
+    --secondary: var(--gray-100);
+    --secondary-foreground: var(--gray-900);
+    --muted: var(--gray-100);
+    --muted-foreground: var(--gray-500);
+    --accent: var(--primary-bg);
+    --accent-foreground: var(--gray-900);
+    --input: var(--gray-200);
   }
 }
 
@@ -104,6 +143,26 @@
 
   --sidebar-bg: #022c22;
   --sidebar-active-bg: #064e3b;
+
+  --tooltip-bg: rgba(255, 255, 255, 0.08);
+  --tooltip-border: rgba(255, 255, 255, 0.12);
+
+  --secondary: var(--gray-100);
+  --secondary-foreground: var(--gray-900);
+  --muted: var(--gray-100);
+  --muted-foreground: var(--gray-500);
+  --accent: var(--primary-bg);
+  --accent-foreground: var(--gray-900);
+  --input: var(--gray-200);
+}
+
+/* ─── Recharts: 차트 클릭 포커스 아웃라인 전역 제거 ──────────── */
+.recharts-wrapper,
+.recharts-wrapper *,
+.recharts-responsive-container,
+.recharts-responsive-container * {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -128,6 +187,7 @@
   --color-primary-pressed: var(--primary-pressed);
   --color-primary-bg: var(--primary-bg);
   --color-primary-border: var(--primary-border);
+  --color-brand-green: var(--brand-green);
 
   /* Sidebar */
   --color-sidebar-bg: var(--sidebar-bg);
@@ -171,6 +231,25 @@
   --color-surface: var(--surface);
   --color-border: var(--border);
   --color-text: var(--text);
+
+  /* shadcn/ui Tailwind v4 color mappings */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 
   /* Border radius */
   --radius-sm: 4px;

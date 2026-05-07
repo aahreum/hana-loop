@@ -5,6 +5,8 @@ import '@fontsource/pretendard/600.css';
 import '@fontsource/pretendard/700.css';
 import './globals.css';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
+import { AppShell } from '@/features/layout/ui/AppShell';
+import { Toaster } from '@/shared/ui/sonner';
 
 export const metadata: Metadata = {
   title: 'HanaLoop Carbon Dashboard',
@@ -19,7 +21,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <AppShell>{children}</AppShell>
+          <Toaster position="top-right" richColors />
+        </QueryProvider>
       </body>
     </html>
   );

@@ -67,7 +67,7 @@ type CreateActivityInput = {
 type ActivityData = CreateActivityInput & {
   id: string;
   yearMonth: string; // "YYYY-MM" — DB generated column (date에서 자동 파생)
-  scope: Scope;       // DB 응답에 포함 — RPC에서 배출계수 기반으로 결정됨
+  scope: Scope; // DB 응답에 포함 — RPC에서 배출계수 기반으로 결정됨
   createdAt: string;
 };
 
