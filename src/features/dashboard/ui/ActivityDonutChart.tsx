@@ -21,46 +21,10 @@ type ActivityDonutChartProps = {
   data: ActivityDonutPoint[];
 };
 
-function CenterLabel({
-  cx,
-  cy,
-  total,
-}: {
-  cx: number;
-  cy: number;
-  total: number;
-}) {
-  return (
-    <g>
-      <text
-        x={cx}
-        y={cy - 8}
-        textAnchor="middle"
-        fill="var(--text)"
-        fontSize={22}
-        fontWeight={700}
-        fontFamily="var(--font-pretendard)"
-      >
-        {total.toFixed(1)}
-      </text>
-      <text
-        x={cx}
-        y={cy + 12}
-        textAnchor="middle"
-        fill="var(--gray-500)"
-        fontSize={11}
-        fontFamily="var(--font-pretendard)"
-      >
-        총 tCO₂e
-      </text>
-    </g>
-  );
-}
-
 export function ActivityDonutChart({ data }: ActivityDonutChartProps) {
   if (data.length === 0) {
     return (
-      <div className="flex h-64 items-center justify-center text-sm text-gray-400">
+      <div className="flex h-64 items-center justify-center text-sm text-muted-foreground">
         데이터가 없습니다
       </div>
     );
@@ -81,51 +45,61 @@ export function ActivityDonutChart({ data }: ActivityDonutChartProps) {
           .join(', ')}
       </p>
 
-      <ResponsiveContainer width="100%" height={260}>
-        <PieChart tabIndex={-1}>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="45%"
-            innerRadius={62}
-            outerRadius={92}
-            paddingAngle={2}
-            dataKey="value"
-            labelLine={false}
-            label={({ cx, cy }) => (
-              <CenterLabel cx={cx} cy={cy} total={total} />
-            )}
-          >
-            {data.map((entry) => (
-              <Cell key={entry.type} fill={entry.fill} stroke="none" />
-            ))}
-          </Pie>
-          <Tooltip
-            contentStyle={{
-              background: 'var(--surface)',
-              border: '1px solid var(--border)',
-              borderRadius: 8,
-              fontSize: 12,
-            }}
-            formatter={(v, _name, item) => {
-              const n = v as number;
-              const share = (item?.payload as ActivityDonutPoint | undefined)
-                ?.share;
-              const pct =
-                share !== undefined
-                  ? (share * 100).toFixed(1)
-                  : total > 0
-                    ? ((n / total) * 100).toFixed(1)
-                    : '0.0';
-              return [`${n.toFixed(2)} tCO₂e (${pct}%)`, ''];
-            }}
-          />
-          <Legend
-            wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
-            iconType="circle"
-          />
-        </PieChart>
-      </ResponsiveContainer>
+      <div className="relative">
+        {/* 가운데 합계 라벨 — Pie 의 label prop 으로 그리면 슬라이스 애니메이션이
+            끝난 후에야 텍스트가 보이므로 별도 overlay 로 즉시 렌더한다. */}
+        <div
+          className="pointer-events-none absolute left-1/2 top-[45%] -translate-x-1/2 -translate-y-1/2 text-center"
+          aria-hidden
+        >
+          <div className="text-2xl font-bold tabular-nums text-text">
+            {total.toFixed(1)}
+          </div>
+          <div className="mt-0.5 text-xs text-muted-foreground">총 tCO₂e</div>
+        </div>
+
+        <ResponsiveContainer width="100%" height={260}>
+          <PieChart tabIndex={-1}>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="45%"
+              innerRadius={62}
+              outerRadius={92}
+              paddingAngle={2}
+              dataKey="value"
+            >
+              {data.map((entry) => (
+                <Cell key={entry.type} fill={entry.fill} stroke="none" />
+              ))}
+            </Pie>
+            <Tooltip
+              contentStyle={{
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
+                borderRadius: 8,
+                fontSize: 12,
+              }}
+              formatter={(v, _name, item) => {
+                const n = v as number;
+                const share = (item?.payload as ActivityDonutPoint | undefined)
+                  ?.share;
+                const pct =
+                  share !== undefined
+                    ? (share * 100).toFixed(1)
+                    : total > 0
+                      ? ((n / total) * 100).toFixed(1)
+                      : '0.0';
+                return [`${n.toFixed(2)} tCO₂e (${pct}%)`, ''];
+              }}
+            />
+            <Legend
+              wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
+              iconType="circle"
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </>
   );
 }

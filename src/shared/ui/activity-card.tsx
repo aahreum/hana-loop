@@ -71,11 +71,11 @@ export function ActivityCard({
       {onDelete && (
         <Button
           variant="ghost"
-          size="icon"
+          size="iconSm"
           onClick={() => onDelete(activity.id)}
           disabled={isDeleting}
           aria-label="활동 데이터 삭제"
-          className="h-8 w-8 shrink-0 text-muted-foreground hover:text-error hover:bg-error-bg cursor-pointer"
+          className="shrink-0 text-muted-foreground"
         >
           <Trash2 className="h-4 w-4" />
         </Button>

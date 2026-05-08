@@ -92,7 +92,7 @@ export function FactorsTable({ factors }: FactorsTableProps) {
           <tbody className="divide-y divide-border/50">
             {factors.map((f) => (
               <tr key={f.id} className="hover:bg-muted/50 transition-colors">
-                <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
+                <td className="px-4 py-3 font-mono text-xs text-muted-foreground break-all">
                   {f.category}
                 </td>
                 <td className="px-4 py-3 font-medium text-text">{f.name}</td>

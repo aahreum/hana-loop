@@ -30,7 +30,14 @@
 --scope1-text: #b91c1c (light) / #fca5a5 (dark)
 --scope2-text: #b45309 (light) / #fcd34d (dark)
 --scope3-text: #1d4ed8 (light) / #93c5fd (dark)
+
+/* 활동 카테고리 차트 fill — 라이트/다크 분기 (globals.css) */
+--chart-cat-electricity:  #1e40af (light) / #60a5fa (dark)
+--chart-cat-raw-material: #0891b2 (light) / #22d3ee (dark)
+--chart-cat-transport:    #16a34a (light) / #4ade80 (dark)
 ```
+
+라이트는 흰 배경에서 채도가 너무 도드라지지 않도록 deep tone, 다크는 어두운 배경에 묻히지 않게 lighter tone. `chartColors.ts` 의 `categories` 는 hex 대신 `var(--chart-cat-*)` 를 참조해 SVG fill 에서 자동 분기된다.
 
 ### 색상 접근성 정책
 
@@ -63,7 +70,19 @@
 :root.dark     /* 다크 모드 강제 */
 ```
 
-다크모드에서 Surface 토큰: `--bg: #0a0a0a`, `--surface: #111827`, `--border: #1f2937`, `--text: #f8fafc`
+다크모드에서 Surface 토큰: `--bg: #0a0a0a`, `--surface: #111827`, `--border: #1e293b`, `--text: #f8fafc`
+
+### Tailwind v4 — `border` 기본 색 토큰 강제
+
+Tailwind v4 부터 `border` 유틸(색 미지정)의 기본값이 `currentColor` 라, 다크 모드에서 본문 텍스트 색(흰색)이 그대로 border 로 노출되는 문제가 있다. `globals.css` 에서 universal selector 로 `--border` 를 강제한다.
+
+```css
+*, ::before, ::after {
+  border-color: var(--border);
+}
+```
+
+shadcn 원본 컴포넌트가 `border` (색 미지정) 만 쓰는 케이스에도 디자인 토큰이 자동 적용된다.
 
 ## 타이포그래피
 

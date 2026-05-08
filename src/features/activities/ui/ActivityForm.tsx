@@ -1,5 +1,6 @@
 'use client';
 
+import { Calendar } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/shared/ui/button';
@@ -83,13 +84,24 @@ export function ActivityForm({
       <div className="grid grid-cols-2 gap-4">
         {/* 날짜 */}
         <div className="space-y-1.5">
-          <Label htmlFor="date">날짜 *</Label>
-          <Input
-            id="date"
-            type="date"
-            {...register('date')}
-            className={errors.date ? 'border-error' : ''}
-          />
+          <Label htmlFor="date">
+            날짜 <span className="text-primary">*</span>
+          </Label>
+          <div className="relative">
+            <Input
+              id="date"
+              type="date"
+              {...register('date')}
+              className={cn(
+                'pr-10 cursor-pointer',
+                errors.date && 'border-error',
+              )}
+            />
+            <Calendar
+              className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
+          </div>
           {errors.date && (
             <p className="text-xs text-error">{errors.date.message}</p>
           )}
@@ -97,7 +109,9 @@ export function ActivityForm({
 
         {/* 활동 유형 */}
         <div className="space-y-1.5">
-          <Label htmlFor="type">활동 유형 *</Label>
+          <Label htmlFor="type">
+            활동 유형 <span className="text-primary">*</span>
+          </Label>
           <Select
             value={selectedType}
             onValueChange={(v) => {
@@ -130,7 +144,9 @@ export function ActivityForm({
 
       {/* 설명 */}
       <div className="space-y-1.5">
-        <Label htmlFor="description">설명 *</Label>
+        <Label htmlFor="description">
+          설명 <span className="text-primary">*</span>
+        </Label>
         <Input
           id="description"
           placeholder="활동에 대한 설명을 입력하세요"
@@ -144,7 +160,9 @@ export function ActivityForm({
 
       {/* 배출계수 선택 */}
       <div className="space-y-1.5">
-        <Label htmlFor="factorCategory">배출계수 *</Label>
+        <Label htmlFor="factorCategory">
+          배출계수 <span className="text-primary">*</span>
+        </Label>
         <Select
           value={selectedCategory}
           onValueChange={(v) => {
@@ -184,7 +202,9 @@ export function ActivityForm({
       <div className="grid grid-cols-2 gap-4">
         {/* 수량 */}
         <div className="space-y-1.5">
-          <Label htmlFor="quantity">활동량 *</Label>
+          <Label htmlFor="quantity">
+            활동량 <span className="text-primary">*</span>
+          </Label>
           <Input
             id="quantity"
             type="number"
@@ -201,7 +221,9 @@ export function ActivityForm({
 
         {/* 단위 */}
         <div className="space-y-1.5">
-          <Label htmlFor="unit">단위 *</Label>
+          <Label htmlFor="unit">
+            단위 <span className="text-primary">*</span>
+          </Label>
           <Input
             id="unit"
             placeholder="kWh, L, kg 등"
@@ -233,17 +255,22 @@ export function ActivityForm({
         </div>
       )}
 
-      {/* Actions */}
-      <div className="flex justify-end gap-2 pt-2">
+      {/* Actions — 모바일은 풀폭 2열, lg 이상은 우측 정렬 */}
+      <div className="flex gap-2 pt-2 lg:justify-end">
         <Button
           type="button"
           variant="outline"
           onClick={onCancel}
           disabled={isSubmitting}
+          className="flex-1 lg:flex-none"
         >
           취소
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="flex-1 lg:flex-none"
+        >
           {isSubmitting ? '저장 중...' : '저장'}
         </Button>
       </div>

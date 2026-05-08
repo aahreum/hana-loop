@@ -144,18 +144,19 @@ export function ActivityTable({
                 <td className="px-4 py-3 max-w-[200px] truncate text-text">
                   {a.description}
                 </td>
-                <td className="px-4 py-3 text-xs text-muted-foreground">
+                <td className="px-4 py-3 text-xs text-muted-foreground break-all">
                   {a.factorCategory}
                 </td>
                 <td className="px-4 py-3 text-right">
                   <Button
                     variant="ghost"
-                    size="icon"
+                    size="iconSm"
                     onClick={() => onDelete(a.id)}
                     disabled={isDeleting}
-                    className="h-7 w-7 text-muted-foreground hover:text-error hover:bg-error-bg cursor-pointer"
+                    aria-label="활동 데이터 삭제"
+                    className="text-muted-foreground"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </td>
               </tr>
