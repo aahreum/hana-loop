@@ -45,7 +45,7 @@
 
 ## 커버리지 결과
 
-`pnpm test:coverage` 실행 결과 (2026-05-08 기준):
+`pnpm test:coverage` 실행 결과:
 
 ```
 Statements   : 21.83% ( 93/426 )
