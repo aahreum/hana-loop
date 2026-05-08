@@ -108,8 +108,8 @@
     --gray-100: #0f172a;
     --gray-50: #020617;
 
-    --sidebar-bg: #060e22;
-    --sidebar-active-bg: #0d1b3e;
+    --sidebar-bg: #111a35;
+    --sidebar-active-bg: #1a2c5c;
 
     --tooltip-bg: rgba(255, 255, 255, 0.08);
     --tooltip-border: rgba(255, 255, 255, 0.12);
@@ -141,7 +141,7 @@
   --gray-100: #0f172a;
   --gray-50: #020617;
 
-  --sidebar-bg: #0d1b3e;
+  --sidebar-bg: #111a35;
   --sidebar-active-bg: #1a2c5c;
 
   --tooltip-bg: rgba(255, 255, 255, 0.08);
