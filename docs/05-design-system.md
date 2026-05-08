@@ -141,7 +141,8 @@
 
 - 트리거: `<button>` + 라벨(선택) + HelpCircle 아이콘
 - 컨텐츠: `border border-border bg-surface px-4 py-3 shadow-xl whitespace-nowrap`
-- 사용 예: tCO₂e 단위 안내, 도넛의 계산식 안내
+- `description`/`comparison`은 `string | ReactNode` — 다중 라인은 ReactNode로 `<span className="block">` 구조화 가능
+- 사용 예: tCO₂e 단위 안내, 도넛의 계산식 안내, 최근 활동 테이블의 Scope 컬럼 정의
 
 ### 차트 컨테이너
 

@@ -2,6 +2,7 @@
 
 import { HelpCircle } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
+import { cn } from '@/shared/lib/utils';
 
 type UnitTooltipProps = {
   /** 라벨 텍스트 (예: "tCO₂e"). 생략 시 트리거는 아이콘만 표시. */
@@ -35,7 +36,10 @@ export function UnitTooltip({
         <button
           type="button"
           aria-label={label ? `${label} 단위 설명` : '단위 설명'}
-          className={`inline-flex items-center gap-1 text-gray-500 hover:text-text cursor-pointer ${className ?? ''}`}
+          className={cn(
+            'inline-flex items-center gap-1 text-gray-500 hover:text-text cursor-pointer',
+            className,
+          )}
         >
           {label && <span>{label}</span>}
           <HelpCircle className="h-3.5 w-3.5" aria-hidden />
