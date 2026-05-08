@@ -1,11 +1,7 @@
 'use client';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/ui/dialog';
+import { Dialog, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
+import { AppDialogContent } from '@/shared/ui/app-dialog';
 import { ActivityForm } from './ActivityForm';
 import { cn } from '@/shared/lib/utils';
 import type { CreateActivityInput } from '@/shared/types/activity';
@@ -30,7 +26,7 @@ export function ActivityFormDialog({
 }: ActivityFormDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
+      <AppDialogContent
         className={cn(
           // 모바일 바텀시트: 화면 하단에 붙고 상단만 라운드
           'left-0 top-auto bottom-0 max-w-full translate-x-0 translate-y-0',
@@ -39,8 +35,8 @@ export function ActivityFormDialog({
           'lg:left-[50%] lg:top-[50%] lg:bottom-auto',
           'lg:max-w-lg lg:translate-x-[-50%] lg:translate-y-[-50%]',
           'lg:rounded-lg lg:border',
-          // 공통 — viewport 초과 방지 + 내부 스크롤. bg-surface 로 조회기간 dialog 와 톤 통일
-          'max-h-[90dvh] overflow-y-auto bg-surface',
+          // 공통 — viewport 초과 방지 + 내부 스크롤
+          'max-h-[90dvh] overflow-y-auto',
         )}
       >
         <DialogHeader>
@@ -53,7 +49,7 @@ export function ActivityFormDialog({
           onSubmit={onSubmit}
           onCancel={() => onOpenChange(false)}
         />
-      </DialogContent>
+      </AppDialogContent>
     </Dialog>
   );
 }

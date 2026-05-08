@@ -2,12 +2,8 @@
 
 import { useState } from 'react';
 import { Calendar } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from '@/shared/ui/dialog';
+import { Dialog, DialogDescription, DialogTitle } from '@/shared/ui/dialog';
+import { AppDialogContent } from '@/shared/ui/app-dialog';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { cn } from '@/shared/lib/utils';
@@ -115,10 +111,10 @@ export function DateRangePicker({
           <Calendar className="h-4 w-4 text-muted-foreground" aria-hidden />
           <span>날짜 선택</span>
         </Button>
-        <DialogContent
+        <AppDialogContent
           className={cn(
             'fixed inset-x-0 bottom-0 left-0 top-auto w-full max-w-full translate-x-0 translate-y-0',
-            'rounded-b-none rounded-t-2xl border-x-0 border-b-0 bg-surface p-5',
+            'rounded-b-none rounded-t-2xl border-x-0 border-b-0 p-5',
           )}
         >
           <DialogTitle className="text-base">조회 기간</DialogTitle>
@@ -173,7 +169,7 @@ export function DateRangePicker({
               </div>
             </div>
           </div>
-        </DialogContent>
+        </AppDialogContent>
       </Dialog>
     </>
   );
