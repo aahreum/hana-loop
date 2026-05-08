@@ -42,9 +42,13 @@ export function RecentActivitiesTable({
               <span className="inline-flex items-center justify-end gap-1">
                 Scope
                 <UnitTooltip
-                  description="GHG Protocol 배출 범위"
+                  description={
+                    <span className="block text-left">
+                      GHG Protocol 배출 범위
+                    </span>
+                  }
                   comparison={
-                    <span className="block space-y-0.5">
+                    <span className="block space-y-0.5 text-left">
                       <span className="block">
                         <strong className="text-text">Scope 1</strong> 직접 배출
                         (연료 연소 등 자체 시설)
