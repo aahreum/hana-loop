@@ -1,12 +1,16 @@
 import type { Metadata } from 'next';
-import '@fontsource/pretendard/400.css';
-import '@fontsource/pretendard/500.css';
-import '@fontsource/pretendard/600.css';
-import '@fontsource/pretendard/700.css';
+import localFont from 'next/font/local';
 import './globals.css';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
 import { AppShell } from '@/widgets/layout/ui/AppShell';
 import { Toaster } from '@/shared/ui/sonner';
+
+const pretendard = localFont({
+  src: './fonts/PretendardVariable.woff2',
+  display: 'swap',
+  weight: '45 930',
+  variable: '--font-pretendard',
+});
 
 export const metadata: Metadata = {
   title: 'HanaLoop Carbon Dashboard',
@@ -19,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
+    <html lang="ko" className={pretendard.variable}>
       <body>
         <QueryProvider>
           <AppShell>{children}</AppShell>
