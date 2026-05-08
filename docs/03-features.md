@@ -8,7 +8,17 @@
   - 회사 선택 드롭다운 (로딩 중 스피너 표시)
   - 페이지 링크: Dashboard, Activities, Companies, Factors
   - 반응형: 모바일에서 오버레이 방식
+  - **데스크탑 접기/펴기 토글** — PanelLeft 아이콘 + Tooltip, 상태 Zustand persist (`desktopSidebarCollapsed`)
 - [x] 헤더: 현재 페이지명, 날짜 범위 필터 (대시보드), 활동 추가 버튼 (활동 페이지)
+  - 사이드바 접힘 시 헤더 좌측에 PanelLeft 펼치기 버튼 노출
+
+### 접근성 (a11y)
+
+- [x] 모든 아이콘 전용 버튼에 `aria-label` 부여 (햄버거, X, PanelLeft, ThemeToggle 등)
+- [x] 폼 요소에 `<label htmlFor>` 또는 `aria-label` (회사 select, 날짜 input × 2)
+- [x] 색 대비 WCAG AA 4.5:1 충족 — gauge zone darker 톤, `--scope*-text` 라이트/다크 분기, 활동 뱃지 `text-primary-pressed`
+- [x] 사이드바 비표시 시 `inert` 속성 — 자식 포커스 차단 (matchMedia로 데스크탑/모바일 분기)
+- [x] 활성 메뉴 `aria-current="page"`, 장식 아이콘 `aria-hidden`, `<aside aria-label>`, `<nav aria-label>`
 
 ---
 

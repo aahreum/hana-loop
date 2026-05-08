@@ -50,7 +50,7 @@ export function FactorsTable({ factors }: FactorsTableProps) {
               </td>
               <td className="px-4 py-3 font-medium text-text">{f.name}</td>
               <td className="px-4 py-3">
-                <span className="inline-flex items-center rounded-full bg-primary-bg px-2 py-0.5 text-xs font-medium text-primary">
+                <span className="inline-flex items-center rounded-full bg-primary-bg px-2 py-0.5 text-xs font-medium text-primary-pressed">
                   {ACTIVITY_TYPE_LABELS[f.activityType] ?? f.activityType}
                 </span>
               </td>

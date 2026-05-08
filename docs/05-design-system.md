@@ -25,7 +25,19 @@
 --scope1: #ef4444;           /* Scope 1: 직접 배출 */
 --scope2: #f59e0b;           /* Scope 2: 간접 배출 */
 --scope3: #3b82f6;           /* Scope 3: 가치사슬 */
+
+/* GHG Scope 텍스트용 — WCAG AA 4.5:1 충족 (라이트/다크 분기) */
+--scope1-text: #b91c1c (light) / #fca5a5 (dark)
+--scope2-text: #b45309 (light) / #fcd34d (dark)
+--scope3-text: #1d4ed8 (light) / #93c5fd (dark)
 ```
+
+### 색상 접근성 정책
+
+차트 fill 컬러(`--scope1/2/3`)는 GHG Protocol 컨벤션 준수상 변경 금지.
+텍스트 가독성은 별도의 darker/lighter 시맨틱 토큰(`--scope*-text`)로 분리 — 라이트 배경 위에서는 `*-700`, 다크 배경 위에서는 `*-300`을 사용해 4.5:1 이상 보장.
+
+배출량 등급 게이지(`gaugeZones`) 색상 5종은 white text 기준 5:1 이상 만족하도록 darker 톤(violet-600 / blue-600 / sky-700 / yellow-700 / green-700)으로 채택.
 
 ## 다크모드
 

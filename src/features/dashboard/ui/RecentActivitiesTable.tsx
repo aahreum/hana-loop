@@ -76,7 +76,7 @@ export function RecentActivitiesTable({
             >
               <td className="py-3 tabular-nums text-text">{a.date}</td>
               <td className="py-3">
-                <span className="inline-flex items-center rounded-full bg-primary-bg px-2 py-0.5 text-xs font-medium text-primary">
+                <span className="inline-flex items-center rounded-full bg-primary-bg px-2 py-0.5 text-xs font-medium text-primary-pressed">
                   {ACTIVITY_TYPE_LABELS[a.type] ?? a.type}
                 </span>
               </td>
