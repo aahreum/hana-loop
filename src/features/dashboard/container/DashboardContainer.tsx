@@ -210,44 +210,46 @@ export function DashboardContainer() {
               role="group"
               aria-label="배출량 조회 기간"
             >
-              <label htmlFor="date-from" className="sr-only">
-                시작 월
-              </label>
               {noCompany ? (
                 <span className="w-[130px] rounded-md border border-border bg-surface px-2 py-1 text-sm text-muted-foreground">
                   YYYY.MM
                 </span>
               ) : (
-                <input
-                  id="date-from"
-                  type="month"
-                  value={from}
-                  min={DATASET_FROM}
-                  max={to}
-                  onChange={(e) => setDateRange(e.target.value, to)}
-                  aria-label="시작 월"
-                  className="w-[130px] rounded-md border border-border bg-surface px-2 py-1 text-sm text-text focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
-                />
+                <>
+                  <label htmlFor="date-from" className="sr-only">
+                    시작 월
+                  </label>
+                  <input
+                    id="date-from"
+                    type="month"
+                    value={from}
+                    min={DATASET_FROM}
+                    max={to}
+                    onChange={(e) => setDateRange(e.target.value, to)}
+                    className="w-[130px] rounded-md border border-border bg-surface px-2 py-1 text-sm text-text focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+                  />
+                </>
               )}
               <span aria-hidden>~</span>
-              <label htmlFor="date-to" className="sr-only">
-                종료 월
-              </label>
               {noCompany ? (
                 <span className="w-[130px] rounded-md border border-border bg-surface px-2 py-1 text-sm text-muted-foreground">
                   YYYY.MM
                 </span>
               ) : (
-                <input
-                  id="date-to"
-                  type="month"
-                  value={to}
-                  min={from}
-                  max={DATASET_TO}
-                  onChange={(e) => setDateRange(from, e.target.value)}
-                  aria-label="종료 월"
-                  className="w-[130px] rounded-md border border-border bg-surface px-2 py-1 text-sm text-text focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
-                />
+                <>
+                  <label htmlFor="date-to" className="sr-only">
+                    종료 월
+                  </label>
+                  <input
+                    id="date-to"
+                    type="month"
+                    value={to}
+                    min={from}
+                    max={DATASET_TO}
+                    onChange={(e) => setDateRange(from, e.target.value)}
+                    className="w-[130px] rounded-md border border-border bg-surface px-2 py-1 text-sm text-text focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+                  />
+                </>
               )}
             </div>
           </div>

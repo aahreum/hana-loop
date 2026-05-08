@@ -122,20 +122,28 @@ export function NavigationDrawer({
         </div>
 
         <div className="px-3 py-3 border-b border-white/10">
-          <label
-            htmlFor="company-select"
-            className="mb-1.5 block text-xs font-medium text-sidebar-muted uppercase tracking-wider"
-          >
-            기업 선택
-          </label>
           <div className="relative">
             {companiesLoading ? (
-              <div className="flex items-center gap-2 rounded-md bg-white/10 px-3 py-2 border border-white/20">
-                <Loader2 className="h-3.5 w-3.5 animate-spin text-sidebar-muted" />
-                <span className="text-sm text-sidebar-muted">로딩 중...</span>
-              </div>
+              <>
+                <p
+                  className="mb-1.5 block text-xs font-medium text-sidebar-muted uppercase tracking-wider"
+                  aria-hidden
+                >
+                  기업 선택
+                </p>
+                <div className="flex items-center gap-2 rounded-md bg-white/10 px-3 py-2 border border-white/20">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-sidebar-muted" />
+                  <span className="text-sm text-sidebar-muted">로딩 중...</span>
+                </div>
+              </>
             ) : (
               <>
+                <label
+                  htmlFor="company-select"
+                  className="mb-1.5 block text-xs font-medium text-sidebar-muted uppercase tracking-wider"
+                >
+                  기업 선택
+                </label>
                 <select
                   id="company-select"
                   value={selectedCompanyId ?? ''}
@@ -188,7 +196,7 @@ export function NavigationDrawer({
                         : undefined
                     }
                     onClick={() => {
-                      if (window.innerWidth < 1024) onClose();
+                      if (!isDesktop) onClose();
                     }}
                   >
                     <Icon className="h-4 w-4 shrink-0" aria-hidden />
