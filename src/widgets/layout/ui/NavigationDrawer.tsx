@@ -98,7 +98,7 @@ export function NavigationDrawer({
           desktopCollapsed && 'lg:hidden',
         )}
       >
-        <div className="flex h-16 items-center justify-between px-4 border-b border-white/10">
+        <div className="flex h-16 items-center justify-between px-4 border-b border-white/5">
           <Link
             href="/dashboard"
             className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
@@ -139,7 +139,7 @@ export function NavigationDrawer({
           </div>
         </div>
 
-        <div className="px-3 py-3 border-b border-white/10">
+        <div className="px-3 py-3 border-b border-white/5">
           {companiesLoading ? (
             <>
               <p
@@ -228,7 +228,7 @@ export function NavigationDrawer({
           </ul>
         </nav>
 
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-white/5">
           <p className="text-xs text-sidebar-muted">
             탄소 배출 관리 플랫폼 v1.0
           </p>

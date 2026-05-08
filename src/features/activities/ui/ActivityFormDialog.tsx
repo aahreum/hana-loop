@@ -39,8 +39,8 @@ export function ActivityFormDialog({
           'lg:left-[50%] lg:top-[50%] lg:bottom-auto',
           'lg:max-w-lg lg:translate-x-[-50%] lg:translate-y-[-50%]',
           'lg:rounded-lg lg:border',
-          // 공통 — viewport 초과 방지 + 내부 스크롤
-          'max-h-[90dvh] overflow-y-auto',
+          // 공통 — viewport 초과 방지 + 내부 스크롤. bg-surface 로 조회기간 dialog 와 톤 통일
+          'max-h-[90dvh] overflow-y-auto bg-surface',
         )}
       >
         <DialogHeader>

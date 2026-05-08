@@ -84,6 +84,20 @@ Tailwind v4 부터 `border` 유틸(색 미지정)의 기본값이 `currentColor`
 
 shadcn 원본 컴포넌트가 `border` (색 미지정) 만 쓰는 케이스에도 디자인 토큰이 자동 적용된다.
 
+### 사이드바 내부 라인
+
+`NavigationDrawer` 의 헤더/회사 선택/푸터 구분선은 `border-white/5` 사용 (라이트/다크 모드 동일). 사이드바 배경은 다크 navy 로 고정이라 mode-aware 토큰을 쓸 수 없고, alpha 0.05 가 라이트 모드 본문(흰색)과의 대비에서도 너무 두드러지지 않는 균형점.
+
+> 이전에는 `border-white/10` 이었으나 라이트 모드에서 흰 라인이 시각적으로 도드라진다는 피드백으로 0.05 로 낮춤.
+
+### 모달 / 바텀시트 배경
+
+`bg-surface` 토큰으로 통일. shadcn `DialogContent` 의 기본값(`bg-background`)을 사용하면 라이트 모드에서 페이지 배경(`#f8fafc`)이 그대로 적용되어 카드/패널과의 시각 위계가 약해진다. 모든 다이얼로그·팝오버·바텀시트는 `className` 에 `bg-surface` 를 명시.
+
+### 모바일 가로 스크롤 차단
+
+`body { overflow-x: clip }` 을 base 에 적용. `NavigationDrawer` 가 모바일 닫힘 상태에서 `fixed left-0 w-60 -translate-x-full` 로 viewport 밖으로 transform 하는데, 일부 모바일 브라우저(안드로이드 Chrome / Samsung Internet 등)는 transform 후 위치까지 layout overflow 로 잡아 가로 스크롤이 발생. `clip` 은 `hidden` 과 달리 stacking context 를 만들지 않아 `position: sticky` 동작을 깨지 않는다.
+
 ## 타이포그래피
 
 ### 폰트 로딩

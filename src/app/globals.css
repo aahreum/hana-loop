@@ -358,6 +358,9 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* 모바일 NavigationDrawer 의 fixed + -translate-x-full 이 일부 모바일 브라우저에서
+     layout overflow 를 만드는 문제 차단. clip 은 sticky 동작을 깨지 않음. */
+  overflow-x: clip;
 }
 
 /* 숫자 tabular 정렬 — KPI 수치, 배출량 테이블 등 */
