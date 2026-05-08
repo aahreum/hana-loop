@@ -1,7 +1,9 @@
 'use client';
 
+import { useEffect } from 'react';
 import { NavigationDrawer } from './NavigationDrawer';
 import { useLayout } from '../hooks/useLayout';
+import { useTheme } from '@/shared/hooks/useTheme';
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -16,6 +18,16 @@ export function AppShell({ children }: AppShellProps) {
     selectedCompanyId,
     setSelectedCompanyId,
   } = useLayout();
+
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove('dark', 'light');
+    if (theme !== null) {
+      root.classList.add(theme);
+    }
+  }, [theme]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-bg">
