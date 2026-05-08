@@ -55,6 +55,21 @@
 
 ## 타이포그래피
 
+### 폰트 로딩
+
+`next/font/local`로 Pretendard Variable 단일 woff2 파일을 self-host.
+
+- 위치: `src/app/fonts/PretendardVariable.woff2` (~2MB, weight 45~930 단일 파일)
+- 진입점: `src/app/layout.tsx`에서 `localFont()` 선언 + `<html className={pretendard.variable}>` 적용
+- CSS 변수: `--font-pretendard` 자동 주입 (`globals.css`의 `body`, `kbd`에서 참조)
+
+이점:
+- 빌드 타임 메트릭 분석 → `size-adjust` 자동 적용 → CLS 0
+- 폰트 파일 자동 preload (`<link rel="preload">`)
+- weight별 별도 파일 불필요 (`@fontsource/pretendard` 대비 ~3MB 절감)
+
+### 스케일
+
 ```
 제목 (h1): 24px / font-bold / text-slate-900
 소제목 (h2): 18px / font-semibold / text-slate-800

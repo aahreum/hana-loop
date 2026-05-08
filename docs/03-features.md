@@ -68,7 +68,7 @@
 - [x] 네트워크 지연 시뮬레이션 (200~800ms)
 - [x] 쓰기 작업 실패 확률 (15%)
 - [x] Loading / Error 상태 재현 가능
-- [x] Swagger UI (`/docs` 페이지)
+- [ ] Swagger UI (`/docs` 페이지)
 
 ---
 
@@ -98,7 +98,7 @@
 
 ### Dark Mode
 
-- [ ] Tailwind `dark:` 클래스 기반 토글
+- [x] CSS 변수 + `<html>` class 기반 토글 (Sun/Moon 헤더 버튼, Zustand persist, 시스템 설정 폴백)
 
 ---
 

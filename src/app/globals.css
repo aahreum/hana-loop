@@ -61,9 +61,6 @@
   --tooltip-bg: rgba(15, 23, 42, 0.06);
   --tooltip-border: rgba(15, 23, 42, 0.1);
 
-  /* Font */
-  --font-pretendard: 'Pretendard Variable', Pretendard, sans-serif;
-
   /* shadcn/ui CSS variable aliases — 우리 디자인 토큰에 매핑 */
   --background: var(--bg);
   --foreground: var(--text);
