@@ -4,13 +4,11 @@
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- Enum: 활동 유형
+-- Enum: 활동 유형 (과제 스펙 4개 카테고리 → 3개 type)
 CREATE TYPE activity_type_enum AS ENUM (
   'electricity',
-  'fuel',
   'raw_material',
-  'transport',
-  'waste'
+  'transport'
 );
 
 -- ────────────────────────────────────────────────────────────

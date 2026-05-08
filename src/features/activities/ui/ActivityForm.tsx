@@ -22,10 +22,8 @@ import { cn } from '@/shared/lib/utils';
 
 const ACTIVITY_TYPES = [
   { value: 'electricity', label: '전기' },
-  { value: 'fuel', label: '연료' },
-  { value: 'raw_material', label: '원자재' },
+  { value: 'raw_material', label: '원소재' },
   { value: 'transport', label: '운송' },
-  { value: 'waste', label: '폐기물' },
 ] as const;
 
 type ActivityFormProps = {

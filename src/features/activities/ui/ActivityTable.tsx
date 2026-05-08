@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
+import { ActivityCard } from '@/shared/ui/activity-card';
 import { cn } from '@/shared/lib/utils';
 import type { ActivityData } from '@/shared/types/activity';
 import {
@@ -64,90 +65,104 @@ export function ActivityTable({
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-border bg-muted/50">
-            {(
-              [
-                { key: 'date', label: '날짜' },
-                { key: 'type', label: '유형' },
-                { key: 'quantity', label: '수량' },
-                { key: 'scope', label: 'Scope' },
-              ] as { key: SortKey; label: string }[]
-            ).map(({ key, label }) => (
-              <th
-                key={key}
-                className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none"
-                onClick={() => handleSort(key)}
-              >
-                <div className="flex items-center gap-1">
-                  {label}
-                  <SortIcon col={key} />
-                </div>
+    <>
+      <ul className="space-y-2 lg:hidden">
+        {sorted.map((a) => (
+          <ActivityCard
+            key={a.id}
+            activity={a}
+            onDelete={onDelete}
+            isDeleting={isDeleting}
+            deletingId={deletingId}
+          />
+        ))}
+      </ul>
+
+      <div className="hidden overflow-x-auto lg:block">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border bg-muted/50">
+              {(
+                [
+                  { key: 'date', label: '날짜' },
+                  { key: 'type', label: '유형' },
+                  { key: 'quantity', label: '수량' },
+                  { key: 'scope', label: 'Scope' },
+                ] as { key: SortKey; label: string }[]
+              ).map(({ key, label }) => (
+                <th
+                  key={key}
+                  className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none"
+                  onClick={() => handleSort(key)}
+                >
+                  <div className="flex items-center gap-1">
+                    {label}
+                    <SortIcon col={key} />
+                  </div>
+                </th>
+              ))}
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                설명
               </th>
-            ))}
-            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              설명
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              배출계수
-            </th>
-            <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              관리
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border/50">
-          {sorted.map((a) => (
-            <tr
-              key={a.id}
-              className={cn(
-                'hover:bg-muted/50 transition-colors',
-                deletingId === a.id && 'opacity-50',
-              )}
-            >
-              <td className="px-4 py-3 tabular-nums text-text">{a.date}</td>
-              <td className="px-4 py-3">
-                <span className="inline-flex items-center rounded-full bg-primary-bg px-2 py-0.5 text-xs font-medium text-primary-pressed">
-                  {ACTIVITY_TYPE_LABELS[a.type] ?? a.type}
-                </span>
-              </td>
-              <td className="px-4 py-3 tabular-nums text-text">
-                {a.quantity.toLocaleString()} {a.unit}
-              </td>
-              <td className="px-4 py-3">
-                <span
-                  className={cn(
-                    'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium',
-                    SCOPE_BADGE_CLASSES[a.scope] ??
-                      'bg-muted text-muted-foreground border-border',
-                  )}
-                >
-                  Scope {a.scope}
-                </span>
-              </td>
-              <td className="px-4 py-3 max-w-[200px] truncate text-text">
-                {a.description}
-              </td>
-              <td className="px-4 py-3 text-xs text-muted-foreground">
-                {a.factorCategory}
-              </td>
-              <td className="px-4 py-3 text-right">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onDelete(a.id)}
-                  disabled={isDeleting}
-                  className="h-7 w-7 text-muted-foreground hover:text-error hover:bg-error-bg cursor-pointer"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </Button>
-              </td>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                배출계수
+              </th>
+              <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                관리
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody className="divide-y divide-border/50">
+            {sorted.map((a) => (
+              <tr
+                key={a.id}
+                className={cn(
+                  'hover:bg-muted/50 transition-colors',
+                  deletingId === a.id && 'opacity-50',
+                )}
+              >
+                <td className="px-4 py-3 tabular-nums text-text">{a.date}</td>
+                <td className="px-4 py-3">
+                  <span className="inline-flex items-center rounded-full bg-primary-bg px-2 py-0.5 text-xs font-medium text-primary-pressed">
+                    {ACTIVITY_TYPE_LABELS[a.type] ?? a.type}
+                  </span>
+                </td>
+                <td className="px-4 py-3 tabular-nums text-text">
+                  {a.quantity.toLocaleString()} {a.unit}
+                </td>
+                <td className="px-4 py-3">
+                  <span
+                    className={cn(
+                      'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium',
+                      SCOPE_BADGE_CLASSES[a.scope] ??
+                        'bg-muted text-muted-foreground border-border',
+                    )}
+                  >
+                    Scope {a.scope}
+                  </span>
+                </td>
+                <td className="px-4 py-3 max-w-[200px] truncate text-text">
+                  {a.description}
+                </td>
+                <td className="px-4 py-3 text-xs text-muted-foreground">
+                  {a.factorCategory}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onDelete(a.id)}
+                    disabled={isDeleting}
+                    className="h-7 w-7 text-muted-foreground hover:text-error hover:bg-error-bg cursor-pointer"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }

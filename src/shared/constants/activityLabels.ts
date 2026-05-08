@@ -1,9 +1,7 @@
 export const ACTIVITY_TYPE_LABELS: Record<string, string> = {
   electricity: '전기',
-  fuel: '연료',
-  raw_material: '원자재',
+  raw_material: '원소재',
   transport: '운송',
-  waste: '폐기물',
 };
 
 // scope1/2/3는 차트 fill 전용 (GHG Protocol 컨벤션 — 변경 금지).

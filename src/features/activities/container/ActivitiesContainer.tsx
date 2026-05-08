@@ -89,7 +89,7 @@ export function ActivitiesContainer() {
         ) : (
           <div className="rounded-xl bg-surface border border-border">
             <div className="border-b border-border px-5 py-4">
-              <h3 className="text-base font-semibold text-text">
+              <h3 className="text-sm lg:text-base font-semibold text-text">
                 활동 목록{' '}
                 {activities && activities.length > 0 && (
                   <span className="ml-1 text-xs font-normal text-muted-foreground">

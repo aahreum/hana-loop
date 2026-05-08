@@ -26,6 +26,7 @@ import { CarbonGradeCard } from '../ui/CarbonGradeCard';
 import { InsightList } from '../ui/InsightList';
 import { ReductionSuggestionCard } from '../ui/ReductionSuggestionCard';
 import { RecentActivitiesTable } from '../ui/RecentActivitiesTable';
+import { DateRangePicker } from '../ui/DateRangePicker';
 import { QueryErrorCard } from '@/shared/ui/query-error-card';
 import { DATASET_FROM, DATASET_TO } from '@/shared/constants/datasetRange';
 
@@ -204,55 +205,14 @@ export function DashboardContainer() {
         title="대시보드"
         onMenuClick={toggleSidebar}
         actions={
-          <div className="flex items-center gap-2">
-            <div
-              className="flex items-center gap-1.5 text-sm text-muted-foreground"
-              role="group"
-              aria-label="배출량 조회 기간"
-            >
-              {noCompany ? (
-                <span className="w-[130px] rounded-md border border-border bg-surface px-2 py-1 text-sm text-muted-foreground">
-                  YYYY.MM
-                </span>
-              ) : (
-                <>
-                  <label htmlFor="date-from" className="sr-only">
-                    시작 월
-                  </label>
-                  <input
-                    id="date-from"
-                    type="month"
-                    value={from}
-                    min={DATASET_FROM}
-                    max={to}
-                    onChange={(e) => setDateRange(e.target.value, to)}
-                    className="w-[130px] rounded-md border border-border bg-surface px-2 py-1 text-sm text-text focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
-                  />
-                </>
-              )}
-              <span aria-hidden>~</span>
-              {noCompany ? (
-                <span className="w-[130px] rounded-md border border-border bg-surface px-2 py-1 text-sm text-muted-foreground">
-                  YYYY.MM
-                </span>
-              ) : (
-                <>
-                  <label htmlFor="date-to" className="sr-only">
-                    종료 월
-                  </label>
-                  <input
-                    id="date-to"
-                    type="month"
-                    value={to}
-                    min={from}
-                    max={DATASET_TO}
-                    onChange={(e) => setDateRange(from, e.target.value)}
-                    className="w-[130px] rounded-md border border-border bg-surface px-2 py-1 text-sm text-text focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
-                  />
-                </>
-              )}
-            </div>
-          </div>
+          <DateRangePicker
+            from={from}
+            to={to}
+            onChange={setDateRange}
+            minDate={DATASET_FROM}
+            maxDate={DATASET_TO}
+            disabled={noCompany}
+          />
         }
       />
 
@@ -272,7 +232,7 @@ export function DashboardContainer() {
             {/* 1. 현재 상태 — KPI Cards */}
             <section>
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-base font-semibold uppercase tracking-wider text-muted-foreground">
+                <h3 className="text-sm lg:text-base font-semibold uppercase tracking-wider text-muted-foreground">
                   현재 상태
                 </h3>
                 <UnitTooltip
@@ -299,7 +259,7 @@ export function DashboardContainer() {
 
             {/* 2. 원인 분석 — 활동 도넛 + Stacked area trend */}
             <section>
-              <h3 className="mb-3 text-base font-semibold uppercase tracking-wider text-muted-foreground">
+              <h3 className="mb-3 text-sm lg:text-base font-semibold uppercase tracking-wider text-muted-foreground">
                 원인 파악
               </h3>
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -367,7 +327,7 @@ export function DashboardContainer() {
 
             {/* 3. 개선 포인트 — 등급 + 감축 제안 */}
             <section>
-              <h3 className="mb-3 text-base font-semibold uppercase tracking-wider text-muted-foreground">
+              <h3 className="mb-3 text-sm lg:text-base font-semibold uppercase tracking-wider text-muted-foreground">
                 개선 방향
               </h3>
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -409,7 +369,7 @@ export function DashboardContainer() {
             {/* 4. 최근 활동 데이터 */}
             <section className="rounded-xl bg-surface border border-border p-5">
               <div className="mb-4 flex items-start justify-between gap-3 border-b border-border pb-3">
-                <h4 className="flex items-center gap-2 text-lg font-semibold text-text">
+                <h4 className="flex items-center gap-2 text-base lg:text-lg font-semibold text-text">
                   <Clock className="h-5 w-5 text-muted-foreground" />
                   최근 활동 데이터
                 </h4>

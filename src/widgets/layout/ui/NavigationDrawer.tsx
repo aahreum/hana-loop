@@ -60,6 +60,15 @@ export function NavigationDrawer({
 
   const isHidden = isDesktop ? desktopCollapsed : !open;
 
+  useEffect(() => {
+    if (isDesktop || !open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isDesktop, open, onClose]);
+
   return (
     <>
       {open && (

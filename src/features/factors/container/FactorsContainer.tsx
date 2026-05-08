@@ -48,7 +48,7 @@ export function FactorsContainer() {
       <main className="flex-1 p-4 md:p-6">
         <div className="rounded-xl bg-surface border border-border">
           <div className="border-b border-border px-5 py-4 flex items-center justify-between">
-            <h3 className="text-base font-semibold text-text">
+            <h3 className="text-sm lg:text-base font-semibold text-text">
               배출계수 목록
               {factors && factors.length > 0 && (
                 <span className="ml-1 text-xs font-normal text-muted-foreground">
@@ -57,7 +57,7 @@ export function FactorsContainer() {
               )}
             </h3>
             <p className="text-xs text-muted-foreground">
-              출처: 한국환경공단 2023 기준
+              출처: GHG Protocol 계수
             </p>
           </div>
           <FactorsContent

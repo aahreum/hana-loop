@@ -46,10 +46,8 @@ type Post = {
 // shared/types/activity.ts
 type ActivityType =
   | 'electricity'
-  | 'fuel'
   | 'raw_material'
-  | 'transport'
-  | 'waste';
+  | 'transport';
 type Scope = 1 | 2 | 3;
 
 // scope는 클라이언트가 보내지 않음 — RPC(create_activity_with_emission)가
@@ -82,7 +80,7 @@ type EmissionFactor = {
   scope: Scope;
   validFrom: string; // "YYYY-MM"
   validTo: string | null; // null = 현재 유효 계수
-  source: string; // "IPCC 2021", "한국 환경부 2023" 등
+  source: string; // "GHG Protocol 계수"
 };
 
 // shared/types/emission.ts
@@ -143,7 +141,7 @@ calcChangeRate(current, previous); // → 전월 대비 증감률 (%)
 | raw_material_plastic1 | 2.3   | kgCO2e/kg     | 3     |
 | raw_material_plastic2 | 3.2   | kgCO2e/kg     | 3     |
 | transport_truck       | 3.5   | kgCO2e/ton-km | 3     |
-| fuel_diesel           | 2.68  | kgCO2e/L      | 1     |
-| waste_general         | 0.58  | kgCO2e/kg     | 3     |
 
-> electricity_kepco는 2024-01~2024-12 이력(0.459)과 2025-01~현재(0.456) 두 버전이 seed에 포함됨
+> 과제 스펙(`docs/00-assignment.md` 컴퓨터 화면 원본)이 4개 카테고리 / 3개 활동 유형(전기/원소재/운송)만 정의하고 있어 fuel·waste는 제거. 출처는 모두 `GHG Protocol 계수`로 통일.
+>
+> electricity_kepco는 2024-01~2024-12 이력(0.459)과 2025-01~현재(0.456) 두 버전이 seed에 포함됨 (버전 관리 데모).

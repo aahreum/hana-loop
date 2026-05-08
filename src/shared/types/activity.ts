@@ -2,10 +2,8 @@ import { z } from 'zod';
 
 export const ActivityTypeSchema = z.enum([
   'electricity',
-  'fuel',
   'raw_material',
   'transport',
-  'waste',
 ]);
 
 export type ActivityType = z.infer<typeof ActivityTypeSchema>;
