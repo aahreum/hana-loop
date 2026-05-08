@@ -11,6 +11,9 @@
   - **데스크탑 접기/펴기 토글** — PanelLeft 아이콘 + Tooltip, 상태 Zustand persist (`desktopSidebarCollapsed`)
 - [x] 헤더: 현재 페이지명, 날짜 범위 필터 (대시보드), 활동 추가 버튼 (활동 페이지)
   - 사이드바 접힘 시 헤더 좌측에 PanelLeft 펼치기 버튼 노출
+- [x] **DateRangePicker (Popover)** — 트리거 버튼(현재 범위 표시) + Popover 안에 From/To 직접 선택 + Preset 4개(`전체` / `최근 1개월` / `3개월` / `6개월`)
+  - 데이터셋 범위는 `useEmissionResults` 응답에서 동적 추출 (`yearMonth` min/max). hardcoded 상수 없음
+  - 빈 from/to = "전체 기간". preset "전체" 클릭 시 빈 값으로 reset → 서버 응답 동적 범위 그대로 사용
 
 ### 접근성 (a11y)
 
@@ -75,7 +78,7 @@
 
 - [x] 전체 활동 데이터 목록
 - [x] 컬럼: 날짜, 유형, 설명, 활동량, 단위, Scope, 배출계수
-- [x] 정렬: 날짜, 유형, 수량, Scope (클릭 시 오름/내림차순 토글)
+- [x] 정렬: 날짜, 유형, 수량, Scope (데스크탑은 컬럼 헤더 클릭, 모바일 카드 뷰는 상단 Select + 방향 토글 버튼). 정렬 상태는 `useActivitySort` hook 으로 추출되어 두 뷰가 동일 상태 공유
 - [x] 삭제 기능 (행별 Trash 아이콘)
 
 **Activity 입력 폼**

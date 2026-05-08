@@ -196,6 +196,19 @@ export function useDashboard() {
     }).filter((c) => c.recentTotal > 0 || c.previousTotal > 0);
   }, [categoryTrendData]);
 
+  // 응답 데이터에서 동적으로 추출하는 사용 가능 기간 — DateRangePicker 의 min/max 로 사용.
+  // 데이터셋 변경 시 hardcoded constant 갱신 없이 자동 반영.
+  const dateRange = useMemo(() => {
+    if (results.length === 0) return null;
+    let min = results[0]!.yearMonth;
+    let max = results[0]!.yearMonth;
+    for (const r of results) {
+      if (r.yearMonth < min) min = r.yearMonth;
+      if (r.yearMonth > max) max = r.yearMonth;
+    }
+    return { min, max };
+  }, [results]);
+
   // 연중 최대 배출 월
   const peakMonth = useMemo(() => {
     if (categoryTrendData.length === 0) return null;
@@ -285,6 +298,7 @@ export function useDashboard() {
     activityTypes: ACTIVITY_TYPES,
     activityTypeLabels: ACTIVITY_TYPE_LABELS,
     peakMonth,
+    dateRange,
     recentActivities,
     emissionScore,
     insights,

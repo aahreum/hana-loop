@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Calendar } from 'lucide-react';
-import { Dialog, DialogDescription, DialogTitle } from '@/shared/ui/dialog';
-import { AppDialogContent } from '@/shared/ui/app-dialog';
+import { Calendar, ChevronDown } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
-import { cn } from '@/shared/lib/utils';
+
+const inputClass = 'cursor-pointer pr-8 text-sm';
 
 type DateRangePickerProps = {
   from: string;
@@ -17,12 +17,33 @@ type DateRangePickerProps = {
   disabled?: boolean;
 };
 
-const desktopInputClass =
-  'w-[130px] rounded-md border border-border bg-surface pl-2 pr-7 py-1 text-sm text-text cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary';
+// "YYYY-MM" 에서 N 개월 뺀 값을 반환. 데이터셋이 월 단위라 day math 불필요.
+function subtractMonths(yearMonth: string, months: number): string {
+  const [y, m] = yearMonth.split('-').map(Number);
+  if (!y || !m) return yearMonth;
+  const total = y * 12 + (m - 1) - months;
+  const newY = Math.floor(total / 12);
+  const newM = (total % 12) + 1;
+  return `${newY}-${String(newM).padStart(2, '0')}`;
+}
 
-// 모바일 바텀시트용 — shared Input 의 기본 h-10/px-3/py-2 + 아이콘 자리 pr-10
-// text-sm 강제 — native month picker 의 텍스트가 OS system font 영향으로 커지는 것 보정
-const mobileInputClass = 'cursor-pointer pr-10 text-sm';
+type PresetRange = readonly [string, string];
+
+const PRESETS: ReadonlyArray<{
+  label: string;
+  getRange: (min: string, max: string) => PresetRange;
+}> = [
+  { label: '전체', getRange: (min, max) => [min, max] as const },
+  { label: '최근 1개월', getRange: (_min, max) => [max, max] as const },
+  {
+    label: '최근 3개월',
+    getRange: (_min, max) => [subtractMonths(max, 2), max] as const,
+  },
+  {
+    label: '최근 6개월',
+    getRange: (_min, max) => [subtractMonths(max, 5), max] as const,
+  },
+];
 
 export function DateRangePicker({
   from,
@@ -34,146 +55,119 @@ export function DateRangePicker({
 }: DateRangePickerProps) {
   const [open, setOpen] = useState(false);
 
-  if (disabled) {
-    return (
-      <div
-        className="flex items-center gap-1.5 text-sm text-muted-foreground"
-        role="group"
-        aria-label="배출량 조회 기간"
-      >
-        <span className="rounded-md border border-border bg-surface px-2 py-1">
-          YYYY.MM
-        </span>
-        <span aria-hidden className="hidden lg:inline">
-          ~
-        </span>
-        <span className="hidden rounded-md border border-border bg-surface px-2 py-1 lg:inline">
-          YYYY.MM
-        </span>
-      </div>
-    );
-  }
+  // 빈 from/to = 전체 기간 (필터 없음). minDate/maxDate 도 데이터 로딩 전 빈 값 가능.
+  const isAll = !from && !to;
+  const triggerLabel = disabled
+    ? '회사 선택 필요'
+    : isAll
+      ? '전체 기간'
+      : `${from} ~ ${to}`;
+  const rangeReady = !!minDate && !!maxDate;
 
   return (
-    <>
-      <div
-        className="hidden items-center gap-1.5 text-sm text-muted-foreground lg:flex"
-        role="group"
-        aria-label="배출량 조회 기간"
-      >
-        <label htmlFor="date-from" className="sr-only">
-          시작 월
-        </label>
-        <div className="relative">
-          <input
-            id="date-from"
-            type="month"
-            value={from}
-            min={minDate}
-            max={to}
-            onChange={(e) => onChange(e.target.value, to)}
-            className={desktopInputClass}
-          />
-          <Calendar
-            className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
-            aria-hidden
-          />
-        </div>
-        <span aria-hidden>~</span>
-        <label htmlFor="date-to" className="sr-only">
-          종료 월
-        </label>
-        <div className="relative">
-          <input
-            id="date-to"
-            type="month"
-            value={to}
-            min={from}
-            max={maxDate}
-            onChange={(e) => onChange(from, e.target.value)}
-            className={desktopInputClass}
-          />
-          <Calendar
-            className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
-            aria-hidden
-          />
-        </div>
-      </div>
-
-      <Dialog open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
         <Button
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => setOpen(true)}
+          disabled={disabled}
+          className="gap-2"
           aria-label="조회 기간 선택"
-          className="gap-1.5 lg:hidden"
         >
           <Calendar className="h-4 w-4 text-muted-foreground" aria-hidden />
-          <span>날짜 선택</span>
+          <span className="tabular-nums">{triggerLabel}</span>
+          <ChevronDown
+            className="h-3.5 w-3.5 text-muted-foreground"
+            aria-hidden
+          />
         </Button>
-        <AppDialogContent
-          className={cn(
-            // 화면 하단에 붙고 상단만 라운드, 최소 300px 높이
-            'fixed inset-x-0 bottom-0 left-0 top-auto w-full max-w-full translate-x-0 translate-y-0',
-            'rounded-b-none rounded-t-2xl border-x-0 border-b-0 p-5',
-            'min-h-[300px] gap-3',
-          )}
-        >
-          <DialogTitle className="text-base">조회 기간</DialogTitle>
-          <DialogDescription className="sr-only">
-            시작 월과 종료 월을 선택해 배출량 조회 기간을 변경합니다.
-          </DialogDescription>
-          <div className="space-y-3">
-            <div>
-              <label
-                htmlFor="date-from-mobile"
-                className="mb-1.5 block text-sm font-medium text-text cursor-pointer"
-              >
-                시작 월
-              </label>
-              <div className="relative">
-                <Input
-                  id="date-from-mobile"
-                  type="month"
-                  value={from}
-                  min={minDate}
-                  max={to}
-                  onChange={(e) => onChange(e.target.value, to)}
-                  className={mobileInputClass}
-                />
-                <Calendar
-                  className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                  aria-hidden
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="date-to-mobile"
-                className="mb-1.5 block text-sm font-medium text-text cursor-pointer"
-              >
-                종료 월
-              </label>
-              <div className="relative">
-                <Input
-                  id="date-to-mobile"
-                  type="month"
-                  value={to}
-                  min={from}
-                  max={maxDate}
-                  onChange={(e) => onChange(from, e.target.value)}
-                  className={mobileInputClass}
-                />
-                <Calendar
-                  className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                  aria-hidden
-                />
-              </div>
+      </PopoverTrigger>
+
+      <PopoverContent align="end" className="w-72 space-y-3">
+        {/* From / To 직접 선택 */}
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label
+              htmlFor="dr-from"
+              className="mb-1 block text-xs font-medium text-muted-foreground cursor-pointer"
+            >
+              시작 월
+            </label>
+            <div className="relative">
+              <Input
+                id="dr-from"
+                type="month"
+                value={from}
+                min={minDate}
+                max={to}
+                onChange={(e) => onChange(e.target.value, to)}
+                className={inputClass}
+              />
+              <Calendar
+                className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
+                aria-hidden
+              />
             </div>
           </div>
-        </AppDialogContent>
-      </Dialog>
-    </>
+          <div>
+            <label
+              htmlFor="dr-to"
+              className="mb-1 block text-xs font-medium text-muted-foreground cursor-pointer"
+            >
+              종료 월
+            </label>
+            <div className="relative">
+              <Input
+                id="dr-to"
+                type="month"
+                value={to}
+                min={from}
+                max={maxDate}
+                onChange={(e) => onChange(from, e.target.value)}
+                className={inputClass}
+              />
+              <Calendar
+                className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
+                aria-hidden
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-border" />
+
+        {/* 빠른 선택 preset — 데이터 로딩 후에만 활성화 */}
+        <div className="space-y-1.5">
+          {PRESETS.map(({ label, getRange }) => {
+            const isAllPreset = label === '전체';
+            const [presetFrom, presetTo] = rangeReady
+              ? getRange(minDate, maxDate)
+              : (['', ''] as const);
+            const active = isAllPreset
+              ? !from && !to
+              : from === presetFrom && to === presetTo;
+            return (
+              <Button
+                key={label}
+                type="button"
+                variant={active ? 'default' : 'outline'}
+                size="sm"
+                disabled={!rangeReady}
+                onClick={() => {
+                  // "전체" 는 필터를 빈 값으로 — 서버 응답의 동적 범위를 그대로 사용.
+                  if (isAllPreset) onChange('', '');
+                  else onChange(presetFrom, presetTo);
+                  setOpen(false);
+                }}
+                className="w-full"
+              >
+                {label}
+              </Button>
+            );
+          })}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }

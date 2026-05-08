@@ -135,8 +135,7 @@ src/
 │   │   ├── queryKeys.ts          # QUERY_KEYS (TanStack Query key 상수)
 │   │   ├── chartColors.ts        # CHART_COLORS (Scope별, 카테고리별)
 │   │   ├── ghgScope.ts           # GHG_SCOPE (활동 유형 → Scope 매핑)
-│   │   ├── activityLabels.ts     # ACTIVITY_TYPE_LABELS, SCOPE_BADGE_CLASSES
-│   │   └── datasetRange.ts       # DATASET_FROM, DATASET_TO (CT-045 기간)
+│   │   └── activityLabels.ts     # ACTIVITY_TYPE_LABELS, SCOPE_BADGE_CLASSES
 │   │
 │   └── hooks/                    # 전역 서버 상태 훅 (TanStack Query) + UI 훅
 │       ├── useActivities.ts      # GET /api/activities + useDeleteActivity
