@@ -299,18 +299,6 @@ const REDUCTION_RULES: Array<{
     template: (label, pct, yearly) =>
       `${label} 사용 효율화 시 연간 약 ${yearly.toFixed(2)}tCO₂e 감소 가능`,
   },
-  {
-    type: 'fuel',
-    pct: 0.12,
-    template: (label, pct, yearly) =>
-      `${label} 사용량 ${(pct * 100).toFixed(0)}% 절감 시 연간 ${yearly.toFixed(2)}tCO₂e 감소 가능`,
-  },
-  {
-    type: 'waste',
-    pct: 0.15,
-    template: (label, pct, yearly) =>
-      `${label} 재활용 비율 향상 시 연간 약 ${yearly.toFixed(2)}tCO₂e 감소 가능`,
-  },
 ];
 
 export function buildReductionSuggestions(

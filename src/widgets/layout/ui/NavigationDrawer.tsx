@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   LayoutDashboard,
   Activity,
@@ -59,6 +59,22 @@ export function NavigationDrawer({
   }, []);
 
   const isHidden = isDesktop ? desktopCollapsed : !open;
+
+  // 부모가 onClose 를 메모이제이션하지 않을 수 있으므로 ref 로 최신 참조만 유지.
+  // 이렇게 하면 isDesktop / open 가 바뀔 때만 keydown 리스너를 재등록한다.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  useEffect(() => {
+    if (isDesktop || !open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCloseRef.current();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isDesktop, open]);
 
   return (
     <>

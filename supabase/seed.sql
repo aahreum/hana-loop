@@ -13,7 +13,7 @@ INSERT INTO companies (id, name, country) VALUES
 -- Emission Factors  (배출계수 + 버전 이력 예시)
 -- ────────────────────────────────────────────────────────────
 
--- 과거 계수 이력 예시 (2024년)
+-- 과거 계수 이력 예시 (2024년) — 버전 관리 데모용
 INSERT INTO emission_factors
   (id, category, name, activity_type, factor, unit, scope, valid_from, valid_to, source)
 VALUES
@@ -23,10 +23,10 @@ VALUES
     '전기 (한국전력 기본값)',
     'electricity', 0.459000, 'kgCO2e/kWh', 2,
     '2024-01', '2024-12',
-    '한국 환경부 2022'
+    'GHG Protocol 계수'
   );
 
--- 현재 유효 계수 (valid_to IS NULL)
+-- 현재 유효 계수 (valid_to IS NULL) — 과제 스펙 제공값
 INSERT INTO emission_factors
   (id, category, name, activity_type, factor, unit, scope, valid_from, valid_to, source)
 VALUES
@@ -36,7 +36,7 @@ VALUES
     '전기 (한국전력 기본값)',
     'electricity', 0.456000, 'kgCO2e/kWh', 2,
     '2025-01', NULL,
-    '한국 환경부 2023'
+    'GHG Protocol 계수'
   ),
   (
     'f0000000-0000-0000-0000-000000000002',
@@ -44,7 +44,7 @@ VALUES
     '원소재 (플라스틱 1)',
     'raw_material', 2.300000, 'kgCO2e/kg', 3,
     '2025-01', NULL,
-    'Ecoinvent 3.9'
+    'GHG Protocol 계수'
   ),
   (
     'f0000000-0000-0000-0000-000000000003',
@@ -52,7 +52,7 @@ VALUES
     '원소재 (플라스틱 2)',
     'raw_material', 3.200000, 'kgCO2e/kg', 3,
     '2025-01', NULL,
-    'Ecoinvent 3.9'
+    'GHG Protocol 계수'
   ),
   (
     'f0000000-0000-0000-0000-000000000004',
@@ -60,23 +60,7 @@ VALUES
     '운송 (트럭)',
     'transport', 3.500000, 'kgCO2e/ton-km', 3,
     '2025-01', NULL,
-    '국토부 2023'
-  ),
-  (
-    'f0000000-0000-0000-0000-000000000005',
-    'fuel_diesel',
-    '연료 (경유)',
-    'fuel', 2.680000, 'kgCO2e/L', 1,
-    '2025-01', NULL,
-    'IPCC 2021'
-  ),
-  (
-    'f0000000-0000-0000-0000-000000000006',
-    'waste_general',
-    '폐기물 (일반)',
-    'waste', 0.580000, 'kgCO2e/kg', 3,
-    '2025-01', NULL,
-    '환경부 폐기물통계 2023'
+    'GHG Protocol 계수'
   );
 
 -- ────────────────────────────────────────────────────────────

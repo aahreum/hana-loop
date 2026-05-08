@@ -1,12 +1,7 @@
 // Supabase CLI로 자동 생성 가능:
 // npx supabase gen types typescript --project-id <your-project-id> > src/shared/types/database.ts
 
-export type ActivityTypeEnum =
-  | 'electricity'
-  | 'fuel'
-  | 'raw_material'
-  | 'transport'
-  | 'waste';
+export type ActivityTypeEnum = 'electricity' | 'raw_material' | 'transport';
 
 export type Database = {
   public: {

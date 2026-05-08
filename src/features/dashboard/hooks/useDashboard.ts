@@ -20,13 +20,7 @@ import {
 } from '@/shared/lib/insights';
 import type { Scope } from '@/shared/types/activity';
 
-const ACTIVITY_TYPES = [
-  'electricity',
-  'fuel',
-  'raw_material',
-  'transport',
-  'waste',
-] as const;
+const ACTIVITY_TYPES = ['electricity', 'raw_material', 'transport'] as const;
 
 export function useDashboard() {
   const { selectedCompanyId, from, to } = useFilterStore();
@@ -116,10 +110,8 @@ export function useDashboard() {
       if (!byMonth[r.yearMonth]) {
         byMonth[r.yearMonth] = {
           electricity: 0,
-          fuel: 0,
           raw_material: 0,
           transport: 0,
-          waste: 0,
         };
       }
     }
@@ -136,10 +128,8 @@ export function useDashboard() {
         return {
           month,
           electricity: cats.electricity ?? 0,
-          fuel: cats.fuel ?? 0,
           raw_material: cats.raw_material ?? 0,
           transport: cats.transport ?? 0,
-          waste: cats.waste ?? 0,
           total,
         };
       });

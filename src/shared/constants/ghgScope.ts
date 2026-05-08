@@ -2,10 +2,8 @@ import type { ActivityType, Scope } from '@/shared/types/activity';
 
 export const GHG_SCOPE: Record<ActivityType, Scope> = {
   electricity: 2,
-  fuel: 1,
   raw_material: 3,
   transport: 3,
-  waste: 3,
 };
 
 export const SCOPE_LABELS: Record<Scope, string> = {

@@ -12,7 +12,7 @@ export const companies = [
 ] as const;
 
 export const emissionFactors = [
-  // 과거 이력
+  // 과거 이력 — 버전 관리 데모용
   {
     id: 'f0000000-0000-0000-0000-000000000011',
     category: 'electricity_kepco',
@@ -23,9 +23,9 @@ export const emissionFactors = [
     scope: 2,
     validFrom: '2024-01',
     validTo: '2024-12',
-    source: '한국 환경부 2022',
+    source: 'GHG Protocol 계수',
   },
-  // 현재 유효 계수
+  // 현재 유효 계수 — 과제 스펙 제공값
   {
     id: 'f0000000-0000-0000-0000-000000000001',
     category: 'electricity_kepco',
@@ -36,7 +36,7 @@ export const emissionFactors = [
     scope: 2,
     validFrom: '2025-01',
     validTo: null,
-    source: '한국 환경부 2023',
+    source: 'GHG Protocol 계수',
   },
   {
     id: 'f0000000-0000-0000-0000-000000000002',
@@ -48,7 +48,7 @@ export const emissionFactors = [
     scope: 3,
     validFrom: '2025-01',
     validTo: null,
-    source: 'Ecoinvent 3.9',
+    source: 'GHG Protocol 계수',
   },
   {
     id: 'f0000000-0000-0000-0000-000000000003',
@@ -60,7 +60,7 @@ export const emissionFactors = [
     scope: 3,
     validFrom: '2025-01',
     validTo: null,
-    source: 'Ecoinvent 3.9',
+    source: 'GHG Protocol 계수',
   },
   {
     id: 'f0000000-0000-0000-0000-000000000004',
@@ -72,31 +72,7 @@ export const emissionFactors = [
     scope: 3,
     validFrom: '2025-01',
     validTo: null,
-    source: '국토부 2023',
-  },
-  {
-    id: 'f0000000-0000-0000-0000-000000000005',
-    category: 'fuel_diesel',
-    name: '연료 (경유)',
-    activityType: 'fuel',
-    factor: 2.68,
-    unit: 'kgCO2e/L',
-    scope: 1,
-    validFrom: '2025-01',
-    validTo: null,
-    source: 'IPCC 2021',
-  },
-  {
-    id: 'f0000000-0000-0000-0000-000000000006',
-    category: 'waste_general',
-    name: '폐기물 (일반)',
-    activityType: 'waste',
-    factor: 0.58,
-    unit: 'kgCO2e/kg',
-    scope: 3,
-    validFrom: '2025-01',
-    validTo: null,
-    source: '환경부 폐기물통계 2023',
+    source: 'GHG Protocol 계수',
   },
 ] as const;
 

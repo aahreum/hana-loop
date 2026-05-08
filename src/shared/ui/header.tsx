@@ -50,7 +50,9 @@ export function Header({ title, onMenuClick, actions }: HeaderProps) {
           </Tooltip>
         )}
 
-        <h2 className="text-lg font-semibold text-muted-foreground">{title}</h2>
+        <h2 className="text-base lg:text-lg font-semibold text-muted-foreground">
+          {title}
+        </h2>
       </div>
       <div className="flex items-center gap-2">
         {actions}
