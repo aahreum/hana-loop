@@ -103,7 +103,7 @@
     color-scheme: dark;
     --bg: #0a0a0a;
     --surface: #111827;
-    --border: #1e293b; /* slate-800 — 차분한 그레이톤, surface 보다 살짝만 밝음 */
+    --border: #1e293b;
     --text: #f8fafc;
 
     /* 다크 모드: 어두운 bg/10 위에서 lighter scope 텍스트가 더 가독적 */
@@ -150,7 +150,7 @@
   color-scheme: dark;
   --bg: #0a0a0a;
   --surface: #111827;
-  --border: #1f2937;
+  --border: #1e293b;
   --text: #f8fafc;
 
   --scope1-text: #fca5a5; /* red-300 */
