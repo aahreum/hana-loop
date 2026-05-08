@@ -34,7 +34,7 @@ type ActivityTableProps = {
 };
 
 export function ActivityTable({ activities, onDelete }: ActivityTableProps) {
-  const { sorted, sortKey, sortDir, handleSort, setSortKey, toggleDir } =
+  const { sorted, sortKey, sortDir, handleSort, toggleDir } =
     useActivitySort(activities);
 
   function SortIcon({ col }: { col: ActivitySortKey }) {
@@ -61,7 +61,7 @@ export function ActivityTable({ activities, onDelete }: ActivityTableProps) {
         <div className="mb-2 flex items-center justify-end gap-2">
           <Select
             value={sortKey}
-            onValueChange={(v) => setSortKey(v as ActivitySortKey)}
+            onValueChange={(v) => handleSort(v as ActivitySortKey)}
           >
             <SelectTrigger className="h-8 w-[120px] text-xs">
               <SelectValue />

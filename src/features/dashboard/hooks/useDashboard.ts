@@ -197,17 +197,18 @@ export function useDashboard() {
   }, [categoryTrendData]);
 
   // 응답 데이터에서 동적으로 추출하는 사용 가능 기간 — DateRangePicker 의 min/max 로 사용.
-  // 데이터셋 변경 시 hardcoded constant 갱신 없이 자동 반영.
+  // 필터(from/to) 영향을 받지 않는 activities 를 기준으로 — 사용자가 범위를 좁혀도
+  // picker 의 선택 가능 영역은 데이터셋 전체를 유지해야 한다.
   const dateRange = useMemo(() => {
-    if (results.length === 0) return null;
-    let min = results[0]!.yearMonth;
-    let max = results[0]!.yearMonth;
-    for (const r of results) {
-      if (r.yearMonth < min) min = r.yearMonth;
-      if (r.yearMonth > max) max = r.yearMonth;
+    if (activities.length === 0) return null;
+    let min = activities[0]!.yearMonth;
+    let max = activities[0]!.yearMonth;
+    for (const a of activities) {
+      if (a.yearMonth < min) min = a.yearMonth;
+      if (a.yearMonth > max) max = a.yearMonth;
     }
     return { min, max };
-  }, [results]);
+  }, [activities]);
 
   // 연중 최대 배출 월
   const peakMonth = useMemo(() => {

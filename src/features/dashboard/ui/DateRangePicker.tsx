@@ -17,13 +17,13 @@ type DateRangePickerProps = {
   disabled?: boolean;
 };
 
-// "YYYY-MM" 에서 N 개월 뺀 값을 반환. 데이터셋이 월 단위라 day math 불필요.
+// "YYYY-MM" 에서 N 개월 뺀 값을 반환. Date 객체에 위임해 연도 이월(-1월 → 전년 12월) 자동 처리.
 function subtractMonths(yearMonth: string, months: number): string {
   const [y, m] = yearMonth.split('-').map(Number);
   if (!y || !m) return yearMonth;
-  const total = y * 12 + (m - 1) - months;
-  const newY = Math.floor(total / 12);
-  const newM = (total % 12) + 1;
+  const date = new Date(y, m - 1 - months, 1);
+  const newY = date.getFullYear();
+  const newM = date.getMonth() + 1;
   return `${newY}-${String(newM).padStart(2, '0')}`;
 }
 
