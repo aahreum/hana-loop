@@ -31,7 +31,7 @@ export function QueryErrorCard({
         variant="outline"
         size="sm"
         onClick={onRetry}
-        className="mt-1 gap-1.5 cursor-pointer"
+        className="mt-1 gap-1.5"
       >
         <RefreshCw className="h-3.5 w-3.5" />
         다시 시도
