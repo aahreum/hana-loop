@@ -50,16 +50,16 @@ export function RecentActivitiesTable({
                   comparison={
                     <span className="block space-y-0.5 text-left">
                       <span className="block">
-                        <strong className="text-text">Scope 1</strong> 직접 배출
-                        (연료 연소 등 자체 시설)
+                        <strong className="text-text">Scope 1</strong> - 직접
+                        배출 (연료 연소 등 자체 시설)
                       </span>
                       <span className="block">
-                        <strong className="text-text">Scope 2</strong> 간접 배출
-                        (구매 전기·열)
+                        <strong className="text-text">Scope 2</strong> - 간접
+                        배출 (구매 전기·열)
                       </span>
                       <span className="block">
-                        <strong className="text-text">Scope 3</strong> 가치사슬
-                        배출 (원자재·운송·폐기 등)
+                        <strong className="text-text">Scope 3</strong> -
+                        가치사슬 배출 (원자재·운송·폐기 등)
                       </span>
                     </span>
                   }
