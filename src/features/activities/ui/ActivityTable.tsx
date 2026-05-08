@@ -1,8 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { Trash2, ChevronUp, ChevronDown } from 'lucide-react';
+import { Trash2, ChevronUp, ChevronDown, ArrowUpDown } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/ui/select';
 import { ActivityCard } from '@/shared/ui/activity-card';
 import { cn } from '@/shared/lib/utils';
 import type { ActivityData } from '@/shared/types/activity';
@@ -10,8 +16,17 @@ import {
   ACTIVITY_TYPE_LABELS,
   SCOPE_BADGE_CLASSES,
 } from '@/shared/constants/activityLabels';
+import {
+  useActivitySort,
+  type ActivitySortKey,
+} from '../hooks/useActivitySort';
 
-type SortKey = keyof Pick<ActivityData, 'date' | 'type' | 'quantity' | 'scope'>;
+const SORT_OPTIONS: { key: ActivitySortKey; label: string }[] = [
+  { key: 'date', label: '날짜' },
+  { key: 'type', label: '유형' },
+  { key: 'quantity', label: '수량' },
+  { key: 'scope', label: 'Scope' },
+];
 
 type ActivityTableProps = {
   activities: ActivityData[];
@@ -19,28 +34,10 @@ type ActivityTableProps = {
 };
 
 export function ActivityTable({ activities, onDelete }: ActivityTableProps) {
-  const [sortKey, setSortKey] = useState<SortKey>('date');
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+  const { sorted, sortKey, sortDir, handleSort, toggleDir } =
+    useActivitySort(activities);
 
-  function handleSort(key: SortKey) {
-    if (sortKey === key) {
-      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortKey(key);
-      setSortDir('desc');
-    }
-  }
-
-  const sorted = [...activities].sort((a, b) => {
-    let cmp = 0;
-    if (sortKey === 'date') cmp = a.date.localeCompare(b.date);
-    else if (sortKey === 'type') cmp = a.type.localeCompare(b.type);
-    else if (sortKey === 'quantity') cmp = a.quantity - b.quantity;
-    else if (sortKey === 'scope') cmp = a.scope - b.scope;
-    return sortDir === 'asc' ? cmp : -cmp;
-  });
-
-  function SortIcon({ col }: { col: SortKey }) {
+  function SortIcon({ col }: { col: ActivitySortKey }) {
     if (sortKey !== col) return <ChevronUp className="h-3 w-3 opacity-30" />;
     return sortDir === 'asc' ? (
       <ChevronUp className="h-3 w-3" />
@@ -59,24 +56,51 @@ export function ActivityTable({ activities, onDelete }: ActivityTableProps) {
 
   return (
     <>
-      <ul className="space-y-2 lg:hidden">
-        {sorted.map((a) => (
-          <ActivityCard key={a.id} activity={a} onDelete={onDelete} />
-        ))}
-      </ul>
+      {/* 모바일 카드 뷰 — 테이블 헤더가 없으므로 정렬 컨트롤을 별도 노출 */}
+      <div className="lg:hidden">
+        <div className="mb-2 flex items-center justify-end gap-2">
+          <Select
+            value={sortKey}
+            onValueChange={(v) => handleSort(v as ActivitySortKey)}
+          >
+            <SelectTrigger className="h-8 w-[120px] text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {SORT_OPTIONS.map(({ key, label }) => (
+                <SelectItem key={key} value={key} className="text-xs">
+                  {label}순
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            type="button"
+            variant="outline"
+            size="iconSm"
+            onClick={toggleDir}
+            aria-label={sortDir === 'asc' ? '오름차순' : '내림차순'}
+          >
+            <ArrowUpDown
+              className={cn(
+                'h-3.5 w-3.5 transition-transform',
+                sortDir === 'asc' && 'rotate-180',
+              )}
+            />
+          </Button>
+        </div>
+        <ul className="space-y-2">
+          {sorted.map((a) => (
+            <ActivityCard key={a.id} activity={a} onDelete={onDelete} />
+          ))}
+        </ul>
+      </div>
 
       <div className="hidden overflow-x-auto lg:block">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
-              {(
-                [
-                  { key: 'date', label: '날짜' },
-                  { key: 'type', label: '유형' },
-                  { key: 'quantity', label: '수량' },
-                  { key: 'scope', label: 'Scope' },
-                ] as { key: SortKey; label: string }[]
-              ).map(({ key, label }) => (
+              {SORT_OPTIONS.map(({ key, label }) => (
                 <th
                   key={key}
                   className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none"

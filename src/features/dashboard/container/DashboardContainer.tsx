@@ -27,7 +27,6 @@ import { ReductionSuggestionCard } from '../ui/ReductionSuggestionCard';
 import { RecentActivitiesTable } from '../ui/RecentActivitiesTable';
 import { DateRangePicker } from '../ui/DateRangePicker';
 import { QueryErrorCard } from '@/shared/ui/query-error-card';
-import { DATASET_FROM, DATASET_TO } from '@/shared/constants/datasetRange';
 
 // Recharts 는 무거운 라이브러리라 메인 번들에서 분리하여 별도 chunk 로 로드.
 const ChartSkeleton = () => (
@@ -208,6 +207,7 @@ export function DashboardContainer() {
     activityTypes,
     activityTypeLabels,
     peakMonth,
+    dateRange,
     recentActivities,
     emissionScore,
     insights,
@@ -229,8 +229,8 @@ export function DashboardContainer() {
             from={from}
             to={to}
             onChange={setDateRange}
-            minDate={DATASET_FROM}
-            maxDate={DATASET_TO}
+            minDate={dateRange?.min ?? ''}
+            maxDate={dateRange?.max ?? ''}
             disabled={noCompany}
           />
         }

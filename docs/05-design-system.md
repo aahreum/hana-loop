@@ -92,6 +92,12 @@ shadcn 원본 컴포넌트가 `border` (색 미지정) 만 쓰는 케이스에�
 
 > 변경 이력: `border-white/10` → `border-white/5` → 완전 제거 (라이트 모드에서 어떤 alpha 도 흰색이 도드라짐).
 
+### Popover — `src/shared/ui/popover.tsx`
+
+Radix Popover wrapper (shadcn 패턴 준수). 헤더 액션 트리거에서 사용 — DateRangePicker (트리거 버튼 + From/To input + preset 버튼). align/sideOffset 기본값을 두고 호출부에서 className 으로 너비/패딩 조정.
+
+> Dialog 와 차이: Popover 는 페이지 위에 떠있는 작은 floating 패널 (overlay 없음, esc 로 닫힘, 외부 클릭으로 닫힘). 모달 흐름이 필요 없으면 Popover 가 더 가벼운 인터랙션.
+
 ### 모달 / 바텀시트 — `AppDialogContent` 사용
 
 shadcn `DialogContent` 의 기본값을 디자인 시스템 룰로 강제하는 wrapper 가 `AppDialogContent` (`src/shared/ui/app-dialog.tsx`).
