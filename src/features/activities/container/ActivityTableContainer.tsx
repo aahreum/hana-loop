@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { toast } from 'sonner';
 import { useDeleteActivity } from '@/shared/hooks/useActivities';
 import { ActivityTable } from '../ui/ActivityTable';
@@ -13,29 +12,16 @@ type ActivityTableContainerProps = {
 export function ActivityTableContainer({
   activities,
 }: ActivityTableContainerProps) {
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const { mutate: deleteActivity, isPending: isDeleting } = useDeleteActivity();
+  const { mutate: deleteActivity } = useDeleteActivity();
 
   function handleDelete(id: string) {
-    setDeletingId(id);
+    // 낙관적 업데이트 — 행이 즉시 사라지고, 실패 시 훅 onError 에서 캐시 롤백.
     deleteActivity(id, {
-      onSuccess: () => {
-        toast.success('활동 데이터가 삭제되었습니다.');
-        setDeletingId(null);
-      },
-      onError: (err) => {
-        toast.error(err.message ?? '삭제에 실패했습니다.');
-        setDeletingId(null);
-      },
+      onSuccess: () => toast.success('활동 데이터가 삭제되었습니다.'),
+      onError: (err) =>
+        toast.error(err.message ?? '삭제에 실패해 이전 상태로 복원했습니다.'),
     });
   }
 
-  return (
-    <ActivityTable
-      activities={activities}
-      onDelete={handleDelete}
-      isDeleting={isDeleting}
-      deletingId={deletingId}
-    />
-  );
+  return <ActivityTable activities={activities} onDelete={handleDelete} />;
 }

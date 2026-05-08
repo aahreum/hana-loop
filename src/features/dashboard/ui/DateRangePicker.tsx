@@ -21,7 +21,8 @@ const desktopInputClass =
   'w-[130px] rounded-md border border-border bg-surface pl-2 pr-7 py-1 text-sm text-text cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary';
 
 // 모바일 바텀시트용 — shared Input 의 기본 h-10/px-3/py-2 + 아이콘 자리 pr-10
-const mobileInputClass = 'cursor-pointer pr-10';
+// text-sm 강제 — native month picker 의 텍스트가 OS system font 영향으로 커지는 것 보정
+const mobileInputClass = 'cursor-pointer pr-10 text-sm';
 
 export function DateRangePicker({
   from,
@@ -113,15 +114,17 @@ export function DateRangePicker({
         </Button>
         <AppDialogContent
           className={cn(
+            // 화면 하단에 붙고 상단만 라운드, 최소 300px 높이
             'fixed inset-x-0 bottom-0 left-0 top-auto w-full max-w-full translate-x-0 translate-y-0',
             'rounded-b-none rounded-t-2xl border-x-0 border-b-0 p-5',
+            'min-h-[300px] gap-3',
           )}
         >
           <DialogTitle className="text-base">조회 기간</DialogTitle>
           <DialogDescription className="sr-only">
             시작 월과 종료 월을 선택해 배출량 조회 기간을 변경합니다.
           </DialogDescription>
-          <div className="mt-2 space-y-3">
+          <div className="space-y-3">
             <div>
               <label
                 htmlFor="date-from-mobile"

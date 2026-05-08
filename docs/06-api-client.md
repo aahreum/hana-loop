@@ -67,40 +67,54 @@ export function useActivities(params?: { companyId?: string }) {
   });
 }
 
-// 생성 — Optimistic Update + Rollback
-export function useCreateActivity() {
+// 삭제 — Optimistic Update + 스냅샷 롤백
+// 클릭 즉시 행이 사라지는 UX. maybeFail 15% 환경에서도 dim 처리보다 자연스럽다.
+export function useDeleteActivity() {
   const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: api.createActivity,
-    onMutate: async (newData) => {
-      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.activities });
-      const previous = queryClient.getQueryData(QUERY_KEYS.activities);
-      // 낙관적 업데이트
-      queryClient.setQueryData(
-        QUERY_KEYS.activities,
-        (old: ActivityData[] = []) => [
-          ...old,
-          {
-            ...newData,
-            id: `temp-${Date.now()}`,
-            yearMonth: newData.date.slice(0, 7),
-            createdAt: new Date().toISOString(),
-          },
-        ],
+  return useMutation<void, Error, string, DeleteActivityContext>({
+    mutationFn: api.deleteActivity,
+    onMutate: async (id) => {
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: QUERY_KEYS.activities }),
+        queryClient.cancelQueries({ queryKey: QUERY_KEYS.emissionResults }),
+      ]);
+      // 모든 필터 캐시 변형까지 스냅샷 (롤백용)
+      const prevActivities = queryClient.getQueriesData<ActivityData[]>({
+        queryKey: QUERY_KEYS.activities,
+      });
+      const prevResults = queryClient.getQueriesData<EmissionResult[]>({
+        queryKey: QUERY_KEYS.emissionResults,
+      });
+      // 낙관적 제거 — activities + emission_results (DB 는 ON DELETE CASCADE)
+      queryClient.setQueriesData<ActivityData[]>(
+        { queryKey: QUERY_KEYS.activities },
+        (old) => old?.filter((a) => a.id !== id),
       );
-      return { previous };
+      queryClient.setQueriesData<EmissionResult[]>(
+        { queryKey: QUERY_KEYS.emissionResults },
+        (old) => old?.filter((r) => r.activityId !== id),
+      );
+      return { prevActivities, prevResults };
     },
-    onError: (_err, _newData, context) => {
-      // maybeFail 실패 시 롤백
-      queryClient.setQueryData(QUERY_KEYS.activities, context?.previous);
+    onError: (_err, _id, context) => {
+      // 실패 시 스냅샷 복원
+      if (!context) return;
+      for (const [key, data] of context.prevActivities) {
+        queryClient.setQueryData(key, data);
+      }
+      for (const [key, data] of context.prevResults) {
+        queryClient.setQueryData(key, data);
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.activities });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.emissionResults });
     },
   });
 }
 ```
+
+> **생성(`useCreateActivity`) 은 invalidate 방식 유지** — 폼 dialog 가 jitter 동안 열려 있어 dim 효과 자체가 없고, 사용자에게 "저장 중..." 버튼 상태로 진행이 보이기 때문.
 
 ## Query Key 전략
 

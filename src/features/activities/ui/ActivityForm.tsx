@@ -72,6 +72,11 @@ export function ActivityForm({
     (f) => f.category === selectedCategory,
   );
 
+  // emission_factor.unit 은 "kgCO2e/kWh" 형태. activities.unit 은 분모만 사용 ("kWh").
+  const activityUnit = selectedFactor
+    ? (selectedFactor.unit.split('/')[1] ?? selectedFactor.unit)
+    : null;
+
   const previewEmission =
     selectedFactor && quantity > 0
       ? kgToTon(calculateEmission(quantity, selectedFactor.factor))
@@ -93,7 +98,7 @@ export function ActivityForm({
               type="date"
               {...register('date')}
               className={cn(
-                'pr-10 cursor-pointer',
+                'pr-10 cursor-pointer text-sm',
                 errors.date && 'border-error',
               )}
             />
@@ -119,7 +124,7 @@ export function ActivityForm({
                 shouldValidate: true,
               });
               setValue('factorCategory', '');
-              setValue('unit', '');
+              setValue('unit', '', { shouldValidate: false });
             }}
           >
             <SelectTrigger
@@ -168,7 +173,11 @@ export function ActivityForm({
           onValueChange={(v) => {
             setValue('factorCategory', v, { shouldValidate: true });
             const f = filteredFactors.find((f) => f.category === v);
-            if (f) setValue('unit', f.unit);
+            if (f) {
+              // emission_factor.unit (kgCO2e/kWh) → activities.unit 분모만 (kWh)
+              const unit = f.unit.split('/')[1] ?? f.unit;
+              setValue('unit', unit, { shouldValidate: true });
+            }
           }}
         >
           <SelectTrigger
@@ -199,45 +208,29 @@ export function ActivityForm({
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        {/* 수량 */}
-        <div className="space-y-1.5">
-          <Label htmlFor="quantity">
-            활동량 <span className="text-primary">*</span>
-          </Label>
-          <Input
-            id="quantity"
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="0"
-            {...register('quantity', { valueAsNumber: true })}
-            className={errors.quantity ? 'border-error' : ''}
-          />
-          {errors.quantity && (
-            <p className="text-xs text-error">{errors.quantity.message}</p>
-          )}
-        </div>
-
-        {/* 단위 */}
-        <div className="space-y-1.5">
-          <Label htmlFor="unit">
-            단위 <span className="text-primary">*</span>
-          </Label>
-          <Input
-            id="unit"
-            placeholder="kWh, L, kg 등"
-            {...register('unit')}
-            readOnly={!!selectedFactor}
-            className={cn(
-              errors.unit ? 'border-error' : '',
-              selectedFactor ? 'bg-muted text-muted-foreground' : '',
-            )}
-          />
-          {errors.unit && (
-            <p className="text-xs text-error">{errors.unit.message}</p>
-          )}
-        </div>
+      {/* 수량 — 단위는 배출계수 선택 시 자동 도출되므로 별도 입력 불필요 */}
+      <div className="space-y-1.5">
+        <Label htmlFor="quantity">
+          활동량
+          {activityUnit && (
+            <span className="ml-1 text-muted-foreground">({activityUnit})</span>
+          )}{' '}
+          <span className="text-primary">*</span>
+        </Label>
+        <Input
+          id="quantity"
+          type="number"
+          step="0.01"
+          min="0"
+          placeholder={activityUnit ? `0 ${activityUnit}` : '0'}
+          {...register('quantity', { valueAsNumber: true })}
+          className={errors.quantity ? 'border-error' : ''}
+        />
+        {/* unit 은 hidden — Zod 검증을 위해 RHF 에 등록 유지, factor 선택 시 setValue 로 자동 채움 */}
+        <input type="hidden" {...register('unit')} />
+        {errors.quantity && (
+          <p className="text-xs text-error">{errors.quantity.message}</p>
+        )}
       </div>
 
       {/* 배출량 미리보기 */}

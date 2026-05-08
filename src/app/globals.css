@@ -340,7 +340,14 @@ input[type='week']::-webkit-calendar-picker-indicator {
 
 html {
   font-size: 16px;
-  scrollbar-gutter: stable;
+}
+
+/* scrollbar-gutter 는 데스크탑(lg+) 에서만 — 모바일은 스크롤바가 가려져 있어
+   gutter 만 예약되어 viewport 가 ~17px 줄고 바텀시트 폭도 함께 줄어드는 문제 발생. */
+@media (min-width: 1024px) {
+  html {
+    scrollbar-gutter: stable;
+  }
 }
 
 body {

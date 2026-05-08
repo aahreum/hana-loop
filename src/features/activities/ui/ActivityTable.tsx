@@ -16,16 +16,9 @@ type SortKey = keyof Pick<ActivityData, 'date' | 'type' | 'quantity' | 'scope'>;
 type ActivityTableProps = {
   activities: ActivityData[];
   onDelete: (id: string) => void;
-  isDeleting: boolean;
-  deletingId: string | null;
 };
 
-export function ActivityTable({
-  activities,
-  onDelete,
-  isDeleting,
-  deletingId,
-}: ActivityTableProps) {
+export function ActivityTable({ activities, onDelete }: ActivityTableProps) {
   const [sortKey, setSortKey] = useState<SortKey>('date');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
@@ -68,13 +61,7 @@ export function ActivityTable({
     <>
       <ul className="space-y-2 lg:hidden">
         {sorted.map((a) => (
-          <ActivityCard
-            key={a.id}
-            activity={a}
-            onDelete={onDelete}
-            isDeleting={isDeleting}
-            deletingId={deletingId}
-          />
+          <ActivityCard key={a.id} activity={a} onDelete={onDelete} />
         ))}
       </ul>
 
@@ -114,13 +101,7 @@ export function ActivityTable({
           </thead>
           <tbody className="divide-y divide-border/50">
             {sorted.map((a) => (
-              <tr
-                key={a.id}
-                className={cn(
-                  'hover:bg-muted/50 transition-colors',
-                  deletingId === a.id && 'opacity-50',
-                )}
-              >
+              <tr key={a.id} className="hover:bg-muted/50 transition-colors">
                 <td className="px-4 py-3 tabular-nums text-text">{a.date}</td>
                 <td className="px-4 py-3">
                   <span className="inline-flex items-center rounded-full bg-primary-bg px-2 py-0.5 text-xs font-medium text-primary-pressed">
@@ -152,7 +133,6 @@ export function ActivityTable({
                     variant="ghost"
                     size="iconSm"
                     onClick={() => onDelete(a.id)}
-                    disabled={isDeleting}
                     aria-label="활동 데이터 삭제"
                     className="text-muted-foreground"
                   >

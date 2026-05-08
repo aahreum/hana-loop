@@ -12,8 +12,6 @@ import {
 type ActivityCardProps = {
   activity: ActivityData;
   onDelete?: (id: string) => void;
-  isDeleting?: boolean;
-  deletingId?: string | null;
 };
 
 const TYPE_BADGE_CLASS =
@@ -26,21 +24,9 @@ const scopeBadgeClass = (scope: ActivityData['scope']) =>
       'bg-muted text-muted-foreground border-border',
   );
 
-export function ActivityCard({
-  activity,
-  onDelete,
-  isDeleting,
-  deletingId,
-}: ActivityCardProps) {
-  const isThisDeleting = deletingId === activity.id;
-
+export function ActivityCard({ activity, onDelete }: ActivityCardProps) {
   return (
-    <li
-      className={cn(
-        'flex items-center gap-2 rounded-lg border border-border bg-background p-3',
-        isThisDeleting && 'opacity-50',
-      )}
-    >
+    <li className="flex items-center gap-2 rounded-lg border border-border bg-background p-3">
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
@@ -73,7 +59,6 @@ export function ActivityCard({
           variant="ghost"
           size="iconSm"
           onClick={() => onDelete(activity.id)}
-          disabled={isDeleting}
           aria-label="활동 데이터 삭제"
           className="shrink-0 text-muted-foreground"
         >
