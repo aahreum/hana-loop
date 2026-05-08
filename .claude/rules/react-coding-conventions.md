@@ -125,7 +125,23 @@ export function ActivityTableContainer() {
 **적용 대상**: `<button>`, `<select>`, `<label>`, `onClick` 핸들러가 있는 `<div>`/`<tr>`/`<th>` 등 모든 인터랙티브 요소.
 **예외**:
 - `<a>`, `<Link>` — 브라우저 기본값이 `cursor-pointer`이므로 명시 불필요
-- shadcn/ui 컴포넌트 내부 코드 수정 금지 원칙에 따라 `src/shared/ui/` 내 shadcn 원본 파일은 제외
+
+**shadcn 원본 베이스라인 (예외 처리됨)**: 일부 shadcn 컴포넌트에는 cursor-pointer 가 baseline class 로 박혀 있어 사용처에서 별도 명시 없이 자동 적용된다. 이 경우 호출부에서 중복 지정하지 않는다.
+
+| 컴포넌트 | 위치 | baseline 클래스 |
+| --- | --- | --- |
+| `Button` | `src/shared/ui/button.tsx` | `cursor-pointer` (모든 variant 공통) |
+| `SelectTrigger` | `src/shared/ui/select.tsx` | `cursor-pointer` |
+| `DialogClose` (X 버튼) | `src/shared/ui/dialog.tsx` | `cursor-pointer` |
+| `Label` | `src/shared/ui/label.tsx` | `cursor-pointer` (`peer-disabled:cursor-not-allowed` 와 공존) |
+
+native date/month input 의 캘린더 picker pseudo-element 는 utility 로 잡을 수 없어 `globals.css` 에서 전역 처리:
+
+```css
+input[type='date']::-webkit-calendar-picker-indicator,
+input[type='month']::-webkit-calendar-picker-indicator,
+... { cursor: pointer; }
+```
 
 ---
 

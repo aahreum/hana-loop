@@ -3,11 +3,13 @@ export const CHART_COLORS = {
   scope2: '#F59E0B',
   scope3: '#3B82F6',
 
-  // 카테고리 순서: electricity, raw_material, transport
+  // 카테고리 순서: electricity, raw_material, transport.
+  // 실제 hex 는 globals.css 의 --chart-cat-* 변수로 관리하며 라이트/다크 분기.
+  // SVG fill 속성은 var() 를 그대로 받아 브라우저가 resolve 한다.
   categories: [
-    '#1E40AF', // 전기   — deep navy
-    '#22D3EE', // 원소재 — bright cyan
-    '#4ADE80', // 운송   — bright green
+    'var(--chart-cat-electricity)',
+    'var(--chart-cat-raw-material)',
+    'var(--chart-cat-transport)',
   ],
 
   // 탄소 관리 등급 게이지 (E→A, 낮은→높은 점수)

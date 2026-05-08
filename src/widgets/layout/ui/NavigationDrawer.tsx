@@ -9,7 +9,7 @@ import {
   FlaskConical,
   Building2,
   X,
-  ChevronLeft,
+  ChevronDown,
   Loader2,
   PanelLeft,
 } from 'lucide-react';
@@ -80,7 +80,7 @@ export function NavigationDrawer({
     <>
       {open && (
         <div
-          className="fixed inset-0 z-20 bg-black/40 lg:hidden"
+          className="fixed inset-0 z-20 bg-black/40 lg:hidden cursor-pointer"
           onClick={onClose}
           aria-hidden
         />
@@ -138,28 +138,30 @@ export function NavigationDrawer({
         </div>
 
         <div className="px-3 py-3 border-b border-white/10">
-          <div className="relative">
-            {companiesLoading ? (
-              <>
-                <p
-                  className="mb-1.5 block text-xs font-medium text-sidebar-muted uppercase tracking-wider"
-                  aria-hidden
-                >
-                  기업 선택
-                </p>
-                <div className="flex items-center gap-2 rounded-md bg-white/10 px-3 py-2 border border-white/20">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin text-sidebar-muted" />
-                  <span className="text-sm text-sidebar-muted">로딩 중...</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <label
-                  htmlFor="company-select"
-                  className="mb-1.5 block text-xs font-medium text-sidebar-muted uppercase tracking-wider"
-                >
-                  기업 선택
-                </label>
+          {companiesLoading ? (
+            <>
+              <p
+                className="mb-1.5 block text-xs font-medium text-sidebar-muted uppercase tracking-wider"
+                aria-hidden
+              >
+                기업 선택
+              </p>
+              <div className="flex items-center gap-2 rounded-md bg-white/10 px-3 py-2 border border-white/20">
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-sidebar-muted" />
+                <span className="text-sm text-sidebar-muted">로딩 중...</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <label
+                htmlFor="company-select"
+                className="mb-1.5 block text-xs font-medium text-sidebar-muted uppercase tracking-wider cursor-pointer"
+              >
+                기업 선택
+              </label>
+              {/* relative scope 를 select 에만 한정해야 ChevronDown 의
+                  top-1/2 가 select 높이 기준으로 정렬된다. */}
+              <div className="relative">
                 <select
                   id="company-select"
                   value={selectedCompanyId ?? ''}
@@ -179,13 +181,13 @@ export function NavigationDrawer({
                     </option>
                   ))}
                 </select>
-                <ChevronLeft
-                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 -rotate-90 h-4 w-4 text-sidebar-muted"
+                <ChevronDown
+                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-sidebar-muted"
                   aria-hidden
                 />
-              </>
-            )}
-          </div>
+              </div>
+            </>
+          )}
         </div>
 
         <nav
