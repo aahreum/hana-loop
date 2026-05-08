@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
-import { AppShell } from '@/widgets/layout/ui/AppShell';
+import { ThemeApplier } from '@/shared/providers/ThemeApplier';
 import { Toaster } from '@/shared/ui/sonner';
 import { TooltipProvider } from '@/shared/ui/tooltip';
 
@@ -28,7 +28,8 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <TooltipProvider delayDuration={200}>
-            <AppShell>{children}</AppShell>
+            <ThemeApplier />
+            {children}
             <Toaster position="top-right" richColors />
           </TooltipProvider>
         </QueryProvider>
