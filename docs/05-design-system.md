@@ -76,7 +76,7 @@
 | ---- | ------------------------------------- | --------------- | ----------------------- | ------------------------------- |
 | h1   | 로고 (HanaLoop, NavigationDrawer)     | 16px (text-base) | sidebar-text (white)    | font-semibold tracking-tight    |
 | h2   | 페이지 타이틀 (대시보드, 활동 데이터) | 18px (text-lg)  | text-muted-foreground   | font-semibold                   |
-| h3   | 섹션 라벨 (현재 상태, 무엇이 원인인가)| 16px (text-base) | text-muted-foreground   | font-semibold uppercase tracking-wider |
+| h3   | 섹션 라벨 (현재 상태, 원인 파악)      | 16px (text-base) | text-muted-foreground   | font-semibold uppercase tracking-wider |
 | h4   | 카드 헤더 (활동 유형별 비중 등)       | 18px (text-lg)  | text-text               | font-semibold + 아이콘(h-5 w-5) |
 
 > 일반 텍스트 스케일 (본문/수치)

@@ -284,7 +284,7 @@ export function DashboardContainer() {
             {/* 2. 원인 분석 — 활동 도넛 + Stacked area trend */}
             <section>
               <h3 className="mb-3 text-base font-semibold uppercase tracking-wider text-muted-foreground">
-                무엇이 원인인가
+                원인 파악
               </h3>
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
                 <div className="rounded-xl bg-surface border border-border p-5">
@@ -352,7 +352,7 @@ export function DashboardContainer() {
             {/* 3. 개선 포인트 — 등급 + 감축 제안 */}
             <section>
               <h3 className="mb-3 text-base font-semibold uppercase tracking-wider text-muted-foreground">
-                어디를 개선할까
+                개선 방향
               </h3>
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
                 <div className="rounded-xl bg-surface border border-border p-5">

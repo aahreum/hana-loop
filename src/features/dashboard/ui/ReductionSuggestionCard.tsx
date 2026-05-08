@@ -7,6 +7,26 @@ type ReductionSuggestionCardProps = {
   suggestions: ReductionSuggestion[];
 };
 
+/**
+ * 메시지 안의 "연간 (약) X tCO₂e 감소 가능" 부분을 굵게 + 초록색으로 강조.
+ * 룰 함수는 평문 string을 만들고, 강조는 렌더 시점에서만 처리한다.
+ */
+const SAVINGS_PATTERN =
+  /(연간\s*(?:약\s*)?\d+(?:\.\d+)?\s*tCO₂e\s*감소\s*가능)/g;
+const SAVINGS_TEST = /^연간\s*(?:약\s*)?\d+(?:\.\d+)?\s*tCO₂e\s*감소\s*가능$/;
+
+function highlightSavings(message: string): React.ReactNode[] {
+  return message.split(SAVINGS_PATTERN).map((part, i) =>
+    SAVINGS_TEST.test(part) ? (
+      <strong key={i} className="font-semibold text-trend-down">
+        {part}
+      </strong>
+    ) : (
+      part
+    ),
+  );
+}
+
 export function ReductionSuggestionCard({
   suggestions,
 }: ReductionSuggestionCardProps) {
@@ -60,7 +80,7 @@ export function ReductionSuggestionCard({
             </span>
             <div className="flex-1">
               <p className="text-sm font-medium text-text leading-snug">
-                {s.message}
+                {highlightSavings(s.message)}
               </p>
               <p className="mt-1 text-xs text-muted-foreground tabular-nums">
                 월 {s.monthlySavingTon.toFixed(2)} tCO₂e · 연{' '}
