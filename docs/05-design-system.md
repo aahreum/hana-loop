@@ -68,43 +68,93 @@
 - 폰트 파일 자동 preload (`<link rel="preload">`)
 - weight별 별도 파일 불필요 (`@fontsource/pretendard` 대비 ~3MB 절감)
 
-### 스케일
+### 헤딩 계층
 
-```
-제목 (h1): 24px / font-bold / text-slate-900
-소제목 (h2): 18px / font-semibold / text-slate-800
-카드 제목: 14px / font-medium / text-slate-600
-본문: 14px / font-normal / text-slate-700
-수치 (KPI): 32px / font-bold / text-slate-900
-보조 텍스트: 12px / font-normal / text-slate-500
-```
+시맨틱 레벨과 시각 크기를 함께 정의. 시각 우선순위는 페이지 타이틀 < 카드 헤더 (내용이 우선).
+
+| 태그 | 용도                                  | 크기            | 컬러                    | 스타일                          |
+| ---- | ------------------------------------- | --------------- | ----------------------- | ------------------------------- |
+| h1   | 로고 (HanaLoop, NavigationDrawer)     | 16px (text-base) | sidebar-text (white)    | font-semibold tracking-tight    |
+| h2   | 페이지 타이틀 (대시보드, 활동 데이터) | 18px (text-lg)  | text-muted-foreground   | font-semibold                   |
+| h3   | 섹션 라벨 (현재 상태, 원인 파악)      | 16px (text-base) | text-muted-foreground   | font-semibold uppercase tracking-wider |
+| h4   | 카드 헤더 (활동 유형별 비중 등)       | 18px (text-lg)  | text-text               | font-semibold + 아이콘(h-5 w-5) |
+
+> 일반 텍스트 스케일 (본문/수치)
+> ```
+> 본문: 14px / font-normal / text-text
+> 보조: 12px / font-normal / text-muted-foreground
+> KPI 수치: 24px (text-2xl) / font-bold tabular-nums / text-text
+> ```
 
 ## 컴포넌트 규칙
 
 ### KPI 카드
 
 ```
-┌─────────────────────────┐
-│ 아이콘  제목             │
-│                         │
-│ 수치 (32px bold)        │
-│ ▲ +12.3% 지난달 대비    │
-└─────────────────────────┘
+┌─┬─────────────────────────┐
+│▎│ 제목              [아이콘]│  ← 좌측 톤 stripe + 우측 톤 아이콘 박스
+│▎│                         │
+│▎│ 수치 (24px bold)        │
+│▎│ 해석 문구 (톤 컬러)       │
+│▎│ ▲ +X.X% 보조 텍스트      │
+└─┴─────────────────────────┘
 ```
 
-- 배경: white
-- 테두리: 없음, 그림자: shadow-sm
-- 호버: shadow-md 전환
+- 배경: bg-surface, 테두리: border-border (rounded-xl)
+- **톤 시스템** (`InsightTone`: `good` / `warn` / `neutral`):
+  - 좌측 stripe (1px 컬러 라인): good=trend-down(green), warn=trend-up(red), neutral=gray-300
+  - 우측 아이콘 박스 배경: good=`bg-trend-down/10`, warn=`bg-trend-up/10`, neutral=`bg-primary-bg`
+  - 해석 문구 컬러: 같은 톤 매핑
+- 톤 미지정 카드(총 배출량 등)는 기존 brand blue 유지
+
+### 카드 섹션 헤더 (CardSectionHeader)
+
+```
+┌────────────────────────────┐
+│ [icon] 카드 제목   [action] │  ← h4, text-lg, text-text
+│ 보조 설명 텍스트              │  ← text-xs, text-muted-foreground
+│ ────────────────────────── │  ← border-b, pb-3
+│ [content]                  │
+└────────────────────────────┘
+```
+
+- **타이틀**: `<h4>` + 아이콘(h-5 w-5 muted) + 텍스트 (text-lg, text-text, font-semibold)
+- **action 슬롯**: 우측 상단 — 도움말 툴팁 등 (예: 도넛의 "계산식 ?")
+- **하단 디바이더**: `border-b border-border pb-3 mb-4`
+
+### 자동 인사이트 리스트 (InsightList)
+
+```
+[✨ 자동 분석]
+  🔴 운송 사용량이 200% 증가했습니다
+  🟢 원자재 활동은 최근 감소 추세입니다 (42%↓)
+```
+
+- 헤더 (선택): Sparkles 아이콘 + uppercase tracking-wider 텍스트
+- 항목: 24px 컬러 동그라미 아이콘 (TrendingUp red / TrendingDown green / Minus gray) + 텍스트
+- 정렬: `items-center` (한 줄/여러 줄 모두 아이콘이 텍스트 중앙)
+- **수치 자동 강조**: `\d+(\.\d+)?%[↓↑]?` 패턴 → `<strong>` 자동 감싸기 (룰 함수는 평문 유지)
+
+### 도움말 툴팁 (UnitTooltip)
+
+용어/단위/계산식 등을 `?` 아이콘으로 노출. 호버/포커스 시 본문 + 보조 비교 문구.
+
+- 트리거: `<button>` + 라벨(선택) + HelpCircle 아이콘
+- 컨텐츠: `border border-border bg-surface px-4 py-3 shadow-xl whitespace-nowrap`
+- `description`/`comparison`은 `string | ReactNode` — 다중 라인은 ReactNode로 `<span className="block">` 구조화 가능
+- 사용 예: tCO₂e 단위 안내, 도넛의 계산식 안내, 최근 활동 테이블의 Scope 컬럼 정의
 
 ### 차트 컨테이너
 
 ```
 ┌─────────────────────────┐
-│ 제목              [필터] │
+│ [icon] 카드 제목         │
+│ 보조 설명                 │
 │─────────────────────────│
 │                         │
 │     차트 영역            │
 │                         │
+│ [✨ 분석/요약 인사이트]    │
 └─────────────────────────┘
 ```
 

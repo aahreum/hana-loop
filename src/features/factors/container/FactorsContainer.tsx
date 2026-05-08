@@ -42,20 +42,20 @@ export function FactorsContainer() {
   const { data: factors, isPending, error } = useFactors();
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
+    <div className="flex flex-1 flex-col">
       <Header title="배출계수" onMenuClick={toggleSidebar} />
 
-      <main className="flex-1 overflow-y-auto p-4 md:p-6">
+      <main className="flex-1 p-4 md:p-6">
         <div className="rounded-xl bg-surface border border-border">
           <div className="border-b border-border px-5 py-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-text">
+            <h3 className="text-base font-semibold text-text">
               배출계수 목록
               {factors && factors.length > 0 && (
                 <span className="ml-1 text-xs font-normal text-muted-foreground">
                   ({factors.length}건)
                 </span>
               )}
-            </h2>
+            </h3>
             <p className="text-xs text-muted-foreground">
               출처: 한국환경공단 2023 기준
             </p>

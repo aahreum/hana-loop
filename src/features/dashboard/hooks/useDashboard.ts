@@ -7,7 +7,26 @@ import { useFilterStore } from '@/shared/lib/store/filterStore';
 import { kgToTon, calcChangeRate } from '@/shared/lib/calculations';
 import { CHART_COLORS } from '@/shared/constants/chartColors';
 import { ACTIVITY_TYPE_LABELS } from '@/shared/constants/activityLabels';
+import {
+  interpretChangeRate,
+  interpretTopCategory,
+  interpretPeakMonth,
+  buildDonutInsights,
+  buildTrendInsights,
+  buildGradeInsights,
+  buildReductionSuggestions,
+  type CategoryShare,
+  type CategoryTrend,
+} from '@/shared/lib/insights';
 import type { Scope } from '@/shared/types/activity';
+
+const ACTIVITY_TYPES = [
+  'electricity',
+  'fuel',
+  'raw_material',
+  'transport',
+  'waste',
+] as const;
 
 export function useDashboard() {
   const { selectedCompanyId, from, to } = useFilterStore();
@@ -33,6 +52,13 @@ export function useDashboard() {
   });
 
   const isPending = resultsLoading || activitiesLoading;
+
+  // 활동 ID → 활동 유형 lookup (find 반복 제거)
+  const activityTypeById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const a of activities) map.set(a.id, a.type);
+    return map;
+  }, [activities]);
 
   const kpis = useMemo(() => {
     if (results.length === 0) return null;
@@ -68,6 +94,8 @@ export function useDashboard() {
     return {
       total,
       changeRate,
+      lastMonth: lastMonth ?? null,
+      currentMonthTon: kgToTon(currentMonthKg),
       byScope: {
         1: kgToTon(byScope[1] ?? 0),
         2: kgToTon(byScope[2] ?? 0),
@@ -76,41 +104,16 @@ export function useDashboard() {
     };
   }, [results]);
 
-  // 월별 추이 데이터 (scope별 합계)
-  const trendData = useMemo(() => {
-    const byMonth: Record<string, Record<Scope, number>> = {};
-    for (const r of results) {
-      if (!byMonth[r.yearMonth]) byMonth[r.yearMonth] = { 1: 0, 2: 0, 3: 0 };
-      byMonth[r.yearMonth][r.scope] =
-        (byMonth[r.yearMonth][r.scope] ?? 0) + r.emissionKgCo2e;
-    }
-    return Object.entries(byMonth)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([month, scopes]) => ({
-        month,
-        scope1: kgToTon(scopes[1] ?? 0),
-        scope2: kgToTon(scopes[2] ?? 0),
-        scope3: kgToTon(scopes[3] ?? 0),
-        total: kgToTon((scopes[1] ?? 0) + (scopes[2] ?? 0) + (scopes[3] ?? 0)),
-      }));
-  }, [results]);
+  // 활동 유형별 월별 추이 (stacked area용)
+  type CategoryTrendRow = {
+    month: string;
+    total: number;
+  } & Record<(typeof ACTIVITY_TYPES)[number], number>;
 
-  // Scope 도넛 차트 데이터
-  const scopeData = useMemo(() => {
-    if (!kpis) return [];
-    return [
-      { name: 'Scope 1', value: kpis.byScope[1], fill: CHART_COLORS.scope1 },
-      { name: 'Scope 2', value: kpis.byScope[2], fill: CHART_COLORS.scope2 },
-      { name: 'Scope 3', value: kpis.byScope[3], fill: CHART_COLORS.scope3 },
-    ].filter((d) => d.value > 0);
-  }, [kpis]);
-
-  // 활동 유형별 월별 바 차트 데이터
-  const categoryBarData = useMemo(() => {
+  const categoryTrendData = useMemo<CategoryTrendRow[]>(() => {
     const byMonth: Record<string, Record<string, number>> = {};
-    // results(기간 필터 적용)로 월 초기화 — trendData와 x축 일치
     for (const r of results) {
-      if (!byMonth[r.yearMonth])
+      if (!byMonth[r.yearMonth]) {
         byMonth[r.yearMonth] = {
           electricity: 0,
           fuel: 0,
@@ -118,40 +121,111 @@ export function useDashboard() {
           transport: 0,
           waste: 0,
         };
+      }
     }
     for (const r of results) {
-      const act = activities.find((a) => a.id === r.activityId);
-      if (!act) continue;
-      if (!byMonth[r.yearMonth]) continue;
-      byMonth[r.yearMonth][act.type] =
-        (byMonth[r.yearMonth][act.type] ?? 0) + kgToTon(r.emissionKgCo2e);
+      const type = activityTypeById.get(r.activityId);
+      if (!type || !byMonth[r.yearMonth]) continue;
+      byMonth[r.yearMonth][type] =
+        (byMonth[r.yearMonth][type] ?? 0) + kgToTon(r.emissionKgCo2e);
     }
     return Object.entries(byMonth)
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([month, cats]) => ({ month, ...cats }));
-  }, [results, activities]);
+      .map(([month, cats]) => {
+        const total = Object.values(cats).reduce((s, v) => s + v, 0);
+        return {
+          month,
+          electricity: cats.electricity ?? 0,
+          fuel: cats.fuel ?? 0,
+          raw_material: cats.raw_material ?? 0,
+          transport: cats.transport ?? 0,
+          waste: cats.waste ?? 0,
+          total,
+        };
+      });
+  }, [results, activityTypeById]);
 
-  // 최대 배출원 (활동 유형 기준)
-  const topSource = useMemo(() => {
-    const byActivity: Record<string, number> = {};
+  // 활동 유형별 합계 (도넛 차트용)
+  const categoryShares = useMemo<CategoryShare[]>(() => {
+    const byType: Record<string, number> = {};
     for (const r of results) {
-      const act = activities.find((a) => a.id === r.activityId);
-      if (!act) continue;
-      const label = ACTIVITY_TYPE_LABELS[act.type] ?? act.type;
-      byActivity[label] = (byActivity[label] ?? 0) + r.emissionKgCo2e;
+      const type = activityTypeById.get(r.activityId);
+      if (!type) continue;
+      byType[type] = (byType[type] ?? 0) + r.emissionKgCo2e;
     }
-    const sorted = Object.entries(byActivity).sort(([, a], [, b]) => b - a);
-    return sorted[0]
-      ? { name: sorted[0][0], value: kgToTon(sorted[0][1]) }
-      : null;
-  }, [results, activities]);
+    const total = Object.values(byType).reduce((s, v) => s + v, 0);
+    if (total === 0) return [];
+    return ACTIVITY_TYPES.filter((t) => (byType[t] ?? 0) > 0).map((t) => ({
+      type: t,
+      label: ACTIVITY_TYPE_LABELS[t] ?? t,
+      value: kgToTon(byType[t] ?? 0),
+      share: (byType[t] ?? 0) / total,
+    }));
+  }, [results, activityTypeById]);
+
+  // 도넛 차트 데이터 — 색상은 ACTIVITY_TYPES 원본 순서 기준으로 고정
+  // (필터된 배열 index를 쓰면 0값 활동이 빠질 때 색이 밀려서 trend 차트와 어긋남)
+  const activityDonutData = useMemo(() => {
+    return categoryShares.map((c) => {
+      const originalIndex = ACTIVITY_TYPES.indexOf(
+        c.type as (typeof ACTIVITY_TYPES)[number],
+      );
+      const colorIndex = originalIndex >= 0 ? originalIndex : 0;
+      return {
+        name: c.label,
+        type: c.type,
+        value: c.value,
+        share: c.share,
+        fill: CHART_COLORS.categories[colorIndex],
+      };
+    });
+  }, [categoryShares]);
+
+  // 최대 배출 활동 (CategoryShare로 통일)
+  const topCategory = useMemo<CategoryShare | null>(() => {
+    if (categoryShares.length === 0) return null;
+    return [...categoryShares].sort((a, b) => b.value - a.value)[0] ?? null;
+  }, [categoryShares]);
+
+  // 활동별 변화율 (최근월 vs 직전월) — 트렌드 인사이트용
+  const categoryTrends = useMemo<CategoryTrend[]>(() => {
+    if (categoryTrendData.length < 2) return [];
+    const last = categoryTrendData[categoryTrendData.length - 1];
+    const prev = categoryTrendData[categoryTrendData.length - 2];
+    if (!last || !prev) return [];
+    return ACTIVITY_TYPES.map((t) => {
+      const recent = (last[t] as number) ?? 0;
+      const previous = (prev[t] as number) ?? 0;
+      return {
+        type: t,
+        label: ACTIVITY_TYPE_LABELS[t] ?? t,
+        recentTotal: recent,
+        previousTotal: previous,
+        changeRate: previous > 0 ? ((recent - previous) / previous) * 100 : 0,
+      };
+    }).filter((c) => c.recentTotal > 0 || c.previousTotal > 0);
+  }, [categoryTrendData]);
+
+  // 연중 최대 배출 월
+  const peakMonth = useMemo(() => {
+    if (categoryTrendData.length === 0) return null;
+    let max = -Infinity;
+    let target: string | null = null;
+    for (const row of categoryTrendData) {
+      if (row.total > max) {
+        max = row.total;
+        target = row.month;
+      }
+    }
+    return target;
+  }, [categoryTrendData]);
 
   // 배출량 감축 추세 기반 탄소 관리 점수 (0–100)
   const emissionScore = useMemo(() => {
-    if (trendData.length < 2) return 50;
-    const n = trendData.length;
-    const firstHalf = trendData.slice(0, Math.ceil(n / 2));
-    const secondHalf = trendData.slice(Math.floor(n / 2));
+    if (categoryTrendData.length < 2) return 50;
+    const n = categoryTrendData.length;
+    const firstHalf = categoryTrendData.slice(0, Math.ceil(n / 2));
+    const secondHalf = categoryTrendData.slice(Math.floor(n / 2));
     const firstAvg =
       firstHalf.reduce((s, d) => s + d.total, 0) / firstHalf.length;
     const lastAvg =
@@ -161,7 +235,45 @@ export function useDashboard() {
     const changeRate = (lastAvg - firstAvg) / firstAvg;
     const raw = Math.round(50 - changeRate * 50);
     return Math.max(0, Math.min(100, raw));
-  }, [trendData]);
+  }, [categoryTrendData]);
+
+  // 인사이트 문구 패키지
+  const insights = useMemo(() => {
+    const totalChangeRate = kpis?.changeRate ?? 0;
+    const recentMonthByType: Record<string, number> = {};
+    if (categoryTrendData.length > 0) {
+      const last = categoryTrendData[categoryTrendData.length - 1];
+      if (last) {
+        for (const t of ACTIVITY_TYPES) {
+          recentMonthByType[t] = (last[t] as number) ?? 0;
+        }
+      }
+    }
+    return {
+      changeRate: interpretChangeRate(totalChangeRate),
+      topCategory: interpretTopCategory(topCategory),
+      peakMonth: interpretPeakMonth(peakMonth),
+      donut: buildDonutInsights(topCategory),
+      trend: buildTrendInsights({
+        categoryTrends,
+        peakMonth,
+        totalChangeRate,
+      }),
+      grade: buildGradeInsights({
+        score: emissionScore,
+        totalChangeRate,
+        topCategory,
+      }),
+      reductionSuggestions: buildReductionSuggestions(recentMonthByType),
+    };
+  }, [
+    kpis?.changeRate,
+    emissionScore,
+    topCategory,
+    categoryTrends,
+    peakMonth,
+    categoryTrendData,
+  ]);
 
   const recentActivities = useMemo(
     () =>
@@ -177,12 +289,14 @@ export function useDashboard() {
     refetchActivities,
     hasData: results.length > 0,
     kpis,
-    topSource,
-    trendData,
-    scopeData,
-    categoryBarData,
+    topCategory,
+    categoryTrendData,
+    activityDonutData,
+    activityTypes: ACTIVITY_TYPES,
+    activityTypeLabels: ACTIVITY_TYPE_LABELS,
+    peakMonth,
     recentActivities,
     emissionScore,
-    activityTypeLabels: ACTIVITY_TYPE_LABELS,
+    insights,
   };
 }

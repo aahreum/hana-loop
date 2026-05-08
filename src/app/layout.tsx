@@ -4,6 +4,7 @@ import './globals.css';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
 import { AppShell } from '@/widgets/layout/ui/AppShell';
 import { Toaster } from '@/shared/ui/sonner';
+import { TooltipProvider } from '@/shared/ui/tooltip';
 
 const pretendard = localFont({
   src: './fonts/PretendardVariable.woff2',
@@ -26,8 +27,10 @@ export default function RootLayout({
     <html lang="ko" className={pretendard.variable}>
       <body>
         <QueryProvider>
-          <AppShell>{children}</AppShell>
-          <Toaster position="top-right" richColors />
+          <TooltipProvider delayDuration={200}>
+            <AppShell>{children}</AppShell>
+            <Toaster position="top-right" richColors />
+          </TooltipProvider>
         </QueryProvider>
       </body>
     </html>

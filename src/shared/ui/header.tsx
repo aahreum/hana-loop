@@ -12,7 +12,7 @@ type HeaderProps = {
 
 export function Header({ title, onMenuClick, actions }: HeaderProps) {
   return (
-    <header className="flex h-16 items-center justify-between border-b border-border bg-surface px-4 shrink-0">
+    <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-surface px-4 shrink-0">
       <div className="flex items-center gap-3">
         <Button
           variant="ghost"
@@ -22,7 +22,7 @@ export function Header({ title, onMenuClick, actions }: HeaderProps) {
         >
           <Menu className="h-5 w-5" />
         </Button>
-        <h1 className="text-lg font-semibold text-text">{title}</h1>
+        <h2 className="text-lg font-semibold text-muted-foreground">{title}</h2>
       </div>
       <div className="flex items-center gap-2">
         {actions}

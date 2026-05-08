@@ -51,14 +51,17 @@ src/
 │   │   ├── container/
 │   │   │   └── DashboardContainer.tsx  # 훅 연결, 섹션별 에러 처리
 │   │   ├── hooks/
-│   │   │   └── useDashboard.ts   # KPI, 차트 데이터 변환 (useMemo)
+│   │   │   └── useDashboard.ts   # KPI, 차트 데이터, 인사이트 패키지 (useMemo)
 │   │   └── ui/                   # props만 받아 렌더링
-│   │       ├── KpiCard.tsx
+│   │       ├── KpiCard.tsx                  # 톤 stripe + 톤 아이콘 배경
 │   │       ├── KpiCardSkeleton.tsx
-│   │       ├── EmissionTrendChart.tsx
-│   │       ├── ScopeDonutChart.tsx
-│   │       ├── CategoryBarChart.tsx
-│   │       ├── CarbonGauge.tsx   # 순수 SVG 단일 arc
+│   │       ├── CardSectionHeader.tsx        # 카드 헤더 (h4, 아이콘+라인+action 슬롯)
+│   │       ├── ActivityDonutChart.tsx       # 활동 유형별 비중 도넛
+│   │       ├── EmissionTrendChart.tsx       # 활동 유형별 stacked area
+│   │       ├── CarbonGauge.tsx              # 순수 SVG 단일 arc
+│   │       ├── CarbonGradeCard.tsx          # CarbonGauge + 등급 인사이트
+│   │       ├── InsightList.tsx              # 자동 분석 리스트 (수치 자동 강조)
+│   │       ├── ReductionSuggestionCard.tsx  # 활동별 절감 시뮬레이션
 │   │       └── RecentActivitiesTable.tsx
 │   │
 │   ├── activities/
@@ -85,8 +88,9 @@ src/
 │
 ├── shared/                       # 전역 공유 (features에서 임포트 가능)
 │   ├── ui/                       # shadcn/ui 컴포넌트(수정 금지) + 커스텀 UI
-│   │   ├── header.tsx            # 페이지 헤더 (공통)
+│   │   ├── header.tsx            # 페이지 헤더 (h2, sticky)
 │   │   ├── query-error-card.tsx  # 에러 격리 + 재시도 버튼
+│   │   ├── unit-tooltip.tsx      # 단위/용어 도움말 툴팁 (HelpCircle 트리거)
 │   │   └── ...                   # shadcn 컴포넌트들
 │   │
 │   ├── types/                    # Zod 스키마 + z.infer 타입 (유일한 타입 출처)
@@ -99,6 +103,7 @@ src/
 │   ├── lib/
 │   │   ├── api.ts
 │   │   ├── calculations.ts
+│   │   ├── insights.ts           # 자동 인사이트 룰 (도넛/트렌드/등급/감축제안)
 │   │   ├── supabase.server.ts
 │   │   ├── openapi.ts
 │   │   ├── utils.ts
