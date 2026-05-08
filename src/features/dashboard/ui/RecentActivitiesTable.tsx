@@ -1,4 +1,5 @@
 import { cn } from '@/shared/lib/utils';
+import { UnitTooltip } from '@/shared/ui/unit-tooltip';
 import type { ActivityData } from '@/shared/types/activity';
 import {
   ACTIVITY_TYPE_LABELS,
@@ -38,7 +39,28 @@ export function RecentActivitiesTable({
               수량
             </th>
             <th className="pb-3 text-right font-medium text-muted-foreground">
-              Scope
+              <span className="inline-flex items-center justify-end gap-1">
+                Scope
+                <UnitTooltip
+                  description="GHG Protocol 배출 범위"
+                  comparison={
+                    <span className="block space-y-0.5">
+                      <span className="block">
+                        <strong className="text-text">Scope 1</strong> 직접 배출
+                        (연료 연소 등 자체 시설)
+                      </span>
+                      <span className="block">
+                        <strong className="text-text">Scope 2</strong> 간접 배출
+                        (구매 전기·열)
+                      </span>
+                      <span className="block">
+                        <strong className="text-text">Scope 3</strong> 가치사슬
+                        배출 (원자재·운송·폐기 등)
+                      </span>
+                    </span>
+                  }
+                />
+              </span>
             </th>
           </tr>
         </thead>
