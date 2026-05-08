@@ -276,6 +276,31 @@ pnpm test:coverage   # 커버리지 리포트
 
 ## 성능
 
+### Lighthouse 측정 (Mobile, prod)
+
+`https://hana-loop.vercel.app/dashboard` Lighthouse Mobile (Slow 4G + 4× CPU throttle) 측정 결과:
+
+| 카테고리 | 점수 |
+| --- | --- |
+| **성능** | **95** |
+| **접근성** | **100** |
+| **권장사항** | **100** |
+| **SEO** | **100** |
+
+핵심 메트릭:
+
+| 지표 | 값 | 등급 |
+| --- | --- | --- |
+| First Contentful Paint (FCP) | 0.9s | 🟢 Good |
+| **Largest Contentful Paint (LCP)** | **0.9s** | 🟢 Good |
+| Total Blocking Time (TBT) | 117ms | 🟢 Good |
+| Cumulative Layout Shift (CLS) | 0 | 🟢 Good |
+| Speed Index (SI) | 5.3s | 🟡 Needs Improvement |
+
+> 초기 측정(2026-05-08)에서 성능 68 / LCP 11.0s 였던 상태에서 RSC prefetch + Recharts 코드 분할 + scrollbar-gutter 분기 등 누적 적용 결과 **LCP 11.0s → 0.9s (-10.1s)**, 성능 68 → 95.
+>
+> `Speed Index` 5.3s 는 jitter 시뮬레이션이 사용자 인터랙션 fetch 에 그대로 적용되어 dashboard 의 점진적 페인트 속도에 영향. 과제 스펙 요구사항이라 의도된 수치.
+
 ### jitter 시뮬레이션 정책
 
 과제 스펙(`docs/00-assignment.md`) 의 "200 \~ 800ms 네트워크 지연 + 10 \~ 20% 쓰기 실패" 시뮬레이션은 prod 에서도 그대로 유지합니다. Loading/Error UX 가 평가 항목이라 인공 지연을 끄는 건 의미 없기 때문입니다. 다만 **첫 페이지 LCP** 만 빠르게 만들기 위해 다음과 같이 분리했습니다:
