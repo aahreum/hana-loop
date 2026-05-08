@@ -13,6 +13,8 @@ export function AppShell({ children }: AppShellProps) {
   const {
     sidebarOpen,
     setSidebarOpen,
+    desktopSidebarCollapsed,
+    toggleDesktopSidebar,
     companies,
     companiesLoading,
     selectedCompanyId,
@@ -34,6 +36,8 @@ export function AppShell({ children }: AppShellProps) {
       <NavigationDrawer
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        desktopCollapsed={desktopSidebarCollapsed}
+        onToggleDesktop={toggleDesktopSidebar}
         companies={companies}
         companiesLoading={companiesLoading}
         selectedCompanyId={selectedCompanyId}

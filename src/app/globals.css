@@ -47,6 +47,11 @@
   --scope2: #f59e0b; /* Scope 2: 간접 배출 (Amber) */
   --scope3: #3b82f6; /* Scope 3: 가치사슬 (Blue) */
 
+  /* Scope 텍스트 (WCAG AA 4.5:1 보장) — 라이트 모드용 darker 변형 */
+  --scope1-text: #b91c1c; /* red-700 — bg-scope1/10 위에서 5.5:1 */
+  --scope2-text: #b45309; /* amber-700 */
+  --scope3-text: #1d4ed8; /* blue-700 */
+
   /* KPI 증감 */
   --trend-up: #ef4444;
   --trend-down: #4bb074;
@@ -96,6 +101,11 @@
     --border: #1f2937;
     --text: #f8fafc;
 
+    /* 다크 모드: 어두운 bg/10 위에서 lighter scope 텍스트가 더 가독적 */
+    --scope1-text: #fca5a5; /* red-300 */
+    --scope2-text: #fcd34d; /* amber-300 */
+    --scope3-text: #93c5fd; /* blue-300 */
+
     --gray-900: #f8fafc;
     --gray-700: #e2e8f0;
     --gray-500: #94a3b8;
@@ -128,6 +138,10 @@
   --surface: #111827;
   --border: #1f2937;
   --text: #f8fafc;
+
+  --scope1-text: #fca5a5; /* red-300 */
+  --scope2-text: #fcd34d; /* amber-300 */
+  --scope3-text: #93c5fd; /* blue-300 */
 
   --gray-900: #f8fafc;
   --gray-700: #e2e8f0;
@@ -218,6 +232,9 @@
   --color-scope1: var(--scope1);
   --color-scope2: var(--scope2);
   --color-scope3: var(--scope3);
+  --color-scope1-text: var(--scope1-text);
+  --color-scope2-text: var(--scope2-text);
+  --color-scope3-text: var(--scope3-text);
 
   /* KPI 증감 */
   --color-trend-up: var(--trend-up);

@@ -109,7 +109,7 @@ src/
 │   │   ├── utils.ts
 │   │   └── store/
 │   │       ├── filterStore.ts    # 선택된 회사, 날짜 범위
-│   │       └── uiStore.ts        # 사이드바 open/close, 테마 (Zustand persist)
+│   │       └── uiStore.ts        # sidebarOpen(모바일), desktopSidebarCollapsed, 테마 (Zustand persist)
 │   │
 │   ├── constants/
 │   │   ├── queryKeys.ts          # QUERY_KEYS (TanStack Query key 상수)
@@ -176,7 +176,7 @@ export function ActivityTableContainer({ activities }: Props) {
 
 ```
 UI State (Zustand — shared/lib/store/)
-├── uiStore: 사이드바 open/close, 테마 ('light'|'dark'|null, localStorage persist)
+├── uiStore: sidebarOpen(모바일 드로어), desktopSidebarCollapsed(persist), 테마 ('light'|'dark'|null, localStorage persist)
 └── filterStore: 선택된 회사 ID, 날짜 범위
 
 Server State (TanStack Query — shared/hooks/)

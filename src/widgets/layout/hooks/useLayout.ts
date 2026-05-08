@@ -6,7 +6,13 @@ import { useFilterStore } from '@/shared/lib/store/filterStore';
 import { useCompanies } from '@/shared/hooks/useCompanies';
 
 export function useLayout() {
-  const { sidebarOpen, setSidebarOpen, toggleSidebar } = useUiStore();
+  const {
+    sidebarOpen,
+    setSidebarOpen,
+    toggleSidebar,
+    desktopSidebarCollapsed,
+    toggleDesktopSidebar,
+  } = useUiStore();
   const { selectedCompanyId, setSelectedCompanyId } = useFilterStore();
   const { data: companies = [], isPending: companiesLoading } = useCompanies();
 
@@ -20,6 +26,8 @@ export function useLayout() {
     sidebarOpen,
     setSidebarOpen,
     toggleSidebar,
+    desktopSidebarCollapsed,
+    toggleDesktopSidebar,
     companies,
     companiesLoading,
     selectedCompanyId,
