@@ -5,7 +5,7 @@ import '@fontsource/pretendard/600.css';
 import '@fontsource/pretendard/700.css';
 import './globals.css';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
-import { AppShell } from '@/features/layout/ui/AppShell';
+import { AppShell } from '@/widgets/layout/ui/AppShell';
 import { Toaster } from '@/shared/ui/sonner';
 
 export const metadata: Metadata = {

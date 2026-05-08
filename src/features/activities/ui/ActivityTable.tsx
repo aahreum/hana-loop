@@ -2,10 +2,8 @@
 
 import { useState } from 'react';
 import { Trash2, ChevronUp, ChevronDown } from 'lucide-react';
-import { toast } from 'sonner';
 import { Button } from '@/shared/ui/button';
 import { cn } from '@/shared/lib/utils';
-import { useDeleteActivity } from '@/shared/hooks/useActivities';
 import type { ActivityData } from '@/shared/types/activity';
 import {
   ACTIVITY_TYPE_LABELS,
@@ -16,11 +14,17 @@ type SortKey = keyof Pick<ActivityData, 'date' | 'type' | 'quantity' | 'scope'>;
 
 type ActivityTableProps = {
   activities: ActivityData[];
+  onDelete: (id: string) => void;
+  isDeleting: boolean;
+  deletingId: string | null;
 };
 
-export function ActivityTable({ activities }: ActivityTableProps) {
-  const { mutate: del, isPending: isDeleting } = useDeleteActivity();
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+export function ActivityTable({
+  activities,
+  onDelete,
+  isDeleting,
+  deletingId,
+}: ActivityTableProps) {
   const [sortKey, setSortKey] = useState<SortKey>('date');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
@@ -31,21 +35,6 @@ export function ActivityTable({ activities }: ActivityTableProps) {
       setSortKey(key);
       setSortDir('desc');
     }
-  }
-
-  function handleDelete(id: string) {
-    if (isDeleting) return;
-    setDeletingId(id);
-    del(id, {
-      onSuccess: () => {
-        toast.success('활동 데이터가 삭제되었습니다.');
-        setDeletingId(null);
-      },
-      onError: (err) => {
-        toast.error(err.message ?? '삭제에 실패했습니다. 다시 시도해주세요.');
-        setDeletingId(null);
-      },
-    });
   }
 
   const sorted = [...activities].sort((a, b) => {
@@ -83,31 +72,28 @@ export function ActivityTable({ activities }: ActivityTableProps) {
               [
                 { key: 'date', label: '날짜' },
                 { key: 'type', label: '유형' },
+                { key: 'quantity', label: '수량' },
+                { key: 'scope', label: 'Scope' },
               ] as { key: SortKey; label: string }[]
-            )
-              .concat([
-                { key: 'quantity' as SortKey, label: '수량' },
-                { key: 'scope' as SortKey, label: 'Scope' },
-              ])
-              .map(({ key, label }) => (
-                <th
-                  key={key}
-                  className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none"
-                  onClick={() => handleSort(key)}
-                >
-                  <div className="flex items-center gap-1">
-                    {label}
-                    <SortIcon col={key} />
-                  </div>
-                </th>
-              ))}
+            ).map(({ key, label }) => (
+              <th
+                key={key}
+                className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none"
+                onClick={() => handleSort(key)}
+              >
+                <div className="flex items-center gap-1">
+                  {label}
+                  <SortIcon col={key} />
+                </div>
+              </th>
+            ))}
             <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               설명
             </th>
             <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               배출계수
             </th>
-            <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               관리
             </th>
           </tr>
@@ -151,7 +137,7 @@ export function ActivityTable({ activities }: ActivityTableProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => handleDelete(a.id)}
+                  onClick={() => onDelete(a.id)}
                   disabled={isDeleting}
                   className="h-7 w-7 text-muted-foreground hover:text-error hover:bg-error-bg"
                 >

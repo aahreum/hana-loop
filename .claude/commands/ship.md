@@ -33,6 +33,17 @@ CLAUDE.md 규칙:
   [ ] supabaseAdmin을 클라이언트 컴포넌트에서 import하지 않는가?
   [ ] Named export를 사용하는가? (page.tsx, layout.tsx, route.ts 제외)
   [ ] console.log가 없는가? (console.warn/error만 허용)
+
+  추가 규칙 (React 19 / TanStack Query v5):
+  [ ] TanStack Query 로딩 상태에 isLoading 대신 isPending을 사용하는가?
+  [ ] forwardRef를 사용하지 않는가? (React 19 — ref를 props로 직접 전달)
+  [ ] page 컴포넌트(app/**/page.tsx)에 'use client'가 없는가?
+      클라이언트 로직이 필요하면 features/{slice}/container/ Container 컴포넌트로 분리
+  [ ] JSX return 내 중첩 삼항연산자가 없는가? (early return 또는 컴포넌트 분리 사용)
+  [ ] container/ 가 과도하게 생성되지 않았는가?
+      (비즈니스 로직 연결 시에만 — 단순 레이아웃 조합은 container 불필요)
+  [ ] 조합형 UI 블록(Header, Sidebar 등)이 features/가 아닌 widgets/에 위치하는가?
+  [ ] features/에서 widgets/를 import하지 않는가? (의존성 방향 위반)
 ```
 
 위반 항목이 있으면 수정 후 Step 1로 이동한다. 없으면 즉시 Step 1로 이동한다.
