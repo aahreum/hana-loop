@@ -2,7 +2,14 @@
 
 import { useState } from 'react';
 import { Calendar } from 'lucide-react';
-import { Dialog, DialogContent, DialogTitle } from '@/shared/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from '@/shared/ui/dialog';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
 import { cn } from '@/shared/lib/utils';
 
 type DateRangePickerProps = {
@@ -13,6 +20,12 @@ type DateRangePickerProps = {
   maxDate: string;
   disabled?: boolean;
 };
+
+const desktopInputClass =
+  'h-auto w-[130px] rounded-md border-border bg-surface px-2 py-1 text-sm text-text cursor-pointer focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0';
+
+const mobileInputClass =
+  'h-auto rounded-md border-border bg-background px-3 py-2 text-base text-text cursor-pointer focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0';
 
 export function DateRangePicker({
   from,
@@ -54,40 +67,42 @@ export function DateRangePicker({
         <label htmlFor="date-from" className="sr-only">
           시작 월
         </label>
-        <input
+        <Input
           id="date-from"
           type="month"
           value={from}
           min={minDate}
           max={to}
           onChange={(e) => onChange(e.target.value, to)}
-          className="w-[130px] rounded-md border border-border bg-surface px-2 py-1 text-sm text-text focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+          className={desktopInputClass}
         />
         <span aria-hidden>~</span>
         <label htmlFor="date-to" className="sr-only">
           종료 월
         </label>
-        <input
+        <Input
           id="date-to"
           type="month"
           value={to}
           min={from}
           max={maxDate}
           onChange={(e) => onChange(from, e.target.value)}
-          className="w-[130px] rounded-md border border-border bg-surface px-2 py-1 text-sm text-text focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+          className={desktopInputClass}
         />
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={() => setOpen(true)}
           aria-label="조회 기간 선택"
-          className="flex items-center gap-1.5 rounded-md border border-border bg-surface px-2 py-1 text-sm text-text hover:bg-muted cursor-pointer lg:hidden"
+          className="gap-1.5 cursor-pointer lg:hidden"
         >
           <Calendar className="h-4 w-4 text-muted-foreground" aria-hidden />
           <span>날짜 선택</span>
-        </button>
+        </Button>
         <DialogContent
           className={cn(
             'fixed inset-x-0 bottom-0 left-0 top-auto w-full max-w-full translate-x-0 translate-y-0',
@@ -95,6 +110,9 @@ export function DateRangePicker({
           )}
         >
           <DialogTitle className="text-base">조회 기간</DialogTitle>
+          <DialogDescription className="sr-only">
+            시작 월과 종료 월을 선택해 배출량 조회 기간을 변경합니다.
+          </DialogDescription>
           <div className="mt-2 space-y-3">
             <div>
               <label
@@ -103,14 +121,14 @@ export function DateRangePicker({
               >
                 시작 월
               </label>
-              <input
+              <Input
                 id="date-from-mobile"
                 type="month"
                 value={from}
                 min={minDate}
                 max={to}
                 onChange={(e) => onChange(e.target.value, to)}
-                className="w-full rounded-md border border-border bg-background px-3 py-2 text-base text-text focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+                className={mobileInputClass}
               />
             </div>
             <div>
@@ -120,14 +138,14 @@ export function DateRangePicker({
               >
                 종료 월
               </label>
-              <input
+              <Input
                 id="date-to-mobile"
                 type="month"
                 value={to}
                 min={from}
                 max={maxDate}
                 onChange={(e) => onChange(from, e.target.value)}
-                className="w-full rounded-md border border-border bg-background px-3 py-2 text-base text-text focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+                className={mobileInputClass}
               />
             </div>
           </div>
