@@ -7,8 +7,8 @@ export default function DocsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-bg">
-      <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-border bg-sidebar-bg px-4 text-sidebar-text">
+    <div className="flex min-h-screen flex-col bg-white">
+      <header className="sticky top-0 z-10 flex h-14 items-center justify-between bg-sidebar-bg px-4 text-sidebar-text">
         <Link
           href="/dashboard"
           className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
@@ -32,7 +32,7 @@ export default function DocsLayout({
           대시보드로
         </Link>
       </header>
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 bg-white">{children}</main>
     </div>
   );
 }
