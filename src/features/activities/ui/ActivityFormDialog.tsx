@@ -28,13 +28,14 @@ export function ActivityFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <AppDialogContent
         className={cn(
-          // 모바일 바텀시트: 화면 하단에 붙고 상단만 라운드
+          // 모바일 바텀시트: 화면 하단에 붙고 상단만 라운드, 최소 300px 높이 보장
           'left-0 top-auto bottom-0 max-w-full translate-x-0 translate-y-0',
           'rounded-b-none rounded-t-2xl border-x-0 border-b-0',
+          'min-h-[300px]',
           // lg 이상: 가운데 모달 복귀
           'lg:left-[50%] lg:top-[50%] lg:bottom-auto',
           'lg:max-w-lg lg:translate-x-[-50%] lg:translate-y-[-50%]',
-          'lg:rounded-lg lg:border',
+          'lg:rounded-lg lg:border lg:min-h-0',
           // 공통 — viewport 초과 방지 + 내부 스크롤
           'max-h-[90dvh] overflow-y-auto',
         )}

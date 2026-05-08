@@ -86,30 +86,69 @@ shadcn 원본 컴포넌트가 `border` (색 미지정) 만 쓰는 케이스에�
 
 ### 사이드바 내부 라인
 
-`NavigationDrawer` 의 헤더/회사 선택/푸터 구분선은 `border-white/5` 사용 (라이트/다크 모드 동일). 사이드바 배경은 다크 navy 로 고정이라 mode-aware 토큰을 쓸 수 없고, alpha 0.05 가 라이트 모드 본문(흰색)과의 대비에서도 너무 두드러지지 않는 균형점.
+`NavigationDrawer` 의 헤더/회사 선택/푸터 구분선은 **모두 제거** (라이트/다크 모드 통일). 사이드바 배경이 다크 navy 로 고정이라 라이트 모드 본문(흰색)과의 대비에서 흰 라인이 두드러지는 문제가 있어, 라인 자체를 빼고 영역 구분은 `px/py` spacing 으로만.
 
-> 이전에는 `border-white/10` 이었으나 라이트 모드에서 흰 라인이 시각적으로 도드라진다는 피드백으로 0.05 로 낮춤.
+회사 선택 select 박스의 외곽 `border` 도 동일 사유로 제거 — `bg-white/10` 으로만 영역 표시.
 
-### 모달 / 바텀시트 배경 — `AppDialogContent` 사용
+> 변경 이력: `border-white/10` → `border-white/5` → 완전 제거 (라이트 모드에서 어떤 alpha 도 흰색이 도드라짐).
 
-shadcn `DialogContent` 의 기본값(`bg-background` = `#f8fafc`) 을 사용하면 라이트 모드에서 카드/패널과의 시각 위계가 약해진다. `bg-surface` 를 매번 명시하는 룰은 누락되기 쉬우므로, `bg-surface` 를 기본값으로 박아둔 wrapper `AppDialogContent` (`src/shared/ui/app-dialog.tsx`) 를 사용한다.
+### 모달 / 바텀시트 — `AppDialogContent` 사용
+
+shadcn `DialogContent` 의 기본값을 디자인 시스템 룰로 강제하는 wrapper 가 `AppDialogContent` (`src/shared/ui/app-dialog.tsx`).
+
+| shadcn default | wrapper 강제값 | 이유 |
+| --- | --- | --- |
+| `bg-background` (`#f8fafc`) | `bg-surface` (`#ffffff`) | 카드/패널과 시각 위계 통일 |
+| `grid` | `flex flex-col` | `gap-*` 호출부 제어가 직관적, 자식 row layout 에 grid 가 불필요 |
 
 ```tsx
 // ✅ 권장
 import { AppDialogContent } from '@/shared/ui/app-dialog';
 <Dialog>
-  <AppDialogContent className="...">...</AppDialogContent>
+  <AppDialogContent className="gap-3 ...">...</AppDialogContent>
 </Dialog>
 
-// ❌ 금지 — bg-background 가 그대로 적용됨
+// ❌ 금지 — bg-background 가 그대로 적용됨, grid layout 에서 gap 동작이 비직관적
 <DialogContent>...</DialogContent>
 ```
 
-shadcn 원본 `dialog.tsx` 는 수정하지 않는다(룰 준수). `AppDialogContent` 는 단순히 `DialogContent` 를 감싸 className 앞에 `bg-surface` 를 끼워 넣는 형태라, 호출부에서 추가 className 으로 케이스별 override 도 가능.
+shadcn 원본 `dialog.tsx` 는 수정하지 않는다(룰 준수). 호출부에서 className 으로 케이스별 override 가능.
+
+### 모바일 바텀시트 표준
+
+모바일(< lg)에서 다이얼로그를 화면 하단에 붙이는 형태로 사용. 다음 조합으로 일관성 유지:
+
+```tsx
+<AppDialogContent className={cn(
+  // 화면 하단에 붙이고 상단만 라운드
+  'left-0 top-auto bottom-0 max-w-full translate-x-0 translate-y-0',
+  'rounded-b-none rounded-t-2xl border-x-0 border-b-0',
+  // 최소 높이 보장 — 콘텐츠가 적어도 시트가 너무 얇지 않게
+  'min-h-[300px]',
+  // lg 이상: 가운데 모달 복귀
+  'lg:left-[50%] lg:top-[50%] lg:bottom-auto',
+  'lg:max-w-lg lg:translate-x-[-50%] lg:translate-y-[-50%]',
+  'lg:rounded-lg lg:border lg:min-h-0',
+)}>
+```
+
+### 모바일 native date / month input 텍스트 크기
+
+native `<input type="month">`, `<input type="date">` 의 picker 결과 텍스트는 일부 모바일 브라우저(Samsung Internet 등)에서 **OS system font size 설정** 을 따라가 18~20px 로 커지는 경우가 있다. `text-sm` 을 명시적으로 입혀서 부분적으로 보정.
+
+```tsx
+<Input type="month" className="cursor-pointer pr-10 text-sm" ... />
+```
+
+> 사용자 OS 폰트 설정이 매우 큰 경우엔 css 만으로 완전 제어가 어렵다. 근본 해결이 필요하면 native input 대신 custom picker (shadcn Calendar 등) 로 교체.
 
 ### 모바일 가로 스크롤 차단
 
 `body { overflow-x: clip }` 을 base 에 적용. `NavigationDrawer` 가 모바일 닫힘 상태에서 `fixed left-0 w-60 -translate-x-full` 로 viewport 밖으로 transform 하는데, 일부 모바일 브라우저(안드로이드 Chrome / Samsung Internet 등)는 transform 후 위치까지 layout overflow 로 잡아 가로 스크롤이 발생. `clip` 은 `hidden` 과 달리 stacking context 를 만들지 않아 `position: sticky` 동작을 깨지 않는다.
+
+### `scrollbar-gutter: stable` 은 데스크탑 한정
+
+`html` 의 `scrollbar-gutter: stable` 은 **`@media (min-width: 1024px)` 안에서만** 적용한다. 모바일에서는 스크롤바가 평소 hidden 이라 gutter 만 예약되어 viewport 가 약 17px 줄어드는 부작용이 있다 (예: iPhone 14 414px → 396.5px). 이 손실분이 모바일 바텀시트의 `w-full` 폭에도 반영되어 시트가 viewport 끝까지 못 차게 된다.
 
 ## 타이포그래피
 

@@ -84,6 +84,22 @@ describe('CreateActivitySchema — 음수/0 입력 거부 (과제 스펙: 음수
     });
     expect(result.success).toBe(true);
   });
+
+  it('상한선(1,000,000) 초과는 거부', () => {
+    const result = CreateActivitySchema.safeParse({
+      ...validInput,
+      quantity: 1_000_001,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('상한선과 같은 값은 통과', () => {
+    const result = CreateActivitySchema.safeParse({
+      ...validInput,
+      quantity: 1_000_000,
+    });
+    expect(result.success).toBe(true);
+  });
 });
 
 describe('CreateActivitySchema — 숫자 외 입력 거부 (과제 스펙: 숫자 외 입력 방지)', () => {

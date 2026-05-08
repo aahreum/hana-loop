@@ -20,7 +20,10 @@ export const CreateActivitySchema = z.object({
   type: ActivityTypeSchema,
   description: z.string().min(1, '설명을 입력하세요'),
   factorCategory: z.string().min(1, '배출계수를 선택하세요'),
-  quantity: z.number().positive('0보다 큰 값을 입력하세요'),
+  quantity: z
+    .number()
+    .positive('0보다 큰 값을 입력하세요')
+    .max(1_000_000, '활동량은 1,000,000 이하로 입력하세요'),
   unit: z.string().min(1, '단위를 선택하세요'),
 });
 

@@ -98,7 +98,7 @@ export function NavigationDrawer({
           desktopCollapsed && 'lg:hidden',
         )}
       >
-        <div className="flex h-16 items-center justify-between px-4 border-b border-white/5">
+        <div className="flex h-16 items-center justify-between px-4">
           <Link
             href="/dashboard"
             className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
@@ -139,7 +139,7 @@ export function NavigationDrawer({
           </div>
         </div>
 
-        <div className="px-3 py-3 border-b border-white/5">
+        <div className="px-3 py-3">
           {companiesLoading ? (
             <>
               <p
@@ -148,7 +148,7 @@ export function NavigationDrawer({
               >
                 기업 선택
               </p>
-              <div className="flex items-center gap-2 rounded-md bg-white/10 px-3 py-2 border border-white/20">
+              <div className="flex items-center gap-2 rounded-md bg-white/10 px-3 py-2">
                 <Loader2 className="h-3.5 w-3.5 animate-spin text-sidebar-muted" />
                 <span className="text-sm text-sidebar-muted">로딩 중...</span>
               </div>
@@ -168,7 +168,7 @@ export function NavigationDrawer({
                   id="company-select"
                   value={selectedCompanyId ?? ''}
                   onChange={(e) => onSelectCompany(e.target.value)}
-                  className="w-full rounded-md bg-white/10 px-3 py-2 text-sm text-sidebar-text border border-white/20 focus:outline-none focus:ring-1 focus:ring-primary appearance-none cursor-pointer"
+                  className="w-full rounded-md bg-white/10 px-3 py-2 text-sm text-sidebar-text focus:outline-none focus:ring-1 focus:ring-primary appearance-none cursor-pointer"
                 >
                   <option value="" disabled>
                     기업을 선택하세요
@@ -228,7 +228,7 @@ export function NavigationDrawer({
           </ul>
         </nav>
 
-        <div className="p-4 border-t border-white/5">
+        <div className="p-4">
           <p className="text-xs text-sidebar-muted">
             탄소 배출 관리 플랫폼 v1.0
           </p>

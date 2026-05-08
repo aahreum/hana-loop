@@ -278,23 +278,23 @@ pnpm test:coverage   # 커버리지 리포트
 
 ### jitter 시뮬레이션 정책
 
-과제 스펙(`docs/00-assignment.md`) 의 "200~800ms 네트워크 지연 + 10~20% 쓰기 실패" 시뮬레이션은 prod 에서도 그대로 유지합니다. Loading/Error UX 가 평가 항목이라 인공 지연을 끄는 건 의미 없기 때문입니다. 다만 **첫 페이지 LCP** 만 빠르게 만들기 위해 다음과 같이 분리했습니다:
+과제 스펙(`docs/00-assignment.md`) 의 "200 \~ 800ms 네트워크 지연 + 10 \~ 20% 쓰기 실패" 시뮬레이션은 prod 에서도 그대로 유지합니다. Loading/Error UX 가 평가 항목이라 인공 지연을 끄는 건 의미 없기 때문입니다. 다만 **첫 페이지 LCP** 만 빠르게 만들기 위해 다음과 같이 분리했습니다:
 
-| 영역 | 경로 | jitter |
-| --- | --- | --- |
-| **첫 페이지 prefetch** | RSC 에서 `supabaseAdmin` 직접 호출 (`shared/lib/server-data.ts`) | 우회 |
-| **사용자 인터랙션** (활동 추가/삭제, 회사 전환, 날짜 필터) | API Route 경유 (`app/api/**`) | 유지 |
+| 영역                                                       | 경로                                                             | jitter |
+| ---------------------------------------------------------- | ---------------------------------------------------------------- | ------ |
+| **첫 페이지 prefetch**                                     | RSC 에서 `supabaseAdmin` 직접 호출 (`shared/lib/server-data.ts`) | 우회   |
+| **사용자 인터랙션** (활동 추가/삭제, 회사 전환, 날짜 필터) | API Route 경유 (`app/api/**`)                                    | 유지   |
 
 평가자는 빠른 첫 진입 + 의도된 loading/error UX 를 둘 다 확인할 수 있습니다.
 
 ### 적용된 최적화
 
-| 최적화 | 효과 |
-| --- | --- |
-| RSC + HydrationBoundary prefetch (`app/(app)/dashboard/page.tsx`) | 클라이언트 워터폴 제거 — fetch round-trip 이 크리티컬 패스에서 빠짐 |
-| Recharts `next/dynamic` 코드 분할 | dashboard 메인 번들 **129 kB → 14.5 kB** (First Load JS 286 kB → 172 kB) |
-| 다크 모드 `--primary-pressed` 재정의 | 활동 뱃지 대비 4.5:1 충족 (Lighthouse 접근성 96 → 100) |
-| `force-dynamic` 명시 | 매 요청 fresh prefetch (빌드 시 prerender 방지) |
+| 최적화                                                            | 효과                                                                     |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| RSC + HydrationBoundary prefetch (`app/(app)/dashboard/page.tsx`) | 클라이언트 워터폴 제거 — fetch round-trip 이 크리티컬 패스에서 빠짐      |
+| Recharts `next/dynamic` 코드 분할                                 | dashboard 메인 번들 **129 kB → 14.5 kB** (First Load JS 286 kB → 172 kB) |
+| 다크 모드 `--primary-pressed` 재정의                              | 활동 뱃지 대비 4.5:1 충족 (Lighthouse 접근성 96 → 100)                   |
+| `force-dynamic` 명시                                              | 매 요청 fresh prefetch (빌드 시 prerender 방지)                          |
 
 > 진단·미적용 항목·향후 개선 방향: [`docs/12-performance-and-accessibility-audit.md`](./docs/12-performance-and-accessibility-audit.md)
 
@@ -312,7 +312,7 @@ pnpm test:coverage   # 커버리지 리포트
 | **배출계수 `valid_from` / `valid_to`**     | 단일 레코드 갱신                     | 과거 시점 계산을 그대로 재현. 규제 감사 대응 필수. 구현 복잡도 ↑ 만큼 가치가 큼.                               |
 | **Scope 자동 결정 (RPC 내부)**             | 사용자가 폼에서 선택                 | 입력 오류 차단. Scope 는 활동 유형으로 결정되는 종속값이라 입력받을 이유 없음.                                 |
 | **TanStack Query + Zustand 분리**          | Context API 단일 사용                | 서버 상태와 UI/Filter 상태의 캐싱·동기화 정책이 완전히 다름. 분리해야 둘 다 단순해짐.                          |
-| **Optimistic Update 미채택**               | useMutation onMutate                 | `maybeFail` 15% 환경에서 낙관적 갱신 후 롤백이 잦으면 오히려 UX 혼란. toast + invalidate 가 더 명확.           |
+| **삭제는 Optimistic Update + 캐시 롤백**   | dim 처리 + invalidate                | jitter 200~800ms 동안 행이 흐려지는 dim 처리가 어색. 클릭 즉시 사라지고, `maybeFail` 15% 발생 시 toast + 스냅샷 롤백으로 이전 상태 복원.   |
 | **Recharts**                               | Visx, Chart.js                       | React 컴포넌트 모델 친화 + SSR 호환. 깊은 커스터마이징은 일부 제한.                                            |
 | **shadcn/ui**                              | MUI / Ant Design                     | 과제 제약(무거운 UI 라이브러리 금지). headless + 스타일 자유도. 초기 셋업 시간만 약간.                         |
 | **CSS 변수 + Tailwind v4**                 | tailwind.config 기반 토큰            | 다크/라이트 모드 분기·런타임 토글이 자연스러움. 시맨틱 토큰만 노출하여 하드코딩 차단.                          |
