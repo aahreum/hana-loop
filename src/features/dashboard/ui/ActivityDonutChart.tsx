@@ -9,14 +9,16 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-type ScopeDataPoint = {
+type ActivityDonutPoint = {
   name: string;
-  value: number;
+  type: string;
+  value: number; // tCO2e
+  share: number; // 0–1
   fill: string;
 };
 
-type ScopeDonutChartProps = {
-  data: ScopeDataPoint[];
+type ActivityDonutChartProps = {
+  data: ActivityDonutPoint[];
 };
 
 function CenterLabel({
@@ -49,13 +51,13 @@ function CenterLabel({
         fontSize={11}
         fontFamily="var(--font-pretendard)"
       >
-        tCO₂e 합계
+        총 tCO₂e
       </text>
     </g>
   );
 }
 
-export function ScopeDonutChart({ data }: ScopeDonutChartProps) {
+export function ActivityDonutChart({ data }: ActivityDonutChartProps) {
   if (data.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-gray-400">
@@ -70,11 +72,11 @@ export function ScopeDonutChart({ data }: ScopeDonutChartProps) {
     <>
       {/* 스크린리더용 목록 */}
       <p className="sr-only">
-        Scope별 탄소 배출량 합계: {total.toFixed(2)} tCO₂e.{' '}
+        활동 유형별 탄소 배출 비중 (총 {total.toFixed(2)} tCO₂e).{' '}
         {data
           .map(
             (d) =>
-              `${d.name}: ${d.value.toFixed(2)} tCO₂e (${((d.value / total) * 100).toFixed(1)}%)`,
+              `${d.name}: ${d.value.toFixed(2)} tCO₂e (${(d.share * 100).toFixed(1)}%)`,
           )
           .join(', ')}
       </p>
@@ -95,7 +97,7 @@ export function ScopeDonutChart({ data }: ScopeDonutChartProps) {
             )}
           >
             {data.map((entry) => (
-              <Cell key={entry.name} fill={entry.fill} stroke="none" />
+              <Cell key={entry.type} fill={entry.fill} stroke="none" />
             ))}
           </Pie>
           <Tooltip
@@ -105,12 +107,17 @@ export function ScopeDonutChart({ data }: ScopeDonutChartProps) {
               borderRadius: 8,
               fontSize: 12,
             }}
-            formatter={(v) => {
+            formatter={(v, _name, item) => {
               const n = v as number;
-              return [
-                `${n.toFixed(2)} tCO₂e (${total > 0 ? ((n / total) * 100).toFixed(1) : 0}%)`,
-                '',
-              ];
+              const share = (item?.payload as ActivityDonutPoint | undefined)
+                ?.share;
+              const pct =
+                share !== undefined
+                  ? (share * 100).toFixed(1)
+                  : total > 0
+                    ? ((n / total) * 100).toFixed(1)
+                    : '0.0';
+              return [`${n.toFixed(2)} tCO₂e (${pct}%)`, ''];
             }}
           />
           <Legend

@@ -52,7 +52,7 @@ export function NavigationDrawer({
       <aside
         className={cn(
           'fixed inset-y-0 left-0 z-30 flex w-60 flex-col bg-sidebar-bg text-sidebar-text transition-transform duration-200',
-          'lg:relative lg:translate-x-0 lg:z-auto',
+          'lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 lg:z-auto',
           open ? 'translate-x-0' : '-translate-x-full',
         )}
       >
@@ -67,9 +67,7 @@ export function NavigationDrawer({
             >
               H
             </div>
-            <span className="text-base font-semibold tracking-tight">
-              HanaLoop
-            </span>
+            <h1 className="text-base font-semibold tracking-tight">HanaLoop</h1>
           </Link>
           <button
             onClick={onClose}

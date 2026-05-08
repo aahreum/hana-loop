@@ -60,7 +60,7 @@ export function ActivitiesContainer() {
   const noCompany = !selectedCompanyId;
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
+    <div className="flex flex-1 flex-col">
       <Header
         title="활동 데이터"
         onMenuClick={toggleSidebar}
@@ -78,7 +78,7 @@ export function ActivitiesContainer() {
         }
       />
 
-      <main className="flex-1 overflow-y-auto p-4 md:p-6">
+      <main className="flex-1 p-4 md:p-6">
         {noCompany ? (
           <div className="flex h-64 flex-col items-center justify-center gap-3 text-center">
             <Leaf className="h-10 w-10 text-primary-border" />
@@ -89,14 +89,14 @@ export function ActivitiesContainer() {
         ) : (
           <div className="rounded-xl bg-surface border border-border">
             <div className="border-b border-border px-5 py-4">
-              <h2 className="text-sm font-semibold text-text">
+              <h3 className="text-base font-semibold text-text">
                 활동 목록{' '}
                 {activities && activities.length > 0 && (
                   <span className="ml-1 text-xs font-normal text-muted-foreground">
                     ({activities.length}건)
                   </span>
                 )}
-              </h2>
+              </h3>
             </div>
             <TableContent
               isPending={isPending}

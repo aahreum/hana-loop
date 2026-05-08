@@ -30,7 +30,7 @@ export function AppShell({ children }: AppShellProps) {
   }, [theme]);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-bg">
+    <div className="flex min-h-screen bg-bg">
       <NavigationDrawer
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -39,9 +39,7 @@ export function AppShell({ children }: AppShellProps) {
         selectedCompanyId={selectedCompanyId}
         onSelectCompany={setSelectedCompanyId}
       />
-      <div className="flex flex-1 flex-col overflow-hidden min-w-0">
-        {children}
-      </div>
+      <div className="flex flex-1 flex-col min-w-0">{children}</div>
     </div>
   );
 }

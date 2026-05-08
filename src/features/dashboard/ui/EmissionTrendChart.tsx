@@ -12,19 +12,21 @@ import {
 } from 'recharts';
 import { CHART_COLORS } from '@/shared/constants/chartColors';
 
-type TrendPoint = {
-  month: string;
-  scope1: number;
-  scope2: number;
-  scope3: number;
-  total: number;
-};
+type TrendPoint = Record<string, string | number>;
 
 type EmissionTrendChartProps = {
   data: TrendPoint[];
+  /** Stacked area에 그릴 활동 유형 키 순서. */
+  categories: readonly string[];
+  /** 활동 키 → 표시 라벨. */
+  categoryLabels: Record<string, string>;
 };
 
-export function EmissionTrendChart({ data }: EmissionTrendChartProps) {
+export function EmissionTrendChart({
+  data,
+  categories,
+  categoryLabels,
+}: EmissionTrendChartProps) {
   if (data.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-gray-400">
@@ -37,24 +39,26 @@ export function EmissionTrendChart({ data }: EmissionTrendChartProps) {
     <>
       {/* 스크린리더용 데이터 테이블 */}
       <table className="sr-only">
-        <caption>월별 Scope별 탄소 배출량 추이 (tCO₂e)</caption>
+        <caption>월별 활동 유형별 탄소 배출량 추이 (tCO₂e)</caption>
         <thead>
           <tr>
             <th scope="col">월</th>
-            <th scope="col">Scope 1 (직접 배출)</th>
-            <th scope="col">Scope 2 (전력 사용)</th>
-            <th scope="col">Scope 3 (가치사슬)</th>
+            {categories.map((c) => (
+              <th key={c} scope="col">
+                {categoryLabels[c] ?? c}
+              </th>
+            ))}
             <th scope="col">합계</th>
           </tr>
         </thead>
         <tbody>
           {data.map((d) => (
-            <tr key={d.month}>
-              <td>{d.month}</td>
-              <td>{d.scope1.toFixed(2)} tCO₂e</td>
-              <td>{d.scope2.toFixed(2)} tCO₂e</td>
-              <td>{d.scope3.toFixed(2)} tCO₂e</td>
-              <td>{d.total.toFixed(2)} tCO₂e</td>
+            <tr key={String(d.month)}>
+              <td>{String(d.month)}</td>
+              {categories.map((c) => (
+                <td key={c}>{((d[c] as number) ?? 0).toFixed(2)} tCO₂e</td>
+              ))}
+              <td>{((d.total as number) ?? 0).toFixed(2)} tCO₂e</td>
             </tr>
           ))}
         </tbody>
@@ -67,42 +71,23 @@ export function EmissionTrendChart({ data }: EmissionTrendChartProps) {
           tabIndex={-1}
         >
           <defs>
-            <linearGradient id="gradScope1" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="5%"
-                stopColor={CHART_COLORS.scope1}
-                stopOpacity={0.25}
-              />
-              <stop
-                offset="95%"
-                stopColor={CHART_COLORS.scope1}
-                stopOpacity={0}
-              />
-            </linearGradient>
-            <linearGradient id="gradScope2" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="5%"
-                stopColor={CHART_COLORS.scope2}
-                stopOpacity={0.25}
-              />
-              <stop
-                offset="95%"
-                stopColor={CHART_COLORS.scope2}
-                stopOpacity={0}
-              />
-            </linearGradient>
-            <linearGradient id="gradScope3" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="5%"
-                stopColor={CHART_COLORS.scope3}
-                stopOpacity={0.3}
-              />
-              <stop
-                offset="95%"
-                stopColor={CHART_COLORS.scope3}
-                stopOpacity={0}
-              />
-            </linearGradient>
+            {categories.map((c, i) => {
+              const color =
+                CHART_COLORS.categories[i % CHART_COLORS.categories.length];
+              return (
+                <linearGradient
+                  key={c}
+                  id={`gradCat-${c}`}
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="5%" stopColor={color} stopOpacity={0.55} />
+                  <stop offset="95%" stopColor={color} stopOpacity={0.1} />
+                </linearGradient>
+              );
+            })}
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
           <XAxis
@@ -125,42 +110,32 @@ export function EmissionTrendChart({ data }: EmissionTrendChartProps) {
               borderRadius: 8,
               fontSize: 12,
             }}
-            formatter={(v) => [`${(v as number).toFixed(2)} tCO₂e`, '']}
+            formatter={(v, name) => [
+              `${(v as number).toFixed(2)} tCO₂e`,
+              String(name),
+            ]}
           />
           <Legend
             wrapperStyle={{ fontSize: 12, paddingTop: 12 }}
             iconType="circle"
           />
-          <Area
-            type="monotone"
-            dataKey="scope1"
-            name="Scope 1"
-            stroke={CHART_COLORS.scope1}
-            strokeWidth={2}
-            fill="url(#gradScope1)"
-            dot={{ r: 3, fill: CHART_COLORS.scope1 }}
-            activeDot={{ r: 5 }}
-          />
-          <Area
-            type="monotone"
-            dataKey="scope2"
-            name="Scope 2"
-            stroke={CHART_COLORS.scope2}
-            strokeWidth={2}
-            fill="url(#gradScope2)"
-            dot={{ r: 3, fill: CHART_COLORS.scope2 }}
-            activeDot={{ r: 5 }}
-          />
-          <Area
-            type="monotone"
-            dataKey="scope3"
-            name="Scope 3"
-            stroke={CHART_COLORS.scope3}
-            strokeWidth={2}
-            fill="url(#gradScope3)"
-            dot={{ r: 3, fill: CHART_COLORS.scope3 }}
-            activeDot={{ r: 5 }}
-          />
+          {categories.map((c, i) => {
+            const color =
+              CHART_COLORS.categories[i % CHART_COLORS.categories.length];
+            return (
+              <Area
+                key={c}
+                type="monotone"
+                dataKey={c}
+                stackId="1"
+                name={categoryLabels[c] ?? c}
+                stroke={color}
+                strokeWidth={1.5}
+                fill={`url(#gradCat-${c})`}
+                activeDot={{ r: 4 }}
+              />
+            );
+          })}
         </AreaChart>
       </ResponsiveContainer>
     </>
