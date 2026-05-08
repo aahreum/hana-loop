@@ -69,7 +69,7 @@ export function ActivitiesContainer() {
             <Button
               size="sm"
               onClick={() => setDialogOpen(true)}
-              className="gap-1.5 cursor-pointer"
+              className="gap-1.5"
             >
               <Plus className="h-4 w-4" />
               활동 추가

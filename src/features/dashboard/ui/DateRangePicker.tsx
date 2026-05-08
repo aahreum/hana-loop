@@ -110,7 +110,7 @@ export function DateRangePicker({
           size="sm"
           onClick={() => setOpen(true)}
           aria-label="조회 기간 선택"
-          className="gap-1.5 cursor-pointer lg:hidden"
+          className="gap-1.5 lg:hidden"
         >
           <Calendar className="h-4 w-4 text-muted-foreground" aria-hidden />
           <span>날짜 선택</span>

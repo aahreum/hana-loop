@@ -85,11 +85,11 @@ pnpm dev          # http://localhost:3000
 ### Feature-Sliced Design (FSD) 4-layer
 
 ```
-app/        → Next.js 라우팅만 (page.tsx, layout.tsx, route.ts)
-widgets/    → 조합형 UI 블록 (AppShell, NavigationDrawer)
-features/   → 기능 슬라이스 (dashboard, activities, companies, factors, api-docs)
-shared/     → 전역 공유 (ui, types, hooks, lib, constants, providers, store)
-data/       → 정적 Seed (독립 레이어)
+src/app/        → Next.js 라우팅만 (page.tsx, layout.tsx, route.ts)
+src/widgets/    → 조합형 UI 블록 (AppShell, NavigationDrawer)
+src/features/   → 기능 슬라이스 (dashboard, activities, companies, factors, api-docs)
+src/shared/     → 전역 공유 (ui, types, hooks, lib, constants, providers, store)
+src/data/       → 정적 Seed (독립 레이어)
 ```
 
 **의존성 방향 — `eslint-plugin-boundaries` 로 자동 강제**
@@ -118,7 +118,7 @@ Form State (React Hook Form)   → features/activities/ui/ActivityForm
 ```
 
 - 하나의 상태가 여러 종류를 겸하지 않도록 **저장소 자체를 분리**.
-- TanStack Query v5 에서 초기 로딩 식별은 반드시 `isPending` (`isLoading` 금지 — retry backoff 중 false 가 되어 신뢰 불가).
+- TanStack Query v5 에서 초기 로딩 식별은 반드시 `isPending` (`isLoading` 금지 — `isPending && isFetching` 합성이라 네트워크 단절로 fetch 가 paused 되면 false 가 되어 신뢰 불가).
 
 ### 데이터 흐름
 

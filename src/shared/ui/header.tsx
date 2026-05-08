@@ -23,7 +23,7 @@ export function Header({ title, onMenuClick, actions }: HeaderProps) {
           size="icon"
           onClick={onMenuClick}
           aria-label="사이드바 열기"
-          className="lg:hidden cursor-pointer"
+          className="lg:hidden"
         >
           <Menu className="h-5 w-5" />
         </Button>
@@ -36,7 +36,7 @@ export function Header({ title, onMenuClick, actions }: HeaderProps) {
                 size="icon"
                 onClick={toggleDesktopSidebar}
                 aria-label="사이드바 열기"
-                className="hidden lg:inline-flex cursor-pointer"
+                className="hidden lg:inline-flex"
               >
                 <PanelLeft className="h-5 w-5" />
               </Button>

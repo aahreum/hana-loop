@@ -100,7 +100,7 @@ export function generateOpenApiDocument() {
 | (D) `registerPath({ method, path, request, responses, ... })` | OpenAPI `paths.<path>.<method>` 항목을 만든다. 요청/응답에 Zod 스키마를 그대로 꽂는다 |
 | `generateOpenApiDocument()` | 등록된 정의를 OpenAPI 3.0 JSON 으로 변환해 반환 |
 
-> **중요**: `YearMonthSchema` 같이 여러 엔드포인트에서 재사용하는 검증은 `shared/types/common.ts` 에 두고 import 한다 (PR #29 코드리뷰 반영).
+> **중요**: `YearMonthSchema` 같이 여러 엔드포인트에서 재사용하는 검증은 `shared/types/common.ts` 에 두고 import 하여 검증 로직의 일관성을 유지한다.
 
 ### 2. `app/api/docs/route.ts` — JSON 스펙 엔드포인트
 
