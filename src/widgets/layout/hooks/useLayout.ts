@@ -8,9 +8,8 @@ import { useCompanies } from '@/shared/hooks/useCompanies';
 export function useLayout() {
   const { sidebarOpen, setSidebarOpen, toggleSidebar } = useUiStore();
   const { selectedCompanyId, setSelectedCompanyId } = useFilterStore();
-  const { data: companies = [] } = useCompanies();
+  const { data: companies = [], isPending: companiesLoading } = useCompanies();
 
-  // 기업 목록 로드 후 첫 번째 기업 자동 선택
   useEffect(() => {
     if (companies.length > 0 && !selectedCompanyId) {
       setSelectedCompanyId(companies[0].id);
@@ -22,6 +21,7 @@ export function useLayout() {
     setSidebarOpen,
     toggleSidebar,
     companies,
+    companiesLoading,
     selectedCompanyId,
     setSelectedCompanyId,
   };

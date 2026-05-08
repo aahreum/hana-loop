@@ -12,19 +12,27 @@ import type { Scope } from '@/shared/types/activity';
 export function useDashboard() {
   const { selectedCompanyId, from, to } = useFilterStore();
 
-  const { data: results = [], isLoading: resultsLoading } = useEmissionResults({
+  const {
+    data: results = [],
+    isPending: resultsLoading,
+    isError: resultsError,
+    refetch: refetchResults,
+  } = useEmissionResults({
     companyId: selectedCompanyId ?? undefined,
     from,
     to,
   });
 
-  const { data: activities = [], isLoading: activitiesLoading } = useActivities(
-    {
-      companyId: selectedCompanyId ?? undefined,
-    },
-  );
+  const {
+    data: activities = [],
+    isPending: activitiesLoading,
+    isError: activitiesError,
+    refetch: refetchActivities,
+  } = useActivities({
+    companyId: selectedCompanyId ?? undefined,
+  });
 
-  const isLoading = resultsLoading || activitiesLoading;
+  const isPending = resultsLoading || activitiesLoading;
 
   const kpis = useMemo(() => {
     if (results.length === 0) return null;
@@ -162,7 +170,11 @@ export function useDashboard() {
   );
 
   return {
-    isLoading,
+    isPending,
+    resultsError,
+    activitiesError,
+    refetchResults,
+    refetchActivities,
     hasData: results.length > 0,
     kpis,
     topSource,

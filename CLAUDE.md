@@ -43,46 +43,11 @@
 
 ## 아키텍처: FSD (Feature-Sliced Design)
 
-### 레이어 구조
+레이어 구조, 의존성 방향, widgets/ · features/ 상세 규칙 →
+[`.claude/rules/fsd-architecture.md`](./.claude/rules/fsd-architecture.md)
 
 ```
-app/        → Next.js 라우팅만 (page.tsx, layout.tsx, route.ts)
-features/   → 기능 단위 슬라이스
-shared/     → 전역 공유 코드
-data/       → 정적 Seed 데이터 (수정 금지)
-```
-
-### 의존성 방향 (단방향, 위반 시 ESLint 에러)
-
-```
-app  →  features  →  shared
-                 ↗
-           data (독립, 다른 레이어 import 금지)
-```
-
-- `features/A`는 `features/B`를 import할 수 없다 (슬라이스 간 금지)
-- `shared`는 어떤 레이어도 import할 수 없다
-- `data/`는 어떤 레이어도 import할 수 없다
-
-### features/ 내부 구조 규칙
-
-```
-features/{slice}/
-  ui/     → 컴포넌트. props만 받아서 렌더링. 훅·상태 직접 사용 금지.
-  hooks/  → 데이터 페칭, 뮤테이션, 로컬 상태 관리.
-```
-
-```tsx
-// ✅ 올바른 ui/ 컴포넌트
-export function ActivityTable({ activities, onDelete }: ActivityTableProps) {
-  return <table>...</table>;
-}
-
-// ❌ 금지 — ui/ 안에서 훅 직접 사용
-export function ActivityTable() {
-  const { data } = useActivities(); // 금지
-  ...
-}
+app  →  widgets  →  features  →  shared
 ```
 
 ---
@@ -262,6 +227,8 @@ const scope = GHG_SCOPE[activityType]; // 자동 결정
 
 ## 코딩 컨벤션
 
+> React 19 / TanStack Query v5 관련 규칙은 [`.claude/rules/react-coding-conventions.md`](./.claude/rules/react-coding-conventions.md) 참조.
+
 ### Named export 필수
 
 ```ts
@@ -284,15 +251,15 @@ export default function KpiCard() { ... }
 
 ### 금지 사항
 
-| 금지                                     | 이유                                    |
-| ---------------------------------------- | --------------------------------------- |
-| `console.log`                            | `console.warn` / `console.error`만 허용 |
-| `any` 타입                               | TypeScript strict 모드 위반             |
-| 하드코딩 색상                            | 다크모드 대응 불가                      |
-| 인라인 Query Key string                  | 타입 안전성 없음, 오타 위험             |
-| `interface`로 중복 타입                  | Zod 스키마가 단일 소스                  |
-| `features/A`에서 `features/B` import     | FSD 규칙 위반                           |
-| `shared/`에서 다른 레이어 import         | FSD 규칙 위반                           |
+| 금지                                     | 이유                                                  |
+| ---------------------------------------- | ----------------------------------------------------- |
+| `console.log`                            | `console.warn` / `console.error`만 허용               |
+| `any` 타입                               | TypeScript strict 모드 위반                           |
+| 하드코딩 색상                            | 다크모드 대응 불가                                    |
+| 인라인 Query Key string                  | 타입 안전성 없음, 오타 위험                           |
+| `interface`로 중복 타입                  | Zod 스키마가 단일 소스                                |
+| `features/A`에서 `features/B` import     | FSD 규칙 위반                                         |
+| `shared/`에서 다른 레이어 import         | FSD 규칙 위반                                         |
 | `supabaseAdmin` 클라이언트 컴포넌트 사용 | 서비스 롤 키 노출                       |
 
 ---

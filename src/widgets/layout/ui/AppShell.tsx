@@ -12,6 +12,7 @@ export function AppShell({ children }: AppShellProps) {
     sidebarOpen,
     setSidebarOpen,
     companies,
+    companiesLoading,
     selectedCompanyId,
     setSelectedCompanyId,
   } = useLayout();
@@ -22,6 +23,7 @@ export function AppShell({ children }: AppShellProps) {
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         companies={companies}
+        companiesLoading={companiesLoading}
         selectedCompanyId={selectedCompanyId}
         onSelectCompany={setSelectedCompanyId}
       />

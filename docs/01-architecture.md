@@ -16,19 +16,19 @@
 
 ---
 
-## 프로젝트 구조 (FSD, entity 레이어 제외)
+## 프로젝트 구조 (FSD 4-layer)
 
-Feature-Sliced Design 3-layer 구조. `features/` 간 상호 임포트 금지.
+Feature-Sliced Design 구조. `features/` 간 상호 임포트 금지.
 
 ```
 src/
-├── app/                          # Next.js App Router (라우팅만)
-│   ├── layout.tsx                # Root layout (Drawer 조합)
+├── app/                          # Next.js App Router (서버 컴포넌트, 라우팅만)
+│   ├── layout.tsx                # Root layout (AppShell 조합)
 │   ├── page.tsx                  # redirect → /dashboard
-│   ├── dashboard/page.tsx
-│   ├── activities/page.tsx
-│   ├── companies/page.tsx
-│   ├── factors/page.tsx
+│   ├── dashboard/page.tsx        # 서버 컴포넌트 → DashboardContainer 렌더
+│   ├── activities/page.tsx       # 서버 컴포넌트 → ActivitiesContainer 렌더
+│   ├── companies/page.tsx        # 서버 컴포넌트 → CompaniesContainer 렌더
+│   ├── factors/page.tsx          # 서버 컴포넌트 → FactorsContainer 렌더
 │   ├── docs/page.tsx             # Swagger UI
 │   └── api/                      # Next.js API Routes (백엔드)
 │       ├── activities/
@@ -38,70 +38,84 @@ src/
 │       ├── factors/route.ts      # GET
 │       └── emission-results/route.ts  # GET
 │
+├── widgets/                      # 조합형 레이아웃 UI 블록
+│   └── layout/
+│       ├── hooks/
+│       │   └── useLayout.ts      # 회사 목록 로딩
+│       └── ui/
+│           ├── AppShell.tsx      # 전체 레이아웃 래퍼
+│           └── NavigationDrawer.tsx  # 사이드바
+│
 ├── features/                     # 기능 슬라이스 (서로 임포트 금지)
 │   ├── dashboard/
-│   │   ├── ui/                   # KPI 카드, 차트, 요약 테이블 (props만, 훅 금지)
-│   │   │   ├── KpiCard.tsx
-│   │   │   ├── EmissionTrendChart.tsx
-│   │   │   ├── CategoryDonutChart.tsx
-│   │   │   ├── ScopedBarChart.tsx
-│   │   │   └── ActivitySummaryTable.tsx
-│   │   └── hooks/
-│   │       └── useDerivedEmissions.ts  # 차트용 데이터 변환 (useMemo 포함)
+│   │   ├── container/
+│   │   │   └── DashboardContainer.tsx  # 훅 연결, 섹션별 에러 처리
+│   │   ├── hooks/
+│   │   │   └── useDashboard.ts   # KPI, 차트 데이터 변환 (useMemo)
+│   │   └── ui/                   # props만 받아 렌더링
+│   │       ├── KpiCard.tsx
+│   │       ├── KpiCardSkeleton.tsx
+│   │       ├── EmissionTrendChart.tsx
+│   │       ├── ScopeDonutChart.tsx
+│   │       ├── CategoryBarChart.tsx
+│   │       ├── CarbonGauge.tsx   # 순수 SVG 단일 arc
+│   │       └── RecentActivitiesTable.tsx
 │   │
 │   ├── activities/
-│   │   ├── ui/                   # 폼, 테이블, 다이얼로그 (props만, 훅 금지)
-│   │   │   ├── ActivityForm.tsx
-│   │   │   ├── ActivityFormDialog.tsx
-│   │   │   └── ActivityTable.tsx
-│   │   └── hooks/
-│   │       ├── useCreateActivity.ts
-│   │       └── useDeleteActivity.ts
+│   │   ├── container/
+│   │   │   ├── ActivitiesContainer.tsx         # 페이지 전체 로직
+│   │   │   ├── ActivityTableContainer.tsx      # 삭제 뮤테이션 + toast
+│   │   │   └── ActivityFormDialogContainer.tsx # 생성 뮤테이션 + toast
+│   │   └── ui/                   # props만 받아 렌더링
+│   │       ├── ActivityForm.tsx
+│   │       ├── ActivityFormDialog.tsx
+│   │       └── ActivityTable.tsx
 │   │
 │   ├── companies/
-│   │   ├── ui/
-│   │   │   ├── CompanyCard.tsx
-│   │   │   └── CompanySelector.tsx   # Drawer용 회사 선택 드롭다운
-│   │   └── hooks/
-│   │       └── useCompanyFilter.ts
+│   │   ├── container/
+│   │   │   └── CompaniesContainer.tsx
+│   │   └── ui/
+│   │       └── CompaniesTable.tsx
 │   │
 │   └── factors/
+│       ├── container/
+│       │   └── FactorsContainer.tsx
 │       └── ui/
 │           └── FactorsTable.tsx
 │
 ├── shared/                       # 전역 공유 (features에서 임포트 가능)
-│   ├── ui/                       # shadcn/ui 컴포넌트 (수정 금지)
-│   │   ├── button.tsx
-│   │   ├── card.tsx
-│   │   ├── dialog.tsx
-│   │   ├── input.tsx
-│   │   ├── select.tsx
-│   │   ├── badge.tsx
-│   │   └── toast.tsx
+│   ├── ui/                       # shadcn/ui 컴포넌트(수정 금지) + 커스텀 UI
+│   │   ├── header.tsx            # 페이지 헤더 (공통)
+│   │   ├── query-error-card.tsx  # 에러 격리 + 재시도 버튼
+│   │   └── ...                   # shadcn 컴포넌트들
 │   │
 │   ├── types/                    # Zod 스키마 + z.infer 타입 (유일한 타입 출처)
-│   │   ├── activity.ts           # CreateActivitySchema, ActivitySchema
-│   │   ├── factor.ts             # EmissionFactorSchema
-│   │   ├── company.ts            # CompanySchema
-│   │   ├── emission.ts           # EmissionResultSchema
-│   │   └── database.ts           # Supabase 자동 생성 타입
+│   │   ├── activity.ts
+│   │   ├── factor.ts
+│   │   ├── company.ts
+│   │   ├── emission.ts
+│   │   └── database.ts
 │   │
 │   ├── lib/
-│   │   ├── api.ts                # fetch → API Routes 호출 (전체 엔드포인트)
-│   │   ├── calculations.ts       # 배출량 계산 순수 함수
-│   │   ├── supabase.ts           # Supabase 브라우저 클라이언트
-│   │   ├── supabase.server.ts    # Supabase 서버 전용 클라이언트
-│   │   ├── openapi.ts            # zod-to-openapi spec 생성
-│   │   └── utils.ts              # cn(), formatNumber() 등
+│   │   ├── api.ts
+│   │   ├── calculations.ts
+│   │   ├── supabase.server.ts
+│   │   ├── openapi.ts
+│   │   ├── utils.ts
+│   │   └── store/
+│   │       ├── filterStore.ts    # 선택된 회사, 날짜 범위
+│   │       └── uiStore.ts        # 사이드바 open/close
 │   │
 │   ├── constants/
 │   │   ├── queryKeys.ts          # QUERY_KEYS (TanStack Query key 상수)
 │   │   ├── chartColors.ts        # CHART_COLORS (Scope별, 카테고리별)
-│   │   └── ghgScope.ts           # GHG_SCOPE (Scope 1/2/3 매핑 테이블)
+│   │   ├── ghgScope.ts           # GHG_SCOPE (활동 유형 → Scope 매핑)
+│   │   ├── activityLabels.ts     # ACTIVITY_TYPE_LABELS, SCOPE_BADGE_CLASSES
+│   │   └── datasetRange.ts       # DATASET_FROM, DATASET_TO (CT-045 기간)
 │   │
 │   └── hooks/                    # 전역 서버 상태 훅 (TanStack Query)
-│       ├── useActivities.ts      # GET /api/activities
-│       ├── useEmissionFactors.ts # GET /api/factors
+│       ├── useActivities.ts      # GET /api/activities + useDeleteActivity
+│       ├── useFactors.ts         # GET /api/factors
 │       ├── useCompanies.ts       # GET /api/companies
 │       └── useEmissionResults.ts # GET /api/emission-results
 │
@@ -114,15 +128,19 @@ src/
 ## 레이어 의존성 규칙
 
 ```
-app  →  features  →  shared
- ↑          ↑
- └──────────┘
-  (단방향, 역방향 금지)
+app  →  widgets  →  features  →  shared
+                              ↑
+                           data (독립)
 
-features/dashboard  ✗→  features/activities  (슬라이스 간 임포트 금지)
-features/*          ✓→  shared/*
-app/*               ✓→  features/*, shared/*
+widgets/A    ✗→  widgets/B    (위젯 간 임포트 금지)
+features/A   ✗→  features/B   (슬라이스 간 임포트 금지)
+features/*   ✓→  shared/*
+widgets/*    ✓→  features/*, shared/*
+app/*        ✓→  widgets/*, features/*, shared/*
+shared/*     ✗→  다른 레이어 (금지)
 ```
+
+ESLint `eslint-plugin-boundaries`로 자동 강제.
 
 ### FSD에서 entity 레이어를 제외한 이유
 
@@ -130,28 +148,41 @@ app/*               ✓→  features/*, shared/*
 
 ---
 
+## UI / Container 분리 패턴
+
+`features/{slice}/ui/` 컴포넌트는 props만 받아 렌더링. 훅·비즈니스 로직 직접 사용 금지.
+`features/{slice}/container/`에서 훅을 연결하고 ui/에 props 주입.
+
+```tsx
+// ui/ — 순수 렌더링
+export function ActivityTable({ activities, onDelete, isDeleting, deletingId }: Props) { ... }
+
+// container/ — 훅 연결
+export function ActivityTableContainer({ activities }: Props) {
+  const { mutate: deleteActivity, isPending } = useDeleteActivity();
+  return <ActivityTable activities={activities} onDelete={deleteActivity} isDeleting={isPending} ... />;
+}
+```
+
+---
+
 ## 상태 분리 전략
 
 ```
-UI State (Zustand — shared/lib/store 또는 features 내 지역 상태)
-├── drawer open/close
-├── modal open/close
-└── 선택된 회사 ID
-
-Filter State (Zustand)
-├── 날짜 범위 (yearMonth from/to)
-├── 활동 유형 필터
-└── Scope 필터
+UI State (Zustand — shared/lib/store/)
+├── uiStore: 사이드바 open/close
+└── filterStore: 선택된 회사 ID, 날짜 범위
 
 Server State (TanStack Query — shared/hooks/)
-├── companies
-├── activities
-├── emission_factors    ← staleTime 길게 (자주 안 바뀜)
-└── emission_results
+├── useCompanies
+├── useActivities
+├── useFactors
+└── useEmissionResults
 
-Form State (React Hook Form — features/activities/ui/)
-└── ActivityForm 내부
+Form State (React Hook Form — features/activities/ui/ActivityForm)
 ```
+
+TanStack Query v5: 초기 로딩 상태는 반드시 `isPending` 사용 (`isLoading` 금지).
 
 ---
 
@@ -160,35 +191,33 @@ Form State (React Hook Form — features/activities/ui/)
 ```
 사용자 입력 (features/activities/ui/ActivityForm)
   → React Hook Form + Zod 검증 (shared/types/activity.ts)
-  → features/activities/hooks/useCreateActivity (useMutation)
-    → shared/lib/api.ts (fetch 호출)
-      → app/api/activities/route.ts
-        → 지연 시뮬레이션 (200~800ms) + 실패 확률 (15%)
-        → Supabase (PostgreSQL)
-          → 성공: QUERY_KEYS.activities invalidate → UI 자동 갱신
-          → 실패: Toast + Optimistic Update 롤백
+  → features/activities/container/ActivityFormDialogContainer (useMutation)
+    → shared/hooks/useActivities (useCreateActivity)
+      → shared/lib/api.ts (fetch 호출)
+        → app/api/activities/route.ts
+          → 지연 시뮬레이션 (200~800ms) + 실패 확률 (15%)
+          → Supabase (PostgreSQL)
+            → 성공: QUERY_KEYS.activities invalidate → UI 자동 갱신
+            → 실패: toast.error
 ```
 
 ---
 
 ## 렌더링 전략
 
-| 컴포넌트             | 전략                              | 이유                        |
-| -------------------- | --------------------------------- | --------------------------- |
-| Dashboard 차트       | Client Component + dynamic import | 인터랙션 필요, SSR 불필요   |
-| KPI 카드             | Client Component + Suspense       | 데이터 로딩 경계 분리       |
-| Navigation Drawer    | Client Component                  | open/close 상태             |
-| Activity 테이블      | Client Component                  | 필터·정렬 인터랙션          |
-| Swagger UI (`/docs`) | Client Component                  | swagger-ui-react가 CSR 전용 |
+| 컴포넌트                | 전략                    | 이유                              |
+| ----------------------- | ----------------------- | --------------------------------- |
+| `app/*/page.tsx`        | Server Component        | 클라이언트 로직 없음, container에 위임 |
+| `features/*/container/` | Client Component        | 훅·상태 사용                      |
+| `features/*/ui/`        | Client Component (props only) | 인터랙션 필요                |
+| `widgets/layout/`       | Client Component        | 사이드바 open/close 상태          |
+| Swagger UI (`/docs`)    | Client Component        | swagger-ui-react가 CSR 전용       |
 
 ---
 
 ## 성능 최적화 포인트
 
-- `useMemo`: `features/dashboard/hooks/useDerivedEmissions.ts`에서 차트 데이터 변환 메모이제이션 (필터 변경 시에만 재계산)
-- `dynamic import`: Recharts (SSR 불필요, 번들 지연 로딩)
-- TanStack Query `staleTime`:
-  - `emission_factors`: 5분 (규정이 자주 안 바뀜)
-  - `activities`: 30초
-- React `Suspense` + `ErrorBoundary`: KPI 카드, 차트 단위로 로딩/에러 경계 분리
+- `useMemo`: `features/dashboard/hooks/useDashboard.ts`에서 KPI·차트 데이터 변환 (필터 변경 시에만 재계산)
+- CarbonGauge: 순수 SVG 단일 arc path (Recharts PieChart 대비 DOM 요소 수십 배 절감)
 - `QUERY_KEYS` 상수: 타입 안전한 query key로 잘못된 invalidation 방지
+- `QueryErrorCard`: 섹션별 독립 에러 격리로 전체 페이지 crash 방지
