@@ -2,6 +2,7 @@
 
 import { Menu } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
+import { ThemeToggle } from '@/shared/ui/theme-toggle';
 
 type HeaderProps = {
   title: string;
@@ -17,13 +18,16 @@ export function Header({ title, onMenuClick, actions }: HeaderProps) {
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="lg:hidden"
+          className="lg:hidden cursor-pointer"
         >
           <Menu className="h-5 w-5" />
         </Button>
         <h1 className="text-lg font-semibold text-text">{title}</h1>
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      <div className="flex items-center gap-2">
+        {actions}
+        <ThemeToggle />
+      </div>
     </header>
   );
 }

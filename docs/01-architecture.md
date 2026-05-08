@@ -104,7 +104,7 @@ src/
 │   │   ├── utils.ts
 │   │   └── store/
 │   │       ├── filterStore.ts    # 선택된 회사, 날짜 범위
-│   │       └── uiStore.ts        # 사이드바 open/close
+│   │       └── uiStore.ts        # 사이드바 open/close, 테마 (Zustand persist)
 │   │
 │   ├── constants/
 │   │   ├── queryKeys.ts          # QUERY_KEYS (TanStack Query key 상수)
@@ -113,11 +113,12 @@ src/
 │   │   ├── activityLabels.ts     # ACTIVITY_TYPE_LABELS, SCOPE_BADGE_CLASSES
 │   │   └── datasetRange.ts       # DATASET_FROM, DATASET_TO (CT-045 기간)
 │   │
-│   └── hooks/                    # 전역 서버 상태 훅 (TanStack Query)
+│   └── hooks/                    # 전역 서버 상태 훅 (TanStack Query) + UI 훅
 │       ├── useActivities.ts      # GET /api/activities + useDeleteActivity
 │       ├── useFactors.ts         # GET /api/factors
 │       ├── useCompanies.ts       # GET /api/companies
-│       └── useEmissionResults.ts # GET /api/emission-results
+│       ├── useEmissionResults.ts # GET /api/emission-results
+│       └── useTheme.ts           # resolvedTheme 계산 (시스템/저장 설정 병합)
 │
 └── data/
     └── seed.ts                   # Seed 데이터 (정적, 수정 금지)
@@ -170,7 +171,7 @@ export function ActivityTableContainer({ activities }: Props) {
 
 ```
 UI State (Zustand — shared/lib/store/)
-├── uiStore: 사이드바 open/close
+├── uiStore: 사이드바 open/close, 테마 ('light'|'dark'|null, localStorage persist)
 └── filterStore: 선택된 회사 ID, 날짜 범위
 
 Server State (TanStack Query — shared/hooks/)

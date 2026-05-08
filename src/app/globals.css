@@ -118,7 +118,7 @@
     --secondary-foreground: var(--gray-900);
     --muted: var(--gray-100);
     --muted-foreground: var(--gray-500);
-    --accent: var(--primary-bg);
+    --accent: var(--gray-200);
     --accent-foreground: var(--gray-900);
     --input: var(--gray-200);
   }
@@ -141,8 +141,8 @@
   --gray-100: #0f172a;
   --gray-50: #020617;
 
-  --sidebar-bg: #022c22;
-  --sidebar-active-bg: #064e3b;
+  --sidebar-bg: #0d1b3e;
+  --sidebar-active-bg: #1a2c5c;
 
   --tooltip-bg: rgba(255, 255, 255, 0.08);
   --tooltip-border: rgba(255, 255, 255, 0.12);
@@ -151,7 +151,7 @@
   --secondary-foreground: var(--gray-900);
   --muted: var(--gray-100);
   --muted-foreground: var(--gray-500);
-  --accent: var(--primary-bg);
+  --accent: var(--gray-200);
   --accent-foreground: var(--gray-900);
   --input: var(--gray-200);
 }
