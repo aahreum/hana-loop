@@ -14,6 +14,7 @@ HanaLoop 프론트엔드 개발자 과제 문서 모음.
 | [07-assumptions-and-questions.md](./07-assumptions-and-questions.md) | 가정 사항, 실제 서비스 시 질문할 내용, 설계 결정 근거                |
 | [08-backend-setup.md](./08-backend-setup.md)                         | Next.js API Routes + Supabase 구성, SQL 스키마, Swagger UI 설정      |
 | [09-carbon-domain.md](./09-carbon-domain.md)                         | 탄소 회계 도메인 이해 — Scope 1/2/3, 배출계수, Net Zero, 발표 포인트 |
+| [10-testing.md](./10-testing.md)                                     | 테스트 전략, 커버리지 결과, 의도적 제외 영역과 trade-off             |
 
 ## 시작하기
 
