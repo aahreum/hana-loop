@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ScopeSchema, ActivityTypeSchema } from './activity';
+import { YearMonthSchema } from './common';
 
 export const EmissionFactorSchema = z.object({
   id: z.string().uuid(),
@@ -9,11 +10,8 @@ export const EmissionFactorSchema = z.object({
   factor: z.number().positive(),
   unit: z.string(),
   scope: ScopeSchema,
-  validFrom: z.string().regex(/^\d{4}-\d{2}$/),
-  validTo: z
-    .string()
-    .regex(/^\d{4}-\d{2}$/)
-    .nullable(),
+  validFrom: YearMonthSchema,
+  validTo: YearMonthSchema.nullable(),
   source: z.string(),
 });
 

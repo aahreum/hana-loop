@@ -172,35 +172,143 @@ export async function POST(req: NextRequest) {
 
 ---
 
-## Swagger UI 설정 (zod-to-openapi)
+## Swagger UI / OpenAPI 3.0 자동 문서화
 
-Zod 스키마가 유효성 검증과 OpenAPI spec의 단일 소스.
-스키마 수정 시 API 문서 자동 반영.
+Zod 스키마가 유효성 검증·응답 타입·OpenAPI spec 의 **단일 출처**.
+타입 파일에는 OpenAPI 메타데이터를 흩뿌리지 않고 `shared/lib/openapi.ts` 한 곳에서 등록한다.
 
-### Zod 스키마에 OpenAPI 메타데이터 추가
+### 자동 생성 흐름
 
-```ts
-// shared/types/activity.ts
-import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
-extendZodWithOpenApi(z);
-
-export const CreateActivitySchema = z
-  .object({
-    date: z
-      .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/)
-      .openapi({ example: '2025-01-01' }),
-    // ...
-  })
-  .openapi('CreateActivity');
+```
+shared/types/*.ts (순수 Zod 스키마)
+  ↓ extendZodWithOpenApi(z) 적용 후 register
+shared/lib/openapi.ts (OpenAPIRegistry: 스키마 + 경로)
+  ↓ OpenApiGeneratorV3.generateDocument()
+{ openapi:'3.0.0', paths:{...}, components:{schemas:{...}} }
+  ↓ NextResponse.json() — force-static prerender
+/api/docs (정적 JSON)
+  ↓ swagger-ui-react fetch
+/docs (인터랙티브 UI)
 ```
 
-### OpenAPI spec 등록 및 라우트
+### 1. `shared/lib/openapi.ts` — 단일 진입점
 
 ```ts
-// shared/lib/openapi.ts — 스키마 및 엔드포인트 등록
-// app/api/docs/route.ts — GET /api/docs → JSON spec 반환
-// app/docs/page.tsx    — SwaggerUI 렌더링
+import {
+  OpenAPIRegistry,
+  OpenApiGeneratorV3,
+  extendZodWithOpenApi,
+} from '@asteasolutions/zod-to-openapi';
+import { z } from 'zod';
+import { CreateActivitySchema, ActivitySchema } from '@/shared/types/activity';
+
+extendZodWithOpenApi(z);  // ← 한 번만 호출
+
+const registry = new OpenAPIRegistry();
+
+// (a) components/schemas
+registry.register('Activity', ActivitySchema);
+registry.register('CreateActivityInput', CreateActivitySchema);
+
+// (b) paths
+registry.registerPath({
+  method: 'post',
+  path: '/api/activities',
+  tags: ['Activities'],
+  summary: '활동 데이터 생성',
+  request: {
+    body: { required: true, content: { 'application/json': { schema: CreateActivitySchema } } },
+  },
+  responses: {
+    201: { description: '생성된 활동 데이터',
+           content: { 'application/json': { schema: ActivitySchema } } },
+    400: errorResponse('입력값 검증 실패'),
+    422: errorResponse('배출계수를 찾을 수 없음'),
+    500: errorResponse('서버 오류 (15% 확률로 시뮬레이션)'),
+  },
+});
+
+export function generateOpenApiDocument() {
+  const generator = new OpenApiGeneratorV3(registry.definitions);
+  return generator.generateDocument({
+    openapi: '3.0.0',
+    info: { title: 'HanaLoop Carbon Dashboard API', version: '1.0.0', description: '...' },
+    servers: [{ url: '/', description: '현재 호스트' }],
+    tags: [/* ... */],
+  });
+}
 ```
 
-→ `/docs` 접속 시 Swagger UI 확인 가능.
+### 2. `app/api/docs/route.ts` — 정적 JSON 응답
+
+```ts
+import { NextResponse } from 'next/server';
+import { generateOpenApiDocument } from '@/shared/lib/openapi';
+
+export const dynamic = 'force-static';  // 빌드 시 1회 prerender
+
+export function GET() {
+  return NextResponse.json(generateOpenApiDocument());
+}
+```
+
+### 3. `/docs` 페이지 — 서버 컴포넌트 + dynamic ssr:false
+
+CLAUDE.md 의 "page는 서버 컴포넌트 유지" 규칙과
+"swagger-ui-react는 브라우저 DOM 의존" 제약을 동시에 만족시키기 위해 3-tier 분리:
+
+```
+app/docs/page.tsx (서버 컴포넌트)
+  → features/api-docs/container/SwaggerDocsContainer ('use client', dynamic ssr:false)
+    → features/api-docs/ui/SwaggerDocsView ('use client', swagger-ui-react)
+```
+
+```tsx
+// features/api-docs/container/SwaggerDocsContainer.tsx
+'use client';
+import dynamic from 'next/dynamic';
+
+const SwaggerDocsView = dynamic(
+  () => import('@/features/api-docs/ui/SwaggerDocsView').then((m) => m.SwaggerDocsView),
+  { ssr: false, loading: () => <div>API 문서를 불러오는 중...</div> },
+);
+
+export function SwaggerDocsContainer() {
+  return <SwaggerDocsView />;
+}
+```
+
+```tsx
+// features/api-docs/ui/SwaggerDocsView.tsx
+'use client';
+import SwaggerUI from 'swagger-ui-react';
+import 'swagger-ui-react/swagger-ui.css';
+
+export function SwaggerDocsView() {
+  return (
+    <div className="swagger-wrapper">
+      <SwaggerUI url="/api/docs" docExpansion="list" defaultModelsExpandDepth={-1} />
+    </div>
+  );
+}
+```
+
+### 4. 레이아웃 분리 — `/docs` 는 AppShell 밖
+
+`/docs` 는 swagger-ui-react 의 라이트 테마와 사이드바(다크) 가 충돌해서,
+대시보드 영역과 분리된 자체 layout 을 갖는다.
+
+```
+app/(app)/layout.tsx   — AppShell (사이드바 + 컨텐츠)
+app/docs/layout.tsx    — 미니 헤더(HanaLoop 로고 + 대시보드로 링크) + 흰 배경
+```
+
+`<html>` 의 dark/light 클래스 동기화는 `shared/providers/ThemeApplier.tsx` 가
+root layout 에서 항상 mount 되어 처리하므로 두 영역 모두 동일 적용된다.
+
+### 신규 스키마 / 엔드포인트 추가 절차
+
+1. `shared/types/*.ts` 에 Zod 스키마 작성 (`.openapi()` 메타데이터 추가 불필요)
+2. `shared/lib/openapi.ts` 에서 `registry.register('Name', Schema)`
+3. 새 엔드포인트면 `registry.registerPath({...})` 추가
+4. 재빌드 → `/docs` 에 자동 반영, `/api/docs` JSON 도 자동 갱신

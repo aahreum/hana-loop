@@ -8,6 +8,7 @@ import {
   Activity,
   FlaskConical,
   Building2,
+  BookOpen,
   X,
   ChevronDown,
   Loader2,
@@ -22,6 +23,7 @@ const NAV_ITEMS = [
   { href: '/activities', label: '활동 데이터', icon: Activity },
   { href: '/factors', label: '배출계수', icon: FlaskConical },
   { href: '/companies', label: '기업 관리', icon: Building2 },
+  { href: '/docs', label: 'API 문서', icon: BookOpen },
 ] as const;
 
 type NavigationDrawerProps = {

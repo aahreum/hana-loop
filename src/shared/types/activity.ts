@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { YearMonthSchema } from './common';
 
 export const ActivityTypeSchema = z.enum([
   'electricity',
@@ -27,7 +28,7 @@ export type CreateActivityInput = z.infer<typeof CreateActivitySchema>;
 
 export const ActivitySchema = CreateActivitySchema.extend({
   id: z.string().uuid(),
-  yearMonth: z.string().regex(/^\d{4}-\d{2}$/),
+  yearMonth: YearMonthSchema,
   scope: ScopeSchema, // DB에 저장된 값 — 응답에 포함
   createdAt: z.string().datetime(),
 });

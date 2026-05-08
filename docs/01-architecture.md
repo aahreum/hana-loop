@@ -23,20 +23,28 @@ Feature-Sliced Design 구조. `features/` 간 상호 임포트 금지.
 ```
 src/
 ├── app/                          # Next.js App Router (서버 컴포넌트, 라우팅만)
-│   ├── layout.tsx                # Root layout (AppShell 조합)
+│   ├── layout.tsx                # Root layout (ThemeApplier + Provider 만, AppShell 미포함)
 │   ├── page.tsx                  # redirect → /dashboard
-│   ├── dashboard/page.tsx        # 서버 컴포넌트 → DashboardContainer 렌더
-│   ├── activities/page.tsx       # 서버 컴포넌트 → ActivitiesContainer 렌더
-│   ├── companies/page.tsx        # 서버 컴포넌트 → CompaniesContainer 렌더
-│   ├── factors/page.tsx          # 서버 컴포넌트 → FactorsContainer 렌더
-│   ├── docs/page.tsx             # Swagger UI
+│   ├── (app)/                    # 대시보드 영역 route group — AppShell 적용
+│   │   ├── layout.tsx            # AppShell wrap
+│   │   ├── dashboard/page.tsx    # 서버 컴포넌트 → DashboardContainer 렌더
+│   │   ├── activities/page.tsx   # 서버 컴포넌트 → ActivitiesContainer 렌더
+│   │   ├── companies/page.tsx    # 서버 컴포넌트 → CompaniesContainer 렌더
+│   │   └── factors/page.tsx      # 서버 컴포넌트 → FactorsContainer 렌더
+│   ├── docs/                     # Swagger UI 영역 — AppShell 미적용
+│   │   ├── layout.tsx            # 미니 헤더(로고 + 대시보드로) + 흰 배경
+│   │   └── page.tsx              # SwaggerDocsContainer 렌더
 │   └── api/                      # Next.js API Routes (백엔드)
 │       ├── activities/
 │       │   ├── route.ts          # GET, POST
 │       │   └── [id]/route.ts     # DELETE
 │       ├── companies/route.ts    # GET
 │       ├── factors/route.ts      # GET
-│       └── emission-results/route.ts  # GET
+│       ├── emission-results/route.ts  # GET
+│       ├── posts/
+│       │   ├── route.ts          # GET, POST
+│       │   └── [id]/route.ts     # DELETE
+│       └── docs/route.ts         # OpenAPI 3.0 JSON spec (force-static)
 │
 ├── widgets/                      # 조합형 레이아웃 UI 블록
 │   └── layout/
@@ -80,11 +88,17 @@ src/
 │   │   └── ui/
 │   │       └── CompaniesTable.tsx
 │   │
-│   └── factors/
+│   ├── factors/
+│   │   ├── container/
+│   │   │   └── FactorsContainer.tsx
+│   │   └── ui/
+│   │       └── FactorsTable.tsx
+│   │
+│   └── api-docs/                 # /docs (Swagger UI) 슬라이스
 │       ├── container/
-│       │   └── FactorsContainer.tsx
+│       │   └── SwaggerDocsContainer.tsx  # dynamic({ ssr:false }) 로 view 로드
 │       └── ui/
-│           └── FactorsTable.tsx
+│           └── SwaggerDocsView.tsx       # swagger-ui-react 렌더
 │
 ├── shared/                       # 전역 공유 (features에서 임포트 가능)
 │   ├── ui/                       # shadcn/ui 컴포넌트(수정 금지) + 커스텀 UI
@@ -94,11 +108,17 @@ src/
 │   │   └── ...                   # shadcn 컴포넌트들
 │   │
 │   ├── types/                    # Zod 스키마 + z.infer 타입 (유일한 타입 출처)
+│   │   ├── common.ts             # YearMonthSchema (YYYY-MM, 월 01-12 검증)
 │   │   ├── activity.ts
 │   │   ├── factor.ts
 │   │   ├── company.ts
 │   │   ├── emission.ts
+│   │   ├── post.ts
 │   │   └── database.ts
+│   │
+│   ├── providers/
+│   │   ├── QueryProvider.tsx     # TanStack Query Provider
+│   │   └── ThemeApplier.tsx      # <html> dark/light class 동기화 (모든 라우트 공통)
 │   │
 │   ├── lib/
 │   │   ├── api.ts
