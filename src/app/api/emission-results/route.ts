@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/shared/lib/supabase.server';
-import { jitter, toCCArray } from '@/app/api/_store';
+import { jitter } from '@/app/api/_store';
+import { toCCArray } from '@/shared/lib/case';
 import type { EmissionResult } from '@/shared/types/emission';
 
 export async function GET(req: NextRequest) {

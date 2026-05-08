@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import {
   BarChart3,
   Zap,
@@ -20,8 +21,6 @@ import { useDashboard } from '../hooks/useDashboard';
 import { KpiCard } from '../ui/KpiCard';
 import { KpiCardSkeleton } from '../ui/KpiCardSkeleton';
 import { CardSectionHeader } from '../ui/CardSectionHeader';
-import { EmissionTrendChart } from '../ui/EmissionTrendChart';
-import { ActivityDonutChart } from '../ui/ActivityDonutChart';
 import { CarbonGradeCard } from '../ui/CarbonGradeCard';
 import { InsightList } from '../ui/InsightList';
 import { ReductionSuggestionCard } from '../ui/ReductionSuggestionCard';
@@ -29,6 +28,27 @@ import { RecentActivitiesTable } from '../ui/RecentActivitiesTable';
 import { DateRangePicker } from '../ui/DateRangePicker';
 import { QueryErrorCard } from '@/shared/ui/query-error-card';
 import { DATASET_FROM, DATASET_TO } from '@/shared/constants/datasetRange';
+
+// Recharts 는 무거운 라이브러리라 메인 번들에서 분리하여 별도 chunk 로 로드.
+const ChartSkeleton = () => (
+  <div className="flex h-64 items-center justify-center">
+    <RefreshCw className="h-6 w-6 animate-spin text-primary-border" />
+  </div>
+);
+const EmissionTrendChart = dynamic(
+  () =>
+    import('../ui/EmissionTrendChart').then((m) => ({
+      default: m.EmissionTrendChart,
+    })),
+  { loading: ChartSkeleton },
+);
+const ActivityDonutChart = dynamic(
+  () =>
+    import('../ui/ActivityDonutChart').then((m) => ({
+      default: m.ActivityDonutChart,
+    })),
+  { loading: ChartSkeleton },
+);
 
 type DashboardData = ReturnType<typeof useDashboard>;
 

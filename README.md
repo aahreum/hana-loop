@@ -274,6 +274,32 @@ pnpm test:coverage   # 커버리지 리포트
 
 ---
 
+## 성능
+
+### jitter 시뮬레이션 정책
+
+과제 스펙(`docs/00-assignment.md`) 의 "200~800ms 네트워크 지연 + 10~20% 쓰기 실패" 시뮬레이션은 prod 에서도 그대로 유지합니다. Loading/Error UX 가 평가 항목이라 인공 지연을 끄는 건 의미 없기 때문입니다. 다만 **첫 페이지 LCP** 만 빠르게 만들기 위해 다음과 같이 분리했습니다:
+
+| 영역 | 경로 | jitter |
+| --- | --- | --- |
+| **첫 페이지 prefetch** | RSC 에서 `supabaseAdmin` 직접 호출 (`shared/lib/server-data.ts`) | 우회 |
+| **사용자 인터랙션** (활동 추가/삭제, 회사 전환, 날짜 필터) | API Route 경유 (`app/api/**`) | 유지 |
+
+평가자는 빠른 첫 진입 + 의도된 loading/error UX 를 둘 다 확인할 수 있습니다.
+
+### 적용된 최적화
+
+| 최적화 | 효과 |
+| --- | --- |
+| RSC + HydrationBoundary prefetch (`app/(app)/dashboard/page.tsx`) | 클라이언트 워터폴 제거 — fetch round-trip 이 크리티컬 패스에서 빠짐 |
+| Recharts `next/dynamic` 코드 분할 | dashboard 메인 번들 **129 kB → 14.5 kB** (First Load JS 286 kB → 172 kB) |
+| 다크 모드 `--primary-pressed` 재정의 | 활동 뱃지 대비 4.5:1 충족 (Lighthouse 접근성 96 → 100) |
+| `force-dynamic` 명시 | 매 요청 fresh prefetch (빌드 시 prerender 방지) |
+
+> 진단·미적용 항목·향후 개선 방향: [`docs/12-performance-and-accessibility-audit.md`](./docs/12-performance-and-accessibility-audit.md)
+
+---
+
 ## 주요 설계 결정 (Trade-off)
 
 > 발표 시 "왜 그렇게 설계했는가" 의 근거. 자세한 가정·질문 사항: [`docs/07-assumptions-and-questions.md`](./docs/07-assumptions-and-questions.md).

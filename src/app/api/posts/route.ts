@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/shared/lib/supabase.server';
-import { jitter, maybeFail, toCC, toCCArray } from '@/app/api/_store';
+import { jitter, maybeFail } from '@/app/api/_store';
+import { toCC, toCCArray } from '@/shared/lib/case';
 import { CreatePostSchema } from '@/shared/types/post';
 import type { Post } from '@/shared/types/post';
 

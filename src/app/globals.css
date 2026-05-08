@@ -116,9 +116,10 @@
     --chart-cat-raw-material: #22d3ee; /* cyan-400 */
     --chart-cat-transport: #4ade80; /* green-400 */
 
-    /* primary-bg/border 다크 변형 — surface 위 alpha-blend */
+    /* primary-bg/border/pressed 다크 변형 — surface 위 alpha-blend */
     --primary-bg: rgba(48, 138, 249, 0.12);
     --primary-border: rgba(48, 138, 249, 0.32);
+    --primary-pressed: #93c5fd; /* blue-300 — bg-primary-bg 위 4.5:1+ */
 
     --gray-900: #f8fafc;
     --gray-700: #e2e8f0;
@@ -163,6 +164,7 @@
 
   --primary-bg: rgba(48, 138, 249, 0.12);
   --primary-border: rgba(48, 138, 249, 0.32);
+  --primary-pressed: #93c5fd; /* blue-300 — bg-primary-bg 위 4.5:1+ */
 
   --gray-900: #f8fafc;
   --gray-700: #e2e8f0;
