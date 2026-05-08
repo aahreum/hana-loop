@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { supabaseAdmin } from '@/shared/lib/supabase.server';
-import { toCCArray } from '@/app/api/_store';
+import { toCCArray } from '@/shared/lib/case';
 import type { ActivityData } from '@/shared/types/activity';
 import type { Company } from '@/shared/types/company';
 import type { EmissionResult } from '@/shared/types/emission';

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/shared/lib/supabase.server';
-import { jitter, toCCArray } from '@/app/api/_store';
+import { jitter } from '@/app/api/_store';
+import { toCCArray } from '@/shared/lib/case';
 import type { Company } from '@/shared/types/company';
 
 export async function GET() {
