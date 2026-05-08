@@ -103,11 +103,6 @@ export function ActivityTableContainer() {
 - 비즈니스 로직(훅, 뮤테이션) 연결이 필요한 경우 → container 생성
 - 단순 레이아웃 조합이나 props 전달만 하는 경우 → container 생성 금지 (과도한 분리)
 
-**Container 생성 기준:**
-
-- 비즈니스 로직(훅, 뮤테이션) 연결이 필요한 경우 → container 생성
-- 단순 레이아웃 조합이나 props 전달만 하는 경우 → container 생성 금지 (과도한 분리)
-
 ---
 
 ## 인터랙티브 요소 — `cursor-pointer` 필수

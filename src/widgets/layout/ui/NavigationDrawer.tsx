@@ -59,7 +59,7 @@ export function NavigationDrawer({
         <div className="flex h-16 items-center justify-between px-4 border-b border-white/10">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2.5 hover:opacity-80 transition-opacity cursor-pointer"
+            className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
           >
             <div
               className="flex h-7 w-7 items-center justify-center rounded-lg text-white text-xs font-bold shrink-0"
@@ -124,7 +124,7 @@ export function NavigationDrawer({
                   <Link
                     href={href}
                     className={cn(
-                      'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer',
+                      'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
                       active
                         ? 'text-white'
                         : 'text-sidebar-muted hover:bg-white/10 hover:text-sidebar-text',

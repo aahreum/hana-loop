@@ -139,7 +139,7 @@ export function ActivityTable({
                   size="icon"
                   onClick={() => onDelete(a.id)}
                   disabled={isDeleting}
-                  className="h-7 w-7 text-muted-foreground hover:text-error hover:bg-error-bg"
+                  className="h-7 w-7 text-muted-foreground hover:text-error hover:bg-error-bg cursor-pointer"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
