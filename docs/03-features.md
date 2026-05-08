@@ -14,6 +14,7 @@
 - [x] **DateRangePicker (Popover)** — 트리거 버튼(현재 범위 표시) + Popover 안에 From/To 직접 선택 + Preset 4개(`전체` / `최근 1개월` / `3개월` / `6개월`)
   - 데이터셋 범위는 `useEmissionResults` 응답에서 동적 추출 (`yearMonth` min/max). hardcoded 상수 없음
   - 빈 from/to = "전체 기간". preset "전체" 클릭 시 빈 값으로 reset → 서버 응답 동적 범위 그대로 사용
+  - From/To 월 input 은 키보드 직접 입력 차단(`onKeyDown` 에서 Tab 외 키 preventDefault) — native month input 이 한국 로케일에서 5자리 이상 연도(`123444년`) 같은 비현실적 값을 받아들이는 문제 회피. picker UI 로만 선택
 
 ### 접근성 (a11y)
 

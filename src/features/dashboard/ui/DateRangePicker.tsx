@@ -8,6 +8,14 @@ import { Input } from '@/shared/ui/input';
 
 const inputClass = 'cursor-pointer pr-8 text-sm';
 
+// native month input 은 한국 로케일에서 키보드 직접 입력 시 6자리 연도(123444년)
+// 같은 비현실적 값도 받는다. picker UI 로만 선택하도록 키보드 입력 자체를 차단한다.
+// (Tab / Shift+Tab 은 포커스 이동용이라 통과시킨다.)
+function blockKeyboardInput(e: React.KeyboardEvent<HTMLInputElement>) {
+  if (e.key === 'Tab') return;
+  e.preventDefault();
+}
+
 type DateRangePickerProps = {
   from: string;
   to: string;
@@ -101,6 +109,7 @@ export function DateRangePicker({
                 value={from}
                 min={minDate}
                 max={to}
+                onKeyDown={blockKeyboardInput}
                 onChange={(e) => onChange(e.target.value, to)}
                 className={inputClass}
               />
@@ -124,6 +133,7 @@ export function DateRangePicker({
                 value={to}
                 min={from}
                 max={maxDate}
+                onKeyDown={blockKeyboardInput}
                 onChange={(e) => onChange(from, e.target.value)}
                 className={inputClass}
               />
