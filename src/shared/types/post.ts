@@ -1,9 +1,10 @@
 import { z } from 'zod';
+import { YearMonthSchema } from './common';
 
 export const CreatePostSchema = z.object({
   title: z.string().min(1, '제목을 입력하세요'),
   resourceUid: z.string().uuid(),
-  dateTime: z.string().regex(/^\d{4}-\d{2}$/, 'YYYY-MM 형식이어야 합니다'),
+  dateTime: YearMonthSchema,
   content: z.string(),
 });
 

@@ -11,6 +11,7 @@ import {
   CreateActivitySchema,
   ScopeSchema,
 } from '@/shared/types/activity';
+import { YearMonthSchema } from '@/shared/types/common';
 import { CompanySchema } from '@/shared/types/company';
 import {
   EmissionResultSchema,
@@ -73,10 +74,7 @@ registry.registerPath({
   request: {
     query: z.object({
       companyId: z.string().uuid().optional(),
-      yearMonth: z
-        .string()
-        .regex(/^\d{4}-\d{2}$/)
-        .optional(),
+      yearMonth: YearMonthSchema.optional(),
       type: ActivityTypeSchema.optional(),
     }),
   },
@@ -162,18 +160,9 @@ registry.registerPath({
   request: {
     query: z.object({
       companyId: z.string().uuid().optional(),
-      yearMonth: z
-        .string()
-        .regex(/^\d{4}-\d{2}$/)
-        .optional(),
-      from: z
-        .string()
-        .regex(/^\d{4}-\d{2}$/)
-        .optional(),
-      to: z
-        .string()
-        .regex(/^\d{4}-\d{2}$/)
-        .optional(),
+      yearMonth: YearMonthSchema.optional(),
+      from: YearMonthSchema.optional(),
+      to: YearMonthSchema.optional(),
     }),
   },
   responses: {
@@ -195,10 +184,7 @@ registry.registerPath({
   request: {
     query: z.object({
       resourceUid: z.string().uuid().optional(),
-      dateTime: z
-        .string()
-        .regex(/^\d{4}-\d{2}$/)
-        .optional(),
+      dateTime: YearMonthSchema.optional(),
     }),
   },
   responses: {
