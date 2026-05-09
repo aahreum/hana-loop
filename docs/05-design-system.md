@@ -148,6 +148,22 @@ native `<input type="month">`, `<input type="date">` 의 picker 결과 텍스트
 
 > 사용자 OS 폰트 설정이 매우 큰 경우엔 css 만으로 완전 제어가 어렵다. 근본 해결이 필요하면 native input 대신 custom picker (shadcn Calendar 등) 로 교체.
 
+### 모바일 native date / month input — `appearance: none` 으로 native chrome 제거
+
+일부 모바일 chromium(Samsung Internet 등)은 `<input type="date|month">` 에 picker indicator 외에 **별도 dropdown chevron 을 select 처럼 그린다**. 우리가 우측에 overlay 하는 Lucide `<Calendar>` 아이콘과 시각적으로 중첩되어 텍스트 영역이 잘리거나 두 아이콘이 겹쳐 보이는 문제가 있다. `globals.css` 에 `appearance: none` 을 추가해 native chrome 자체를 제거 (picker 동작은 유지 — 클릭 시 그대로 열림).
+
+```css
+input[type='date'],
+input[type='month'],
+input[type='time'],
+input[type='datetime-local'],
+input[type='week'] {
+  position: relative;
+  -webkit-appearance: none;
+  appearance: none;
+}
+```
+
 ### 모바일 가로 스크롤 차단
 
 `body { overflow-x: clip }` 을 base 에 적용. `NavigationDrawer` 가 모바일 닫힘 상태에서 `fixed left-0 w-60 -translate-x-full` 로 viewport 밖으로 transform 하는데, 일부 모바일 브라우저(안드로이드 Chrome / Samsung Internet 등)는 transform 후 위치까지 layout overflow 로 잡아 가로 스크롤이 발생. `clip` 은 `hidden` 과 달리 stacking context 를 만들지 않아 `position: sticky` 동작을 깨지 않는다.
