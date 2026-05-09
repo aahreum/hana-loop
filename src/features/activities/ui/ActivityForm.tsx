@@ -86,7 +86,9 @@ export function ActivityForm({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <input type="hidden" {...register('companyId')} />
 
-      <div className="grid grid-cols-2 gap-4">
+      {/* 모바일은 다이얼로그 폭이 좁아 native date input(yyyy. mm. dd.) 텍스트가
+          잘리므로 1단으로 떨어뜨려 풀폭 확보. sm(640px) 이상부터 2단 정렬. */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* 날짜 */}
         <div className="space-y-1.5">
           <Label htmlFor="date">

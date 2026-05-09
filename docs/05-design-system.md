@@ -164,6 +164,38 @@ input[type='week'] {
 }
 ```
 
+### 모바일 좁은 영역 — native date input 은 단독 폭 확보
+
+`<input type="date">` 는 OS chrome 이 표시 텍스트(`yyyy. mm. dd.`)를 직접 그리기 때문에 좁은 컨테이너에서 일반 CSS `text-overflow: ellipsis` 가 듣지 않고 **끝부터 잘려 사라진다**. 다이얼로그 폼처럼 다단 grid 안에 들어가는 native date input 은 모바일(< sm)에서 1단으로 떨어뜨려 풀폭을 확보한다.
+
+```tsx
+{/* 활동 입력 폼 — 모바일 1단, sm(640px) 이상 2단 */}
+<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+  <Input type="date" ... />
+  <Select ... />
+</div>
+```
+
+> 본질 해결을 원하면 native input 대신 `<input readOnly>` + `react-day-picker` (shadcn Calendar) 로 교체. 그땐 표시 텍스트를 우리가 직접 그리므로 `text-overflow: ellipsis` 정상 동작.
+
+### 헤더 액션 버튼 — 모바일에선 라벨 축약, popover 내부에서 현재 상태 노출
+
+좁은 헤더(< md)에서 트리거 버튼이 풀 라벨을 가지면 두 줄로 깨진다. 트리거는 아이콘 + 짧은 키워드만 두고, 현재 선택 상태는 popover 내부 상단에서 노출한다 (`DateRangePicker` 적용).
+
+```tsx
+<Button>
+  <Calendar />
+  <span className="md:hidden">기간</span>
+  <span className="hidden md:inline">{`${from} ~ ${to}`}</span>
+  <ChevronDown />
+</Button>
+
+<PopoverContent>
+  <div className="md:hidden">현재 선택: {triggerLabel}</div>
+  ...
+</PopoverContent>
+```
+
 ### 모바일 가로 스크롤 차단
 
 `body { overflow-x: clip }` 을 base 에 적용. `NavigationDrawer` 가 모바일 닫힘 상태에서 `fixed left-0 w-60 -translate-x-full` 로 viewport 밖으로 transform 하는데, 일부 모바일 브라우저(안드로이드 Chrome / Samsung Internet 등)는 transform 후 위치까지 layout overflow 로 잡아 가로 스크롤이 발생. `clip` 은 `hidden` 과 달리 stacking context 를 만들지 않아 `position: sticky` 동작을 깨지 않는다.

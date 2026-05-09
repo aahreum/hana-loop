@@ -93,7 +93,10 @@ export function DateRangePicker({
           aria-label="조회 기간 선택"
         >
           <Calendar className="h-4 w-4 text-muted-foreground" aria-hidden />
-          <span className="tabular-nums">{triggerLabel}</span>
+          {/* 모바일(< md)은 헤더 폭이 좁아 두 줄로 깨지는 걸 방지하기 위해
+              "기간" 만 표시. 현재 선택된 범위는 popover 내부에서 확인. */}
+          <span className="md:hidden">기간</span>
+          <span className="hidden tabular-nums md:inline">{triggerLabel}</span>
           <ChevronDown
             className="h-3.5 w-3.5 text-muted-foreground"
             aria-hidden
@@ -102,6 +105,13 @@ export function DateRangePicker({
       </PopoverTrigger>
 
       <PopoverContent align="end" className="w-72 space-y-3">
+        {/* 모바일 트리거 라벨이 "기간" 으로 축약되므로 popover 내부에서 현재 선택 노출 */}
+        <div className="rounded-md bg-muted/60 px-3 py-2 text-xs md:hidden">
+          <span className="text-muted-foreground">현재 선택: </span>
+          <span className="font-medium tabular-nums text-text">
+            {triggerLabel}
+          </span>
+        </div>
         {/* From / To 직접 선택 */}
         <div className="grid grid-cols-2 gap-2">
           <div>

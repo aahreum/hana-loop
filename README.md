@@ -2,6 +2,16 @@
 
 > 기업 탄소 배출량 관리 대시보드 — HanaLoop 프론트엔드 개발자 채용 과제
 
+- **Live Demo**: https://hana-loop.vercel.app/dashboard
+- **API Docs (Swagger UI)**: https://hana-loop.vercel.app/docs
+- **Lighthouse (Mobile, prod)**: 성능 95 · LCP 0.9s — 측정 상세는 [`docs/12-performance-and-accessibility-audit.md`](./docs/12-performance-and-accessibility-audit.md)
+
+### 시연
+
+| 대시보드 — 날짜 필터로 기간 변경 시 KPI/차트 즉시 갱신 | 활동 데이터 — 추가 · 삭제 (성공/실패 케이스) |
+| :---: | :---: |
+| ![대시보드 시연](./public/dashboard-demo.gif) | ![활동 데이터 추가/삭제 시연](./public/activities-demo.gif) |
+
 기업 임원·관리자가 활동 데이터를 입력하면 배출계수 기반으로 탄소 배출량을 자동 계산하고, Scope 1/2/3 기준의 시각화·인사이트·감축 시뮬레이션을 제공하는 웹 애플리케이션입니다.
 
 ```
