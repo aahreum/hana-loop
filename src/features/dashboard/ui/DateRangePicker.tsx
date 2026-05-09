@@ -93,7 +93,10 @@ export function DateRangePicker({
           aria-label="조회 기간 선택"
         >
           <Calendar className="h-4 w-4 text-muted-foreground" aria-hidden />
-          <span className="tabular-nums">{triggerLabel}</span>
+          {/* 모바일(< md)은 헤더 폭이 좁아 두 줄로 깨지는 걸 방지하기 위해
+              "기간" 만 표시. 현재 선택된 범위는 popover 내부에서 확인. */}
+          <span className="md:hidden">기간</span>
+          <span className="hidden tabular-nums md:inline">{triggerLabel}</span>
           <ChevronDown
             className="h-3.5 w-3.5 text-muted-foreground"
             aria-hidden
@@ -101,7 +104,17 @@ export function DateRangePicker({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent align="end" className="w-72 space-y-3">
+      {/* space-y-3 대신 flex+gap 사용 — space-y 의 `> * + *` 셀렉터는 md:hidden(display:none)
+          요소도 DOM 에 있으면 다음 형제에 마진을 부여해 데스크톱(>= md) 에서 상단 12px 공백이
+          남는다. gap 은 display:none 형제를 올바르게 무시한다. */}
+      <PopoverContent align="end" className="flex w-72 flex-col gap-3">
+        {/* 모바일 트리거 라벨이 "기간" 으로 축약되므로 popover 내부에서 현재 선택 노출 */}
+        <div className="rounded-md bg-muted/60 px-3 py-2 text-xs md:hidden">
+          <span className="text-muted-foreground">현재 선택: </span>
+          <span className="font-medium tabular-nums text-text">
+            {triggerLabel}
+          </span>
+        </div>
         {/* From / To 직접 선택 */}
         <div className="grid grid-cols-2 gap-2">
           <div>
