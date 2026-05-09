@@ -202,13 +202,21 @@
 /* 네이티브 캘린더 picker indicator 를 시각적으로 숨기되 click 영역은 보존.
    - display:none 은 picker 트리거 자체를 막아 사용 불가
    - opacity:0 + absolute + 풀 사이즈 로 input 전체를 덮어, 어디를 클릭해도
-     picker 가 열림. 시각적 캘린더 아이콘은 호출부의 Lucide Calendar overlay. */
+     picker 가 열림. 시각적 캘린더 아이콘은 호출부의 Lucide Calendar overlay.
+   - appearance:none 은 Samsung Internet 등 일부 모바일 chromium 이 select 처럼
+     별도 dropdown chevron 을 그리는 동작을 막는다 (우리 Calendar 아이콘과 중첩 방지).
+     부작용: 데스크탑 브라우저 기본 '값 지우기(clear)' / '스핀 버튼' 도 함께 사라진다.
+     디자인 시스템상 모든 date/month input 은 Lucide 아이콘 overlay 패턴을 사용하고
+     '지우기' 기능이 필요한 input 이 없어 현재는 영향 없음. 향후 그런 input 이 생기면
+     이 전역 정책 재검토 필요 (개별 input 에서 appearance:auto 로 override). */
 input[type='date'],
 input[type='month'],
 input[type='time'],
 input[type='datetime-local'],
 input[type='week'] {
   position: relative;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 input[type='date']::-webkit-calendar-picker-indicator,
