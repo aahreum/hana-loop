@@ -104,7 +104,10 @@ export function DateRangePicker({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent align="end" className="w-72 space-y-3">
+      {/* space-y-3 대신 flex+gap 사용 — space-y 의 `> * + *` 셀렉터는 md:hidden(display:none)
+          요소도 DOM 에 있으면 다음 형제에 마진을 부여해 데스크톱(>= md) 에서 상단 12px 공백이
+          남는다. gap 은 display:none 형제를 올바르게 무시한다. */}
+      <PopoverContent align="end" className="flex w-72 flex-col gap-3">
         {/* 모바일 트리거 라벨이 "기간" 으로 축약되므로 popover 내부에서 현재 선택 노출 */}
         <div className="rounded-md bg-muted/60 px-3 py-2 text-xs md:hidden">
           <span className="text-muted-foreground">현재 선택: </span>

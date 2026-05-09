@@ -182,16 +182,29 @@ input[type='week'] {
 
 좁은 헤더(< md)에서 트리거 버튼이 풀 라벨을 가지면 두 줄로 깨진다. 트리거는 아이콘 + 짧은 키워드만 두고, 현재 선택 상태는 popover 내부 상단에서 노출한다 (`DateRangePicker` 적용).
 
+라벨 텍스트는 `${from} ~ ${to}` 를 직접 쓰지 않고 `triggerLabel` 변수로 일원화 — `disabled` 일 땐 "회사 선택 필요", 빈 값일 땐 "전체 기간", 그 외에는 `${from} ~ ${to}` 로 분기되는 단일 표시 규칙이라 트리거와 popover 내부 박스가 동일한 라벨을 공유해야 일관된다.
+
 ```tsx
+const triggerLabel = disabled
+  ? '회사 선택 필요'
+  : isAll
+    ? '전체 기간'
+    : `${from} ~ ${to}`;
+
 <Button>
   <Calendar />
   <span className="md:hidden">기간</span>
-  <span className="hidden md:inline">{`${from} ~ ${to}`}</span>
+  <span className="hidden tabular-nums md:inline">{triggerLabel}</span>
   <ChevronDown />
 </Button>
 
-<PopoverContent>
-  <div className="md:hidden">현재 선택: {triggerLabel}</div>
+{/* PopoverContent 는 space-y-* 대신 flex+gap — md:hidden 박스가 DOM 에 남아도
+    space-y 의 `> * + *` 셀렉터가 다음 형제에 마진을 줘 데스크톱에서 상단 공백이 생기는 문제 회피 */}
+<PopoverContent className="flex w-72 flex-col gap-3">
+  <div className="rounded-md bg-muted/60 px-3 py-2 text-xs md:hidden">
+    <span className="text-muted-foreground">현재 선택: </span>
+    <span className="font-medium tabular-nums text-text">{triggerLabel}</span>
+  </div>
   ...
 </PopoverContent>
 ```
