@@ -18,27 +18,27 @@
 #### 대시보드 (`/dashboard`)
 
 KPI 4종 · 활동 도넛 · 월별 stacked area · 탄소 등급 게이지 · 감축 제안 · 자동 인사이트
-![대시보드](./public/screenshots/dashboard.png)
+![대시보드 화면 스크린샷](./public/screenshots/dashboard.png)
 
 #### 활동 데이터 (`/activities`)
 
 원본 활동 데이터 30건 — 날짜·유형·수량·Scope·설명·배출계수 컬럼, 정렬·삭제를 지원합니다.
-![활동 데이터](./public/screenshots/activities.png)
+![활동 데이터 화면 스크린샷](./public/screenshots/activities.png)
 
 #### 배출계수 (`/factors`)
 
 4개 카테고리(전기·원소재 1·원소재 2·운송) — 배출계수·단위·Scope·유효기간·출처
-![배출계수](./public/screenshots/factors.png)
+![배출계수 화면 스크린샷](./public/screenshots/factors.png)
 
 #### 기업 관리 (`/companies`)
 
 등록된 기업 목록
-![기업 관리](./public/screenshots/companies.png)
+![기업 관리 화면 스크린샷](./public/screenshots/companies.png)
 
 #### API 문서 (`/docs`) — Swagger UI
 
 Zod 스키마에서 자동 생성된 OpenAPI 3.0 spec 인터랙티브 문서
-![API 문서](./public/screenshots/api-docs.png)
+![API 문서 화면 스크린샷](./public/screenshots/api-docs.png)
 
 </details>
 
